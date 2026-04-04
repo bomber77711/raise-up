@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Raise — Invest in the Real Italian Economy</title>
+<style>
+  /* ── Reset & Base ── */
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #FAFAFA;
+    --surface: #FFFFFF;
+    --surface-2: #F5F5F7;
+    --text-pri: #1D1D1F;
+    --text-sec: #6E6E73;
+    --text-ter: #A1A1A6;
+    --border: #E8E8ED;
+    --blue: #0071E3;
+    --blue-light: #EBF5FF;
+    --green: #30D158;
+    --green-dark: #1BA843;
+    --green-light: #E8FBF0;
+    --gradient: linear-gradient(135deg, #0071E3 0%, #30D158 100%);
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
+    --shadow-md: 0 4px 24px rgba(0,0,0,0.06);
+    --shadow-lg: 0 12px 48px rgba(0,0,0,0.08);
+    --shadow-xl: 0 24px 80px rgba(0,0,0,0.10);
+    --radius: 16px;
+    --radius-lg: 24px;
+    --radius-xl: 32px;
+  }
+
+  html { scroll-behavior: smooth; font-size: 16px; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text-pri);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+
+  .container { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
+
+  /* ── Typography ── */
+  h1 { font-size: clamp(2.8rem, 6vw, 5rem); font-weight: 700; letter-spacing: -0.03em; line-height: 1.08; }
+  h2 { font-size: clamp(2rem, 4vw, 3.2rem); font-weight: 700; letter-spacing: -0.025em; line-height: 1.12; }
+  h3 { font-size: clamp(1.3rem, 2.5vw, 1.8rem); font-weight: 600; letter-spacing: -0.015em; line-height: 1.2; }
+  .subtitle { font-size: clamp(1.1rem, 2vw, 1.4rem); color: var(--text-sec); line-height: 1.6; max-width: 600px; }
+  .label { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-ter); }
+
+  /* ── Nav ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(250, 250, 250, 0.85);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    height: 64px;
+    display: flex; align-items: center;
+    transition: all 0.3s;
+  }
+  nav .container { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+  .nav-logo { display: flex; align-items: center; gap: 6px; text-decoration: none; }
+  .nav-logo .arrow { color: var(--green); font-weight: 900; font-size: 1.4rem; }
+  .nav-logo .name { color: var(--text-pri); font-weight: 800; font-size: 1.3rem; letter-spacing: -0.02em; }
+  .nav-links { display: flex; gap: 36px; align-items: center; }
+  .nav-links a { text-decoration: none; color: var(--text-sec); font-size: 0.9rem; font-weight: 500; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--text-pri); }
+  .btn-nav {
+    background: var(--text-pri); color: #fff; border: none; padding: 10px 22px;
+    border-radius: 980px; font-size: 0.85rem; font-weight: 600; cursor: pointer;
+    transition: transform 0.2s, opacity 0.2s;
+  }
+  .btn-nav:hover { opacity: 0.85; transform: scale(1.02); }
+
+  /* ── Hero ── */
+  .hero {
+    padding: 160px 0 100px; text-align: center;
+    background: linear-gradient(180deg, #FAFAFA 0%, #F0F4FF 50%, #FAFAFA 100%);
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
+    width: 800px; height: 800px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,113,227,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero h1 { margin-bottom: 24px; }
+  .hero h1 .green { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .hero .subtitle { margin: 0 auto 48px; }
+  .hero-cta { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 80px; }
+  .btn-primary {
+    background: var(--text-pri); color: #fff; border: none; padding: 16px 36px;
+    border-radius: 980px; font-size: 1rem; font-weight: 600; cursor: pointer;
+    transition: all 0.25s; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+  .btn-secondary {
+    background: transparent; color: var(--text-pri); border: 1.5px solid var(--border); padding: 16px 36px;
+    border-radius: 980px; font-size: 1rem; font-weight: 600; cursor: pointer;
+    transition: all 0.25s; text-decoration: none;
+  }
+  .btn-secondary:hover { border-color: var(--text-sec); background: var(--surface); }
+
+  /* Hero phones mockup */
+  .hero-phones {
+    display: flex; justify-content: center; align-items: flex-end; gap: 20px;
+    max-width: 900px; margin: 0 auto; position: relative;
+  }
+  .phone-mock {
+    background: #000; border-radius: 36px; overflow: hidden;
+    box-shadow: var(--shadow-xl); border: 6px solid #2A2A2E;
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .phone-mock:hover { transform: translateY(-8px); }
+  .phone-mock.center { width: 280px; z-index: 2; }
+  .phone-mock.side { width: 230px; opacity: 0.92; }
+  .phone-mock img, .phone-mock .screen-placeholder { width: 100%; display: block; }
+
+  /* Phone screen simulations */
+  .phone-screen {
+    width: 100%; aspect-ratio: 9/19.5; background: #000;
+    display: flex; flex-direction: column; padding: 20px 16px; position: relative; overflow: hidden;
+  }
+  .phone-screen .status-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 10px; font-weight: 600; color: #fff; margin-bottom: 8px; padding: 0 4px;
+  }
+  .phone-screen .dynamic-island {
+    width: 80px; height: 22px; background: #000; border-radius: 11px;
+    position: absolute; top: 6px; left: 50%; transform: translateX(-50%);
+  }
+
+  /* ── Logos bar ── */
+  .logos-bar {
+    padding: 60px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+    text-align: center;
+  }
+  .logos-bar .label { margin-bottom: 28px; display: block; }
+  .logos-row {
+    display: flex; justify-content: center; align-items: center; gap: 56px; flex-wrap: wrap;
+    opacity: 0.4;
+  }
+  .logos-row span { font-size: 1.1rem; font-weight: 700; letter-spacing: 0.05em; color: var(--text-sec); }
+
+  /* ── Features Grid ── */
+  .features { padding: 120px 0; }
+  .section-header { text-align: center; margin-bottom: 72px; }
+  .section-header .label { margin-bottom: 16px; display: block; }
+  .section-header h2 { margin-bottom: 20px; }
+  .section-header .subtitle { margin: 0 auto; }
+
+  .features-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+  }
+  .feature-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 40px 32px;
+    transition: all 0.3s; position: relative; overflow: hidden;
+  }
+  .feature-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: transparent; }
+  .feature-icon {
+    width: 52px; height: 52px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; margin-bottom: 24px;
+  }
+  .feature-card h3 { margin-bottom: 12px; }
+  .feature-card p { color: var(--text-sec); font-size: 0.95rem; line-height: 1.6; }
+
+  /* ── How it Works ── */
+  .how-it-works { padding: 120px 0; background: var(--surface-2); }
+  .steps {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px; margin-top: 64px;
+  }
+  .step { text-align: center; }
+  .step-num {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: var(--text-pri); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem; font-weight: 700; margin: 0 auto 24px;
+  }
+  .step h3 { margin-bottom: 12px; }
+  .step p { color: var(--text-sec); font-size: 0.9rem; line-height: 1.6; }
+  .step-connector {
+    display: none; /* clean without arrows */
+  }
+
+  /* ── Stats ── */
+  .stats { padding: 100px 0; }
+  .stats-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px;
+    text-align: center;
+  }
+  .stat-num { font-size: clamp(2.4rem, 4vw, 3.6rem); font-weight: 700; letter-spacing: -0.03em; margin-bottom: 8px; }
+  .stat-num.blue { color: var(--blue); }
+  .stat-num.green { color: var(--green-dark); }
+  .stat-label { color: var(--text-sec); font-size: 0.95rem; }
+
+  /* ── App Showcase ── */
+  .showcase { padding: 120px 0; background: var(--text-pri); color: #fff; overflow: hidden; }
+  .showcase .section-header .label { color: rgba(255,255,255,0.4); }
+  .showcase .section-header h2 { color: #fff; }
+  .showcase .section-header .subtitle { color: rgba(255,255,255,0.6); }
+  .showcase-content {
+    display: flex; align-items: center; gap: 80px; margin-top: 64px;
+  }
+  .showcase-phone {
+    flex-shrink: 0; width: 320px;
+    background: #1C1C1E; border-radius: 44px; padding: 12px;
+    box-shadow: 0 40px 80px rgba(0,0,0,0.4);
+  }
+  .showcase-phone-inner {
+    background: #000; border-radius: 36px; aspect-ratio: 9/19.5;
+    overflow: hidden; position: relative;
+  }
+  .showcase-features { flex: 1; }
+  .showcase-feature {
+    padding: 28px 0; border-bottom: 1px solid rgba(255,255,255,0.08);
+    display: flex; gap: 20px; align-items: flex-start;
+  }
+  .showcase-feature:last-child { border-bottom: none; }
+  .sf-icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    background: rgba(255,255,255,0.08);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem; flex-shrink: 0;
+  }
+  .sf-text h3 { color: #fff; font-size: 1.1rem; margin-bottom: 6px; }
+  .sf-text p { color: rgba(255,255,255,0.5); font-size: 0.9rem; line-height: 1.5; }
+
+  /* ── For Everyone ── */
+  .for-everyone { padding: 120px 0; }
+  .audience-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 64px;
+  }
+  .audience-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 48px 36px; text-align: center;
+    transition: all 0.3s;
+  }
+  .audience-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); border-color: transparent; }
+  .audience-emoji { font-size: 3rem; margin-bottom: 24px; display: block; }
+  .audience-card h3 { margin-bottom: 12px; }
+  .audience-card p { color: var(--text-sec); font-size: 0.9rem; line-height: 1.6; }
+
+  /* ── Security / Trust ── */
+  .trust { padding: 120px 0; background: var(--surface-2); }
+  .trust-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 24px; margin-top: 64px;
+  }
+  .trust-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 40px 36px;
+    display: flex; gap: 20px; align-items: flex-start;
+  }
+  .trust-icon {
+    width: 48px; height: 48px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; flex-shrink: 0; background: var(--surface-2);
+  }
+  .trust-card h3 { margin-bottom: 8px; font-size: 1.1rem; }
+  .trust-card p { color: var(--text-sec); font-size: 0.9rem; line-height: 1.5; }
+
+  /* ── Business Model ── */
+  .model { padding: 120px 0; }
+  .model-cards {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 64px;
+  }
+  .model-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 40px 32px; text-align: center;
+    transition: all 0.3s;
+  }
+  .model-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); }
+  .model-pct { font-size: 2.8rem; font-weight: 700; margin-bottom: 8px; }
+  .model-card h3 { margin-bottom: 12px; }
+  .model-card p { color: var(--text-sec); font-size: 0.9rem; line-height: 1.5; }
+
+  /* ── Testimonials ── */
+  .testimonials { padding: 120px 0; background: var(--surface-2); }
+  .testimonial-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 64px;
+  }
+  .testimonial-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 36px 32px;
+  }
+  .testimonial-card p { font-size: 1rem; line-height: 1.6; color: var(--text-pri); margin-bottom: 24px; font-style: italic; }
+  .testimonial-author { display: flex; align-items: center; gap: 12px; }
+  .ta-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem; font-weight: 700; color: #fff;
+  }
+  .ta-info .ta-name { font-size: 0.85rem; font-weight: 600; }
+  .ta-info .ta-role { font-size: 0.8rem; color: var(--text-ter); }
+
+  /* ── CTA ── */
+  .final-cta {
+    padding: 120px 0; text-align: center;
+    background: linear-gradient(180deg, var(--bg) 0%, #F0F4FF 50%, var(--bg) 100%);
+    position: relative;
+  }
+  .final-cta h2 { margin-bottom: 20px; }
+  .final-cta .subtitle { margin: 0 auto 40px; }
+  .cta-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+  .cta-note { margin-top: 20px; color: var(--text-ter); font-size: 0.85rem; }
+
+  /* ── Footer ── */
+  footer {
+    padding: 60px 0 40px; border-top: 1px solid var(--border);
+    color: var(--text-sec); font-size: 0.85rem;
+  }
+  .footer-grid {
+    display: grid; grid-template-columns: 2fr repeat(3, 1fr); gap: 48px; margin-bottom: 48px;
+  }
+  .footer-brand .nav-logo { margin-bottom: 16px; }
+  .footer-brand p { color: var(--text-ter); font-size: 0.85rem; line-height: 1.6; max-width: 280px; }
+  .footer-col h4 { font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-ter); margin-bottom: 16px; }
+  .footer-col a { display: block; color: var(--text-sec); text-decoration: none; margin-bottom: 10px; font-size: 0.9rem; transition: color 0.2s; }
+  .footer-col a:hover { color: var(--text-pri); }
+  .footer-bottom { display: flex; justify-content: space-between; padding-top: 24px; border-top: 1px solid var(--border); }
+  .footer-legal { display: flex; gap: 24px; }
+  .footer-legal a { color: var(--text-ter); text-decoration: none; font-size: 0.8rem; }
+
+  /* ── Scroll animations ── */
+  .fade-up {
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+  .fade-up.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── Responsive ── */
+  @media (max-width: 900px) {
+    .features-grid, .audience-grid, .model-cards, .testimonial-grid { grid-template-columns: 1fr; }
+    .steps { grid-template-columns: repeat(2, 1fr); }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .trust-grid { grid-template-columns: 1fr; }
+    .showcase-content { flex-direction: column; text-align: center; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+    .hero-phones .side { display: none; }
+    .nav-links a:not(.btn-nav) { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ══ NAV ══ -->
+<nav>
+  <div class="container">
+    <a href="#" class="nav-logo">
+      <span class="arrow">↑</span>
+      <span class="name">Raise</span>
+    </a>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#how-it-works">How It Works</a>
+      <a href="#showcase">Platform</a>
+      <a href="#trust">Security</a>
+      <button class="btn-nav" onclick="document.getElementById('cta').scrollIntoView({behavior:'smooth'})">Get Early Access</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ══ HERO ══ -->
+<section class="hero">
+  <div class="container">
+    <div class="label fade-up">Invest in What's Real</div>
+    <h1 class="fade-up" style="transition-delay:0.1s">
+      The future of<br><span class="green">investing in Italy</span>
+    </h1>
+    <p class="subtitle fade-up" style="transition-delay:0.2s">
+      Raise is the platform where anyone can invest in vetted Italian businesses.
+      From restaurants to fashion, manufacturing to hospitality — powered by AI due diligence.
+    </p>
+    <div class="hero-cta fade-up" style="transition-delay:0.3s">
+      <a href="#cta" class="btn-primary">Get Early Access →</a>
+      <a href="/app.html" class="btn-secondary">Try the App ↗</a>
+    </div>
+
+    <!-- 3 phone mockups -->
+    <div class="hero-phones fade-up" style="transition-delay:0.4s">
+      <div class="phone-mock side">
+        <div class="phone-screen" style="background: linear-gradient(180deg, #5A3A1E 0%, #000 40%);">
+          <div class="dynamic-island"></div>
+          <div style="padding-top: 40px;">
+            <div style="font-size:8px;color:rgba(255,255,255,0.5);margin-bottom:4px;">← Esplora</div>
+            <div style="font-size:18px;font-weight:700;color:#fff;margin-bottom:4px;">Osteria del Sole</div>
+            <div style="font-size:8px;color:rgba(255,255,255,0.5);margin-bottom:16px;">Ristorazione · Napoli</div>
+            <div style="display:flex;gap:12px;margin-bottom:16px;">
+              <div><div style="font-size:12px;font-weight:700;color:#fff;">€1.2M</div><div style="font-size:7px;color:rgba(255,255,255,0.4);">Target</div></div>
+              <div><div style="font-size:12px;font-weight:700;color:#fff;">72%</div><div style="font-size:7px;color:rgba(255,255,255,0.4);">Funded</div></div>
+              <div><div style="font-size:12px;font-weight:700;color:#fff;">18-22%</div><div style="font-size:7px;color:rgba(255,255,255,0.4);">IRR</div></div>
+            </div>
+            <div style="height:4px;background:#333;border-radius:2px;margin-bottom:16px;"><div style="width:72%;height:100%;background:#30D158;border-radius:2px;"></div></div>
+            <div style="font-size:8px;color:#30D158;margin-bottom:16px;">✓ AI Verified · 200+ checks</div>
+            <div style="border-top:1px solid #222;padding-top:12px;">
+              <div style="font-size:10px;font-weight:600;color:#fff;margin-bottom:8px;">Details</div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="font-size:8px;color:rgba(255,255,255,0.4);">Instrument</span><span style="font-size:8px;color:#fff;">Revenue Sharing</span></div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="font-size:8px;color:rgba(255,255,255,0.4);">Duration</span><span style="font-size:8px;color:#fff;">36 months</span></div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="font-size:8px;color:rgba(255,255,255,0.4);">Minimum</span><span style="font-size:8px;color:#fff;">€5,000</span></div>
+            </div>
+            <div style="margin-top:16px;background:#0071E3;color:#fff;text-align:center;padding:10px;border-radius:20px;font-size:10px;font-weight:600;">Invest Now</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phone-mock center">
+        <div class="phone-screen">
+          <div class="dynamic-island"></div>
+          <div style="padding-top: 40px;">
+            <div style="font-size:9px;color:rgba(255,255,255,0.4);margin-bottom:2px;">Hello, Alessandro</div>
+            <div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:20px;">Your Portfolio</div>
+            <div style="font-size:28px;font-weight:300;color:#fff;letter-spacing:-0.02em;margin-bottom:6px;">€247,500.00</div>
+            <div style="margin-bottom:16px;"><span style="font-size:10px;color:#30D158;font-weight:600;">+€32,500</span><span style="font-size:9px;color:rgba(255,255,255,0.3);"> +12.4%</span></div>
+            <!-- SVG Chart -->
+            <svg viewBox="0 0 260 80" style="width:100%;margin-bottom:16px;">
+              <defs>
+                <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#30D158" stop-opacity="0.3"/>
+                  <stop offset="100%" stop-color="#30D158" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <path d="M0,60 Q20,55 40,52 T80,40 T120,35 T160,28 T200,22 T240,15 L260,12 L260,80 L0,80 Z" fill="url(#chartGrad)"/>
+              <path d="M0,60 Q20,55 40,52 T80,40 T120,35 T160,28 T200,22 T240,15 L260,12" fill="none" stroke="#30D158" stroke-width="2"/>
+            </svg>
+            <div style="display:flex;justify-content:space-between;border-top:1px solid #222;padding-top:12px;margin-bottom:16px;">
+              <div><div style="font-size:7px;color:rgba(255,255,255,0.3);">Investments</div><div style="font-size:13px;font-weight:700;color:#fff;">7</div></div>
+              <div><div style="font-size:7px;color:rgba(255,255,255,0.3);">Returns</div><div style="font-size:13px;font-weight:700;color:#fff;">€31.2K</div></div>
+              <div><div style="font-size:7px;color:rgba(255,255,255,0.3);">Avg IRR</div><div style="font-size:13px;font-weight:700;color:#fff;">14.8%</div></div>
+            </div>
+            <div style="font-size:11px;font-weight:600;color:#fff;margin-bottom:10px;">New Opportunities</div>
+            <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #1A1A1C;">
+              <div style="width:28px;height:28px;border-radius:6px;background:linear-gradient(135deg,#8B4513,#D2691E);flex-shrink:0;"></div>
+              <div style="flex:1;"><div style="font-size:9px;font-weight:600;color:#fff;">Osteria del Sole</div><div style="font-size:7px;color:rgba(255,255,255,0.4);">18-22% IRR</div></div>
+              <div style="font-size:7px;padding:3px 8px;background:rgba(48,209,88,0.15);color:#30D158;border-radius:8px;font-weight:600;">A+</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #1A1A1C;">
+              <div style="width:28px;height:28px;border-radius:6px;background:linear-gradient(135deg,#1E3A5F,#4169E1);flex-shrink:0;"></div>
+              <div style="flex:1;"><div style="font-size:9px;font-weight:600;color:#fff;">Tessuti Morandi</div><div style="font-size:7px;color:rgba(255,255,255,0.4);">14-18% IRR</div></div>
+              <div style="font-size:7px;padding:3px 8px;background:rgba(0,113,227,0.15);color:#0071E3;border-radius:8px;font-weight:600;">A</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;padding:8px 0;">
+              <div style="width:28px;height:28px;border-radius:6px;background:linear-gradient(135deg,#8B6914,#DAA520);flex-shrink:0;"></div>
+              <div style="flex:1;"><div style="font-size:9px;font-weight:600;color:#fff;">Borgo Luxury Hotels</div><div style="font-size:7px;color:rgba(255,255,255,0.4);">20-25% IRR</div></div>
+              <div style="font-size:7px;padding:3px 8px;background:rgba(48,209,88,0.15);color:#30D158;border-radius:8px;font-weight:600;">A+</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="phone-mock side">
+        <div class="phone-screen">
+          <div class="dynamic-island"></div>
+          <div style="padding-top:40px;">
+            <div style="font-size:16px;font-weight:700;color:#fff;margin-bottom:16px;">Portfolio</div>
+            <div style="font-size:28px;font-weight:300;color:#fff;margin-bottom:4px;">€247,500.00</div>
+            <div style="font-size:10px;color:#30D158;font-weight:600;margin-bottom:16px;">+€32,500.00 +12.4%</div>
+            <svg viewBox="0 0 220 70" style="width:100%;margin-bottom:16px;">
+              <defs><linearGradient id="cg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#30D158" stop-opacity="0.2"/><stop offset="100%" stop-color="#30D158" stop-opacity="0"/></linearGradient></defs>
+              <path d="M0,50 Q25,47 50,44 T100,32 T150,22 T200,14 L220,10 L220,70 L0,70Z" fill="url(#cg2)"/>
+              <path d="M0,50 Q25,47 50,44 T100,32 T150,22 T200,14 L220,10" fill="none" stroke="#30D158" stroke-width="1.5"/>
+            </svg>
+            <div style="border-top:1px solid #222;padding-top:12px;">
+              <div style="font-size:11px;font-weight:600;color:#fff;margin-bottom:10px;">Performance</div>
+              <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #1A1A1C;"><span style="font-size:8px;color:rgba(255,255,255,0.4);">Invested</span><span style="font-size:8px;color:#fff;">€215,000</span></div>
+              <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #1A1A1C;"><span style="font-size:8px;color:rgba(255,255,255,0.4);">Gain</span><span style="font-size:8px;color:#30D158;">+€32,500</span></div>
+              <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #1A1A1C;"><span style="font-size:8px;color:rgba(255,255,255,0.4);">Avg IRR</span><span style="font-size:8px;color:#30D158;">14.8%</span></div>
+            </div>
+            <div style="margin-top:12px;font-size:11px;font-weight:600;color:#fff;margin-bottom:8px;">Your Investments</div>
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+              <div style="width:8px;height:8px;border-radius:50%;background:#FF453A;"></div>
+              <span style="font-size:8px;color:#fff;flex:1;">Osteria del Sole</span>
+              <span style="font-size:8px;color:#30D158;">+18.2%</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:6px;">
+              <div style="width:8px;height:8px;border-radius:50%;background:#0071E3;"></div>
+              <span style="font-size:8px;color:#fff;flex:1;">Tessuti Morandi</span>
+              <span style="font-size:8px;color:#30D158;">+11.4%</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <div style="width:8px;height:8px;border-radius:50%;background:#AF52DE;"></div>
+              <span style="font-size:8px;color:#fff;flex:1;">Borgo Luxury Hotels</span>
+              <span style="font-size:8px;color:#30D158;">+22.1%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ LOGOS ══ -->
+<section class="logos-bar">
+  <div class="container">
+    <span class="label">Regulated under European frameworks</span>
+    <div class="logos-row">
+      <span>ECSPR</span>
+      <span>ESMA</span>
+      <span>CONSOB</span>
+      <span>Banca d'Italia</span>
+      <span>PSD2</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FEATURES ══ -->
+<section class="features" id="features">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="label">Platform</span>
+      <h2>Everything you need to<br>invest with confidence</h2>
+      <p class="subtitle">A complete investment platform designed for clarity, security, and returns.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card fade-up">
+        <div class="feature-icon" style="background: var(--blue-light); color: var(--blue);">🔍</div>
+        <h3>AI Due Diligence</h3>
+        <p>Every business goes through 200+ automated checks covering financials, legal, market, and team — before you ever see it.</p>
+      </div>
+      <div class="feature-card fade-up" style="transition-delay:0.1s">
+        <div class="feature-icon" style="background: var(--green-light); color: var(--green-dark);">📊</div>
+        <h3>Risk Scoring</h3>
+        <p>Proprietary AI scoring from A+ to C, based on hard data — revenue trends, EBITDA, sector dynamics, management track record.</p>
+      </div>
+      <div class="feature-card fade-up" style="transition-delay:0.2s">
+        <div class="feature-icon" style="background: #FFF3E0; color: #F59E0B;">💼</div>
+        <h3>Multiple Instruments</h3>
+        <p>Not just equity. Revenue sharing, convertible notes, business debt, secured loans — the right structure for each deal.</p>
+      </div>
+      <div class="feature-card fade-up" style="transition-delay:0.1s">
+        <div class="feature-icon" style="background: #F3E8FF; color: #8B5CF6;">🏦</div>
+        <h3>Escrow Protection</h3>
+        <p>All funds held in regulated escrow until funding targets are met. Your money is protected at every stage.</p>
+      </div>
+      <div class="feature-card fade-up" style="transition-delay:0.2s">
+        <div class="feature-icon" style="background: #E0F2FE; color: #0284C7;">📱</div>
+        <h3>Real-Time Portfolio</h3>
+        <p>Track every investment, distribution, and return in real time. Full transparency from day one to exit.</p>
+      </div>
+      <div class="feature-card fade-up" style="transition-delay:0.3s">
+        <div class="feature-icon" style="background: #FEE2E2; color: #DC2626;">🤝</div>
+        <h3>Direct Access</h3>
+        <p>Talk to founders directly. Access data rooms, financial models, and schedule calls — all within the platform.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ HOW IT WORKS ══ -->
+<section class="how-it-works" id="how-it-works">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="label">Process</span>
+      <h2>Investing made simple</h2>
+      <p class="subtitle">From discovery to returns in four straightforward steps.</p>
+    </div>
+    <div class="steps">
+      <div class="step fade-up">
+        <div class="step-num">1</div>
+        <h3>Discover</h3>
+        <p>Browse AI-vetted Italian businesses across sectors — restaurants, fashion, hospitality, manufacturing, food brands.</p>
+      </div>
+      <div class="step fade-up" style="transition-delay:0.1s">
+        <div class="step-num">2</div>
+        <h3>Analyze</h3>
+        <p>Review detailed deal pages with financials, AI risk scores, growth projections, and full data room access.</p>
+      </div>
+      <div class="step fade-up" style="transition-delay:0.2s">
+        <div class="step-num">3</div>
+        <h3>Invest</h3>
+        <p>Choose your amount starting from €5,000. Secure digital payment, funds held in escrow until the round closes.</p>
+      </div>
+      <div class="step fade-up" style="transition-delay:0.3s">
+        <div class="step-num">4</div>
+        <h3>Earn</h3>
+        <p>Receive quarterly distributions. Track performance in real time. Full reporting and tax documentation included.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ STATS ══ -->
+<section class="stats">
+  <div class="container">
+    <div class="stats-grid fade-up">
+      <div>
+        <div class="stat-num blue">€850B+</div>
+        <div class="stat-label">Italian household<br>financial assets</div>
+      </div>
+      <div>
+        <div class="stat-num green">4.4M</div>
+        <div class="stat-label">Italian SMEs<br>seeking capital</div>
+      </div>
+      <div>
+        <div class="stat-num blue">€1B+</div>
+        <div class="stat-label">EU crowdfunding<br>volume (2023)</div>
+      </div>
+      <div>
+        <div class="stat-num green">98</div>
+        <div class="stat-label">Licensed platforms<br>across 17 EU countries</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ APP SHOWCASE ══ -->
+<section class="showcase" id="showcase">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="label">The App</span>
+      <h2>Powerful. Intuitive.<br>Built for investors.</h2>
+      <p class="subtitle">Everything from deal discovery to portfolio management, in one beautiful app.</p>
+    </div>
+    <div class="showcase-content">
+      <div class="showcase-phone fade-up">
+        <div class="showcase-phone-inner" style="padding:20px 14px;">
+          <div style="height:22px;"></div>
+          <div style="font-size:8px;color:rgba(255,255,255,0.4);margin-bottom:2px;">Hello, Alessandro</div>
+          <div style="font-size:14px;font-weight:700;color:#fff;margin-bottom:14px;">Your Portfolio</div>
+          <div style="font-size:26px;font-weight:300;color:#fff;letter-spacing:-0.02em;">€247,500.00</div>
+          <div style="margin:6px 0 12px;"><span style="font-size:10px;color:#30D158;font-weight:600;">+€32,500 (+12.4%)</span></div>
+          <svg viewBox="0 0 280 90" style="width:100%;margin-bottom:12px;">
+            <defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#30D158" stop-opacity="0.25"/><stop offset="100%" stop-color="#30D158" stop-opacity="0"/></linearGradient></defs>
+            <path d="M0,65 Q30,60 60,56 T120,44 T180,32 T240,18 L280,12 L280,90 L0,90Z" fill="url(#sg)"/>
+            <path d="M0,65 Q30,60 60,56 T120,44 T180,32 T240,18 L280,12" fill="none" stroke="#30D158" stroke-width="2"/>
+          </svg>
+          <div style="display:flex;gap:6px;margin-bottom:14px;">
+            <div style="flex:1;padding:3px 6px;text-align:center;font-size:8px;color:rgba(255,255,255,0.3);border-radius:10px;">1M</div>
+            <div style="flex:1;padding:3px 6px;text-align:center;font-size:8px;color:rgba(255,255,255,0.3);border-radius:10px;">3M</div>
+            <div style="flex:1;padding:3px 6px;text-align:center;font-size:8px;color:rgba(255,255,255,0.3);border-radius:10px;">6M</div>
+            <div style="flex:1;padding:3px 6px;text-align:center;font-size:8px;color:#fff;background:#333;border-radius:10px;font-weight:600;">1A</div>
+            <div style="flex:1;padding:3px 6px;text-align:center;font-size:8px;color:rgba(255,255,255,0.3);border-radius:10px;">All</div>
+          </div>
+          <div style="border-top:1px solid #222;padding-top:10px;font-size:10px;font-weight:600;color:#fff;margin-bottom:8px;">New Opportunities</div>
+          <div style="display:flex;align-items:center;gap:6px;padding:6px 0;border-bottom:1px solid #1A1A1C;">
+            <div style="width:24px;height:24px;border-radius:6px;background:linear-gradient(135deg,#8B4513,#D2691E);"></div>
+            <div style="flex:1;"><div style="font-size:8px;font-weight:600;color:#fff;">Osteria del Sole</div><div style="font-size:6px;color:rgba(255,255,255,0.4);">18-22% · Napoli</div></div>
+            <div style="font-size:6px;padding:2px 6px;background:rgba(48,209,88,0.15);color:#30D158;border-radius:6px;font-weight:600;">A+</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;padding:6px 0;border-bottom:1px solid #1A1A1C;">
+            <div style="width:24px;height:24px;border-radius:6px;background:linear-gradient(135deg,#1E3A5F,#4169E1);"></div>
+            <div style="flex:1;"><div style="font-size:8px;font-weight:600;color:#fff;">Tessuti Morandi</div><div style="font-size:6px;color:rgba(255,255,255,0.4);">14-18% · Como</div></div>
+            <div style="font-size:6px;padding:2px 6px;background:rgba(0,113,227,0.15);color:#0071E3;border-radius:6px;font-weight:600;">A</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;padding:6px 0;">
+            <div style="width:24px;height:24px;border-radius:6px;background:linear-gradient(135deg,#8B6914,#DAA520);"></div>
+            <div style="flex:1;"><div style="font-size:8px;font-weight:600;color:#fff;">Borgo Luxury Hotels</div><div style="font-size:6px;color:rgba(255,255,255,0.4);">20-25% · Toscana</div></div>
+            <div style="font-size:6px;padding:2px 6px;background:rgba(48,209,88,0.15);color:#30D158;border-radius:6px;font-weight:600;">A+</div>
+          </div>
+        </div>
+      </div>
+      <div class="showcase-features fade-up" style="transition-delay:0.2s">
+        <div class="showcase-feature">
+          <div class="sf-icon">📈</div>
+          <div class="sf-text"><h3>Live Portfolio Tracking</h3><p>Real-time valuations, distributions, and performance metrics across all your investments.</p></div>
+        </div>
+        <div class="showcase-feature">
+          <div class="sf-icon">🤖</div>
+          <div class="sf-text"><h3>AI-Powered Discovery</h3><p>Smart matching based on your risk profile, interests, and investment history.</p></div>
+        </div>
+        <div class="showcase-feature">
+          <div class="sf-icon">🔒</div>
+          <div class="sf-text"><h3>Bank-Grade Security</h3><p>End-to-end encryption, biometric authentication, and regulated escrow accounts.</p></div>
+        </div>
+        <div class="showcase-feature">
+          <div class="sf-icon">📋</div>
+          <div class="sf-text"><h3>Complete Data Rooms</h3><p>Access every document, financial model, and legal agreement before investing.</p></div>
+        </div>
+        <div class="showcase-feature">
+          <div class="sf-icon">💬</div>
+          <div class="sf-text"><h3>Direct Founder Access</h3><p>Schedule calls, ask questions, and build relationships with the businesses you back.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOR EVERYONE ══ -->
+<section class="for-everyone" id="audience">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="label">For Everyone</span>
+      <h2>Built for every type of investor</h2>
+      <p class="subtitle">Whether you're starting with €5,000 or deploying millions, Raise is designed for you.</p>
+    </div>
+    <div class="audience-grid">
+      <div class="audience-card fade-up">
+        <span class="audience-emoji">👤</span>
+        <h3>Retail Investors</h3>
+        <p>Access the same quality deals previously reserved for the wealthy. Start from €5,000 with full AI-powered guidance and portfolio diversification tools.</p>
+      </div>
+      <div class="audience-card fade-up" style="transition-delay:0.1s">
+        <span class="audience-emoji">💎</span>
+        <h3>HNWIs & Family Offices</h3>
+        <p>Premium deal flow, priority allocations, dedicated relationship managers, and custom portfolio construction across the Italian real economy.</p>
+      </div>
+      <div class="audience-card fade-up" style="transition-delay:0.2s">
+        <span class="audience-emoji">🏢</span>
+        <h3>Businesses Raising Capital</h3>
+        <p>Skip the banks. Raise capital from a curated investor base while maintaining control. Equity, debt, or revenue sharing — your terms.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ TRUST ══ -->
+<section class="trust" id="trust">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="label">Security & Compliance</span>
+      <h2>Trust is our foundation</h2>
+      <p class="subtitle">Every layer of Raise is built around investor protection and regulatory compliance.</p>
+    </div>
+    <div class="trust-grid">
+      <div class="trust-card fade-up">
+        <div class="trust-icon">🇪🇺</div>
+        <div><h3>ECSPR Regulated</h3><p>Operating under the European Crowdfunding Service Providers Regulation — the gold standard for business crowdfunding.</p></div>
+      </div>
+      <div class="trust-card fade-up" style="transition-delay:0.1s">
+        <div class="trust-icon">🤖</div>
+        <div><h3>200+ AI Checks</h3><p>Every business passes through our proprietary AI due diligence pipeline before listing — financials, legal, market, team, and fraud detection.</p></div>
+      </div>
+      <div class="trust-card fade-up" style="transition-delay:0.1s">
+        <div class="trust-icon">🔐</div>
+        <div><h3>Escrow Protection</h3><p>All investor funds held by a regulated third-party escrow provider until funding conditions are met.</p></div>
+      </div>
+      <div class="trust-card fade-up" style="transition-delay:0.2s">
+        <div class="trust-icon">📊</div>
+        <div><h3>Ongoing Monitoring</h3><p>Post-investment reporting, quarterly updates, and continuous AI monitoring of portfolio company health.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ BUSINESS MODEL ══ -->
+<section class="model">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="label">Revenue Model</span>
+      <h2>Aligned with your success</h2>
+      <p class="subtitle">We earn when businesses raise successfully — our incentives are perfectly aligned.</p>
+    </div>
+    <div class="model-cards">
+      <div class="model-card fade-up">
+        <div class="model-pct" style="color:var(--blue);">4-6%</div>
+        <h3>Platform Fee</h3>
+        <p>Charged to businesses on successful raises. Investors pay nothing to browse, analyze, or invest.</p>
+      </div>
+      <div class="model-card fade-up" style="transition-delay:0.1s">
+        <div class="model-pct" style="color:var(--green-dark);">€29/mo</div>
+        <h3>Premium Plan</h3>
+        <p>Advanced analytics, priority deal access, tax optimization tools, and dedicated support for active investors.</p>
+      </div>
+      <div class="model-card fade-up" style="transition-delay:0.2s">
+        <div class="model-pct" style="color:var(--blue);">1-2%</div>
+        <h3>AUM Fee</h3>
+        <p>Optional managed portfolio service. We construct and rebalance your Italian real-economy portfolio.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ TESTIMONIALS ══ -->
+<section class="testimonials">
+  <div class="container">
+    <div class="section-header fade-up">
+      <span class="label">Early Feedback</span>
+      <h2>What people are saying</h2>
+    </div>
+    <div class="testimonial-grid">
+      <div class="testimonial-card fade-up">
+        <p>"Finally a way to invest in the Italian businesses I believe in — not just stocks on a screen, but real restaurants, real products, real people."</p>
+        <div class="testimonial-author">
+          <div class="ta-avatar" style="background:var(--blue);">M</div>
+          <div class="ta-info"><div class="ta-name">Marco R.</div><div class="ta-role">Retail Investor, Milano</div></div>
+        </div>
+      </div>
+      <div class="testimonial-card fade-up" style="transition-delay:0.1s">
+        <p>"The AI due diligence is impressive. It gives me confidence that the deals have been properly vetted before I commit capital."</p>
+        <div class="testimonial-author">
+          <div class="ta-avatar" style="background:var(--green-dark);">S</div>
+          <div class="ta-info"><div class="ta-name">Sofia L.</div><div class="ta-role">Family Office, Roma</div></div>
+        </div>
+      </div>
+      <div class="testimonial-card fade-up" style="transition-delay:0.2s">
+        <p>"We raised €800K in 3 weeks. The process was faster than any bank, and we kept full control of our business."</p>
+        <div class="testimonial-author">
+          <div class="ta-avatar" style="background:#8B5CF6;">G</div>
+          <div class="ta-info"><div class="ta-name">Giuseppe T.</div><div class="ta-role">Founder, Osteria del Sole</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FINAL CTA ══ -->
+<section class="final-cta" id="cta">
+  <div class="container">
+    <div class="label fade-up" style="margin-bottom:16px;">Ready?</div>
+    <h2 class="fade-up">Start investing in<br>the real Italian economy</h2>
+    <p class="subtitle fade-up" style="transition-delay:0.1s">Join the waitlist for early access. Be among the first to invest in vetted Made in Italy businesses.</p>
+    <div class="cta-buttons fade-up" style="transition-delay:0.2s">
+      <a href="#" class="btn-primary">Join the Waitlist →</a>
+      <a href="#" class="btn-secondary">Talk to Our Team</a>
+    </div>
+    <p class="cta-note fade-up" style="transition-delay:0.3s">No commitment required · Early investors get priority access</p>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="nav-logo"><span class="arrow">↑</span><span class="name">Raise</span></a>
+        <p>The platform where global capital funds vetted Italian businesses. Regulated, transparent, AI-powered.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Platform</h4>
+        <a href="#">How It Works</a>
+        <a href="#">For Investors</a>
+        <a href="#">For Businesses</a>
+        <a href="#">Pricing</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="#">About</a>
+        <a href="#">Team</a>
+        <a href="#">Careers</a>
+        <a href="#">Press</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="#">Terms of Service</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Risk Disclosure</a>
+        <a href="#">Cookie Policy</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 Raise S.r.l. All rights reserved.</span>
+      <div class="footer-legal">
+        <a href="#">Risk Warning: Capital at risk. Past performance is not indicative of future results.</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ══ Scroll Animation Script ══ -->
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>

@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Raise — App Simulator</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+    background: #F5F5F7;
+    display: flex; justify-content: center; align-items: center;
+    min-height: 100vh; padding: 40px 20px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .simulator-wrapper {
+    text-align: center;
+  }
+  .sim-title {
+    font-size: 1.4rem; font-weight: 700; color: #1D1D1F; margin-bottom: 4px;
+    letter-spacing: -0.02em;
+  }
+  .sim-subtitle {
+    font-size: 0.85rem; color: #6E6E73; margin-bottom: 32px;
+  }
+
+  /* Phone frame */
+  .phone-frame {
+    width: 375px; height: 812px;
+    background: #1C1C1E; border-radius: 50px; padding: 10px;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.05);
+    position: relative; margin: 0 auto;
+    overflow: hidden;
+  }
+  .phone-inner {
+    width: 100%; height: 100%;
+    background: #000; border-radius: 42px;
+    overflow: hidden; position: relative;
+  }
+
+  /* Dynamic island */
+  .dynamic-island {
+    position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+    width: 120px; height: 34px; background: #000; border-radius: 17px; z-index: 100;
+  }
+
+  /* Screen container with transitions */
+  .screen-container {
+    width: 100%; height: 100%;
+    position: relative; overflow: hidden;
+  }
+  .screen {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    overflow-y: auto; overflow-x: hidden;
+    background: #000; color: #fff;
+    transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.4s;
+    -ms-overflow-style: none; scrollbar-width: none;
+  }
+  .screen::-webkit-scrollbar { display: none; }
+  .screen.hidden-right { transform: translateX(100%); opacity: 0; pointer-events: none; }
+  .screen.hidden-left { transform: translateX(-100%); opacity: 0; pointer-events: none; }
+  .screen.active { transform: translateX(0); opacity: 1; pointer-events: auto; }
+
+  /* Status bar */
+  .status-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 52px 24px 8px; font-size: 12px; font-weight: 600;
+    position: sticky; top: 0; background: #000; z-index: 50;
+  }
+
+  /* Tab bar */
+  .tab-bar {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 84px; background: rgba(0,0,0,0.95);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid #1C1C1E;
+    display: flex; align-items: flex-start; padding-top: 8px;
+    z-index: 200;
+  }
+  .tab-item {
+    flex: 1; display: flex; flex-direction: column; align-items: center;
+    gap: 4px; cursor: pointer; padding: 6px 0;
+    transition: all 0.2s; -webkit-tap-highlight-color: transparent;
+  }
+  .tab-icon { font-size: 22px; line-height: 1; }
+  .tab-label { font-size: 10px; font-weight: 500; }
+  .tab-item.active .tab-icon, .tab-item.active .tab-label { color: #0071E3; }
+  .tab-item:not(.active) .tab-icon, .tab-item:not(.active) .tab-label { color: #48484A; }
+
+  /* Shared styles */
+  .s-pad { padding: 0 20px; }
+  .s-title { font-size: 28px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 4px; }
+  .s-subtitle { font-size: 13px; color: #6E6E73; }
+  .s-section-title { font-size: 20px; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 4px; }
+  .s-label { font-size: 11px; color: #48484A; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
+  .s-separator { height: 1px; background: #1C1C1E; margin: 0 20px; }
+  .s-card {
+    background: #1C1C1E; border-radius: 16px; padding: 16px;
+    margin: 0 20px; margin-bottom: 12px;
+  }
+  .big-number {
+    font-size: 40px; font-weight: 300; letter-spacing: -0.02em; line-height: 1.1;
+  }
+  .green { color: #30D158; }
+  .blue { color: #0071E3; }
+  .muted { color: #6E6E73; }
+  .tiny { font-size: 11px; color: #48484A; }
+
+  /* Buttons */
+  .btn-blue {
+    display: block; width: calc(100% - 40px); margin: 12px 20px;
+    padding: 16px; border-radius: 980px; border: none;
+    background: #0071E3; color: #fff; font-size: 16px; font-weight: 600;
+    cursor: pointer; transition: opacity 0.2s; text-align: center;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn-blue:active { opacity: 0.7; }
+  .btn-outline {
+    display: inline-block; padding: 12px 24px;
+    border-radius: 980px; border: 1.5px solid #333; background: none;
+    color: #8E8E93; font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all 0.2s; text-align: center;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn-outline:active { background: #1C1C1E; }
+
+  /* Chart SVG */
+  .chart-svg { width: 100%; display: block; }
+
+  /* Deal row */
+  .deal-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 20px; cursor: pointer;
+    transition: background 0.15s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .deal-row:active { background: rgba(255,255,255,0.03); }
+  .deal-thumb {
+    width: 48px; height: 48px; border-radius: 12px; flex-shrink: 0;
+  }
+  .deal-info { flex: 1; }
+  .deal-name { font-size: 15px; font-weight: 600; }
+  .deal-meta { font-size: 12px; color: #6E6E73; margin-top: 2px; }
+  .deal-irr { font-size: 12px; color: #30D158; font-weight: 600; margin-top: 2px; }
+  .deal-score {
+    font-size: 11px; font-weight: 700; padding: 4px 10px;
+    border-radius: 10px; flex-shrink: 0;
+  }
+  .deal-chevron { color: #3A3A3C; font-size: 18px; }
+
+  /* Investment row */
+  .inv-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 20px;
+  }
+  .inv-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .inv-info { flex: 1; }
+  .inv-name { font-size: 14px; font-weight: 600; }
+  .inv-type { font-size: 11px; color: #48484A; }
+  .inv-perf { text-align: right; }
+  .inv-pct { font-size: 14px; font-weight: 600; color: #30D158; }
+  .inv-amt { font-size: 11px; color: #48484A; }
+
+  /* Detail rows */
+  .detail-row {
+    display: flex; justify-content: space-between; padding: 10px 0;
+    border-bottom: 1px solid #1C1C1E;
+  }
+  .detail-row:last-child { border-bottom: none; }
+  .detail-label { font-size: 14px; color: #6E6E73; }
+  .detail-value { font-size: 14px; font-weight: 600; }
+
+  /* Slider */
+  .amount-slider {
+    width: calc(100% - 40px); margin: 0 20px;
+    -webkit-appearance: none; height: 4px; border-radius: 2px;
+    background: #333; outline: none;
+  }
+  .amount-slider::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 28px; height: 28px; border-radius: 50%;
+    background: #fff; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+
+  /* Quick amounts */
+  .quick-amounts {
+    display: flex; gap: 8px; padding: 0 20px; margin: 12px 0;
+  }
+  .quick-amt {
+    flex: 1; padding: 10px 0; border-radius: 980px; border: none;
+    font-size: 13px; font-weight: 600; cursor: pointer; text-align: center;
+    transition: all 0.2s; -webkit-tap-highlight-color: transparent;
+  }
+  .quick-amt.active { background: #0071E3; color: #fff; }
+  .quick-amt:not(.active) { background: #1C1C1E; color: #8E8E93; }
+
+  /* Period pills */
+  .period-pills {
+    display: flex; gap: 6px; padding: 0 20px; margin: 8px 0;
+  }
+  .period-pill {
+    flex: 1; padding: 8px 0; border-radius: 980px; border: none;
+    font-size: 12px; font-weight: 600; cursor: pointer; text-align: center;
+    transition: all 0.15s; -webkit-tap-highlight-color: transparent;
+  }
+  .period-pill.active { background: #fff; color: #000; }
+  .period-pill:not(.active) { background: none; color: #48484A; }
+
+  /* Filter pills */
+  .filter-row { display: flex; gap: 8px; padding: 0 20px; overflow-x: auto; margin: 8px 0; }
+  .filter-pill {
+    padding: 8px 16px; border-radius: 980px; border: none;
+    font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap;
+    transition: all 0.15s; flex-shrink: 0;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .filter-pill.active { background: #fff; color: #000; }
+  .filter-pill:not(.active) { background: none; color: #6E6E73; border: 1px solid #333; }
+
+  /* Search bar */
+  .search-bar {
+    margin: 8px 20px; padding: 12px 16px; border-radius: 12px;
+    background: #1C1C1E; color: #48484A; font-size: 14px;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  /* Grid cards */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 20px; }
+  .grid-card {
+    background: #1C1C1E; border-radius: 16px; overflow: hidden;
+    cursor: pointer; transition: transform 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .grid-card:active { transform: scale(0.97); }
+  .grid-card-img { width: 100%; height: 90px; }
+  .grid-card-body { padding: 12px; }
+  .grid-card-name { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+  .grid-card-meta { font-size: 10px; color: #48484A; }
+  .grid-card-irr { font-size: 12px; color: #30D158; font-weight: 600; margin-top: 4px; }
+
+  /* Back nav */
+  .back-nav {
+    display: flex; align-items: center; gap: 4px;
+    padding: 4px 20px 8px; cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .back-nav span { font-size: 14px; color: #0071E3; }
+
+  /* Progress bar */
+  .progress-bar { height: 4px; border-radius: 2px; background: #333; margin: 8px 0; }
+  .progress-fill { height: 100%; border-radius: 2px; background: #30D158; }
+
+  /* Screen bottom padding for tab bar */
+  .screen-content { padding-bottom: 100px; }
+
+  /* Hint */
+  .sim-hint {
+    margin-top: 24px; font-size: 0.8rem; color: #8E8E93;
+  }
+  .sim-hint kbd {
+    background: #E8E8ED; padding: 2px 8px; border-radius: 4px;
+    font-size: 0.75rem; font-family: inherit;
+  }
+</style>
+</head>
+<body>
+
+<div class="simulator-wrapper">
+  <div class="sim-title">↑ Raise — App Prototype</div>
+  <div class="sim-subtitle">Interactive simulator · Click through all screens</div>
+
+  <div class="phone-frame">
+    <div class="phone-inner">
+      <div class="dynamic-island"></div>
+      <div class="screen-container" id="screenContainer">
+
+        <!-- ═══ SCREEN: HOME ═══ -->
+        <div class="screen active" id="screen-home">
+          <div class="screen-content">
+            <div class="status-bar"><span>9:41</span><span style="display:flex;gap:4px;align-items:center;"><span style="font-size:10px;">●●●●</span> <span style="font-size:10px;">◗</span></span></div>
+
+            <div class="s-pad" style="margin-bottom:4px;">
+              <div class="s-subtitle">Hello, Alessandro</div>
+              <div class="s-title">Your Portfolio</div>
+            </div>
+
+            <div class="s-pad" style="margin-bottom:4px;">
+              <div class="big-number">€247,500.00</div>
+              <div style="margin-top:6px;">
+                <span class="green" style="font-size:14px;font-weight:600;">+€32,500</span>
+                <span class="green" style="font-size:12px;"> (+12.4%)</span>
+                <span class="tiny"> from start</span>
+              </div>
+            </div>
+
+            <div class="s-pad" style="margin:12px 0;">
+              <svg class="chart-svg" viewBox="0 0 335 100">
+                <defs>
+                  <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#30D158" stop-opacity="0.25"/>
+                    <stop offset="100%" stop-color="#30D158" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <path d="M0,72 Q20,70 40,66 T80,58 T120,50 T160,42 T200,34 T240,24 T280,18 T320,12 L335,10 L335,100 L0,100Z" fill="url(#areaGrad)"/>
+                <path d="M0,72 Q20,70 40,66 T80,58 T120,50 T160,42 T200,34 T240,24 T280,18 T320,12 L335,10" fill="none" stroke="#30D158" stroke-width="2.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+
+            <div class="period-pills">
+              <button class="period-pill">1D</button>
+              <button class="period-pill">1W</button>
+              <button class="period-pill">1M</button>
+              <button class="period-pill">3M</button>
+              <button class="period-pill">6M</button>
+              <button class="period-pill active">1Y</button>
+              <button class="period-pill">All</button>
+            </div>
+
+            <div class="s-separator" style="margin-top:12px;"></div>
+
+            <div style="display:flex;padding:16px 20px;gap:12px;">
+              <div style="flex:1;"><div class="tiny">Investments</div><div style="font-size:18px;font-weight:700;">7</div></div>
+              <div style="flex:1;"><div class="tiny">Returns</div><div style="font-size:18px;font-weight:700;">€31.2K</div></div>
+              <div style="flex:1;"><div class="tiny">Avg IRR</div><div style="font-size:18px;font-weight:700;">14.8%</div></div>
+            </div>
+
+            <div class="s-separator"></div>
+
+            <div class="s-pad" style="padding-top:16px;padding-bottom:4px;">
+              <div class="s-section-title">New Opportunities</div>
+              <div class="tiny">AI-verified</div>
+            </div>
+
+            <div class="deal-row" onclick="showDeal('osteria')">
+              <div class="deal-thumb" style="background:linear-gradient(135deg,#8B4513,#D2691E);"></div>
+              <div class="deal-info">
+                <div class="deal-name">Osteria del Sole</div>
+                <div class="deal-meta">Restaurant · Naples</div>
+                <div class="deal-irr">18-22% IRR</div>
+              </div>
+              <div class="deal-score" style="background:rgba(48,209,88,0.12);color:#30D158;">A+</div>
+              <div class="deal-chevron">›</div>
+            </div>
+            <div class="s-separator" style="margin-left:80px;"></div>
+
+            <div class="deal-row" onclick="showDeal('tessuti')">
+              <div class="deal-thumb" style="background:linear-gradient(135deg,#1E3A5F,#4169E1);"></div>
+              <div class="deal-info">
+                <div class="deal-name">Tessuti Morandi</div>
+                <div class="deal-meta">Textile · Como</div>
+                <div class="deal-irr">14-18% IRR</div>
+              </div>
+              <div class="deal-score" style="background:rgba(0,113,227,0.12);color:#0071E3;">A</div>
+              <div class="deal-chevron">›</div>
+            </div>
+            <div class="s-separator" style="margin-left:80px;"></div>
+
+            <div class="deal-row" onclick="showDeal('borgo')">
+              <div class="deal-thumb" style="background:linear-gradient(135deg,#8B6914,#DAA520);"></div>
+              <div class="deal-info">
+                <div class="deal-name">Borgo Luxury Hotels</div>
+                <div class="deal-meta">Hospitality · Tuscany</div>
+                <div class="deal-irr">20-25% IRR</div>
+              </div>
+              <div class="deal-score" style="background:rgba(48,209,88,0.12);color:#30D158;">A+</div>
+              <div class="deal-chevron">›</div>
+            </div>
+            <div class="s-separator" style="margin-left:80px;"></div>
+
+            <div class="deal-row" onclick="showDeal('sapori')">
+              <div class="deal-thumb" style="background:linear-gradient(135deg,#2D5016,#4CAF50);"></div>
+              <div class="deal-info">
+                <div class="deal-name">Sapori d'Italia</div>
+                <div class="deal-meta">Food & Bev · Milan</div>
+                <div class="deal-irr">16-20% IRR</div>
+              </div>
+              <div class="deal-score" style="background:rgba(0,113,227,0.12);color:#0071E3;">A</div>
+              <div class="deal-chevron">›</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══ SCREEN: EXPLORE ═══ -->
+        <div class="screen hidden-right" id="screen-explore">
+          <div class="screen-content">
+            <div class="status-bar"><span>9:41</span><span style="display:flex;gap:4px;"><span style="font-size:10px;">●●●●</span></span></div>
+            <div class="s-pad"><div class="s-title">Explore</div></div>
+
+            <div class="search-bar">
+              <span>🔍</span> Search opportunities...
+            </div>
+
+            <div class="filter-row">
+              <button class="filter-pill active">All</button>
+              <button class="filter-pill">Restaurant</button>
+              <button class="filter-pill">Textile</button>
+              <button class="filter-pill">Hospitality</button>
+              <button class="filter-pill">Food</button>
+              <button class="filter-pill">Health</button>
+            </div>
+
+            <div class="s-pad" style="padding-top:16px;padding-bottom:8px;">
+              <div class="s-section-title">Featured</div>
+            </div>
+
+            <div style="margin:0 20px;background:#1C1C1E;border-radius:16px;overflow:hidden;cursor:pointer;" onclick="showDeal('osteria')">
+              <div style="height:120px;background:linear-gradient(135deg,#8B4513 0%,#D2691E 50%,#000 100%);position:relative;">
+                <div style="position:absolute;top:12px;right:12px;background:rgba(48,209,88,0.9);padding:4px 10px;border-radius:10px;font-size:11px;font-weight:700;">A+</div>
+              </div>
+              <div style="padding:16px;">
+                <div style="font-size:16px;font-weight:700;margin-bottom:4px;">Osteria del Sole</div>
+                <div style="font-size:12px;color:#6E6E73;margin-bottom:12px;">Premium Restaurant · Naples</div>
+                <div style="display:flex;gap:20px;">
+                  <div><div class="green" style="font-size:14px;font-weight:700;">18-22%</div><div class="tiny">IRR</div></div>
+                  <div><div style="font-size:14px;font-weight:700;">€1.2M</div><div class="tiny">Target</div></div>
+                  <div><div style="font-size:14px;font-weight:700;">72%</div><div class="tiny">Funded</div></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="s-pad" style="padding-top:20px;padding-bottom:8px;">
+              <div class="s-section-title">All Opportunities</div>
+            </div>
+
+            <div class="grid-2">
+              <div class="grid-card" onclick="showDeal('tessuti')">
+                <div class="grid-card-img" style="background:linear-gradient(135deg,#1E3A5F,#4169E1);position:relative;">
+                  <div style="position:absolute;top:8px;right:8px;background:rgba(0,113,227,0.9);padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700;color:#fff;">A</div>
+                </div>
+                <div class="grid-card-body">
+                  <div class="grid-card-name">Tessuti Morandi</div>
+                  <div class="grid-card-meta">Textile · Como</div>
+                  <div class="grid-card-irr">14-18% IRR</div>
+                </div>
+              </div>
+              <div class="grid-card" onclick="showDeal('borgo')">
+                <div class="grid-card-img" style="background:linear-gradient(135deg,#8B6914,#DAA520);position:relative;">
+                  <div style="position:absolute;top:8px;right:8px;background:rgba(48,209,88,0.9);padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700;color:#fff;">A+</div>
+                </div>
+                <div class="grid-card-body">
+                  <div class="grid-card-name">Borgo Luxury</div>
+                  <div class="grid-card-meta">Hotel · Tuscany</div>
+                  <div class="grid-card-irr">20-25% IRR</div>
+                </div>
+              </div>
+              <div class="grid-card" onclick="showDeal('sapori')">
+                <div class="grid-card-img" style="background:linear-gradient(135deg,#2D5016,#4CAF50);position:relative;">
+                  <div style="position:absolute;top:8px;right:8px;background:rgba(0,113,227,0.9);padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700;color:#fff;">A</div>
+                </div>
+                <div class="grid-card-body">
+                  <div class="grid-card-name">Sapori d'Italia</div>
+                  <div class="grid-card-meta">Food · Milan</div>
+                  <div class="grid-card-irr">16-20% IRR</div>
+                </div>
+              </div>
+              <div class="grid-card">
+                <div class="grid-card-img" style="background:linear-gradient(135deg,#87CEEB,#B0E0E6);position:relative;">
+                  <div style="position:absolute;top:8px;right:8px;background:rgba(255,159,10,0.9);padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700;color:#fff;">B+</div>
+                </div>
+                <div class="grid-card-body">
+                  <div class="grid-card-name">Milano Clinic+</div>
+                  <div class="grid-card-meta">Health · Milan</div>
+                  <div class="grid-card-irr">12-15% IRR</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══ SCREEN: PORTFOLIO ═══ -->
+        <div class="screen hidden-right" id="screen-portfolio">
+          <div class="screen-content">
+            <div class="status-bar"><span>9:41</span><span style="display:flex;gap:4px;"><span style="font-size:10px;">●●●●</span></span></div>
+
+            <div class="s-pad"><div class="s-title">Portfolio</div></div>
+
+            <div class="s-pad" style="margin-bottom:4px;">
+              <div class="big-number">€247,500.00</div>
+              <div style="margin-top:4px;">
+                <span class="green" style="font-size:14px;font-weight:600;">+€32,500.00</span>
+                <span class="muted" style="font-size:12px;"> +12.4% from start</span>
+              </div>
+            </div>
+
+            <div class="s-pad" style="margin:12px 0;">
+              <svg class="chart-svg" viewBox="0 0 335 120">
+                <defs>
+                  <linearGradient id="pg" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#30D158" stop-opacity="0.2"/>
+                    <stop offset="100%" stop-color="#30D158" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <path d="M0,90 Q15,88 30,84 T60,76 T90,68 T120,58 T150,50 T180,44 T210,38 T240,30 T270,22 T300,16 L335,10 L335,120 L0,120Z" fill="url(#pg)"/>
+                <path d="M0,90 Q15,88 30,84 T60,76 T90,68 T120,58 T150,50 T180,44 T210,38 T240,30 T270,22 T300,16 L335,10" fill="none" stroke="#30D158" stroke-width="2.5" stroke-linecap="round"/>
+              </svg>
+            </div>
+
+            <div class="period-pills">
+              <button class="period-pill">1M</button>
+              <button class="period-pill">3M</button>
+              <button class="period-pill">6M</button>
+              <button class="period-pill">1Y</button>
+              <button class="period-pill active">All</button>
+            </div>
+
+            <div class="s-separator" style="margin-top:12px;"></div>
+
+            <div class="s-pad" style="padding-top:16px;">
+              <div class="s-section-title">Performance</div>
+            </div>
+            <div class="s-pad">
+              <div class="detail-row"><span class="detail-label">Invested</span><span class="detail-value">€215,000</span></div>
+              <div class="detail-row"><span class="detail-label">Gain</span><span class="detail-value green">+€32,500</span></div>
+              <div class="detail-row"><span class="detail-label">Avg IRR</span><span class="detail-value green">14.8%</span></div>
+              <div class="detail-row"><span class="detail-label">Next Distribution</span><span class="detail-value blue">15 Apr 2026</span></div>
+            </div>
+
+            <div class="s-separator" style="margin-top:8px;"></div>
+
+            <div class="s-pad" style="padding-top:16px;">
+              <div class="s-section-title">Your Investments</div>
+            </div>
+
+            <div class="inv-row">
+              <div class="inv-dot" style="background:#FF453A;"></div>
+              <div class="inv-info"><div class="inv-name">Osteria del Sole</div><div class="inv-type">Revenue Sharing</div></div>
+              <div class="inv-perf"><div class="inv-pct">+18.2%</div><div class="inv-amt">€50,000</div></div>
+            </div>
+            <div class="s-separator" style="margin-left:42px;"></div>
+            <div class="inv-row">
+              <div class="inv-dot" style="background:#0071E3;"></div>
+              <div class="inv-info"><div class="inv-name">Tessuti Morandi</div><div class="inv-type">Equity</div></div>
+              <div class="inv-perf"><div class="inv-pct">+11.4%</div><div class="inv-amt">€35,000</div></div>
+            </div>
+            <div class="s-separator" style="margin-left:42px;"></div>
+            <div class="inv-row">
+              <div class="inv-dot" style="background:#AF52DE;"></div>
+              <div class="inv-info"><div class="inv-name">Borgo Luxury Hotels</div><div class="inv-type">Rev. Share</div></div>
+              <div class="inv-perf"><div class="inv-pct">+22.1%</div><div class="inv-amt">€80,000</div></div>
+            </div>
+            <div class="s-separator" style="margin-left:42px;"></div>
+            <div class="inv-row">
+              <div class="inv-dot" style="background:#FF9F0A;"></div>
+              <div class="inv-info"><div class="inv-name">Sapori d'Italia</div><div class="inv-type">Equity</div></div>
+              <div class="inv-perf"><div class="inv-pct">+9.8%</div><div class="inv-amt">€25,000</div></div>
+            </div>
+            <div class="s-separator" style="margin-left:42px;"></div>
+            <div class="inv-row">
+              <div class="inv-dot" style="background:#5AC8FA;"></div>
+              <div class="inv-info"><div class="inv-name">Milano Clinic</div><div class="inv-type">Debt Note</div></div>
+              <div class="inv-perf"><div class="inv-pct">+7.2%</div><div class="inv-amt">€25,000</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ═══ SCREEN: PROFILE ═══ -->
+        <div class="screen hidden-right" id="screen-profile">
+          <div class="screen-content">
+            <div class="status-bar"><span>9:41</span><span style="display:flex;gap:4px;"><span style="font-size:10px;">●●●●</span></span></div>
+            <div class="s-pad"><div class="s-title">Profile</div></div>
+
+            <div style="text-align:center;padding:24px 0;">
+              <div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#0071E3,#30D158);margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;">A</div>
+              <div style="font-size:18px;font-weight:700;">Alessandro Vaccari</div>
+              <div class="muted" style="font-size:13px;">Investor since 2025</div>
+            </div>
+
+            <div class="s-card">
+              <div style="font-size:14px;font-weight:600;margin-bottom:12px;">Account</div>
+              <div class="detail-row"><span class="detail-label">Investor Type</span><span class="detail-value">Retail</span></div>
+              <div class="detail-row"><span class="detail-label">KYC Status</span><span class="detail-value green">Verified ✓</span></div>
+              <div class="detail-row"><span class="detail-label">Risk Profile</span><span class="detail-value">Balanced</span></div>
+              <div class="detail-row"><span class="detail-label">Member Since</span><span class="detail-value">Jan 2025</span></div>
+            </div>
+
+            <div class="s-card">
+              <div style="font-size:14px;font-weight:600;margin-bottom:12px;">Settings</div>
+              <div class="detail-row" style="cursor:pointer;"><span class="detail-label">Payment Methods</span><span style="color:#3A3A3C;">›</span></div>
+              <div class="detail-row" style="cursor:pointer;"><span class="detail-label">Notifications</span><span style="color:#3A3A3C;">›</span></div>
+              <div class="detail-row" style="cursor:pointer;"><span class="detail-label">Tax Documents</span><span style="color:#3A3A3C;">›</span></div>
+              <div class="detail-row" style="cursor:pointer;"><span class="detail-label">Security</span><span style="color:#3A3A3C;">›</span></div>
+              <div class="detail-row" style="cursor:pointer;"><span class="detail-label">Help & Support</span><span style="color:#3A3A3C;">›</span></div>
+            </div>
+
+            <div style="text-align:center;padding:20px;"><div style="color:#FF453A;font-size:14px;font-weight:600;cursor:pointer;">Sign Out</div></div>
+
+            <div style="text-align:center;padding:8px;"><div class="tiny">Raise v1.0.0 · ECSPR Regulated</div></div>
+          </div>
+        </div>
+
+        <!-- ═══ SCREEN: DEAL DETAIL ═══ -->
+        <div class="screen hidden-right" id="screen-deal">
+          <div class="screen-content" id="dealContent">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <!-- ═══ SCREEN: INVEST ═══ -->
+        <div class="screen hidden-right" id="screen-invest">
+          <div class="screen-content">
+            <div class="status-bar"><span>9:41</span><span style="display:flex;gap:4px;"><span style="font-size:10px;">●●●●</span></span></div>
+            <div class="back-nav" onclick="goBack()"><span>‹ Back</span></div>
+            <div style="text-align:center;font-size:16px;font-weight:700;margin:-28px 0 16px;">Invest</div>
+
+            <div class="s-card" style="display:flex;align-items:center;gap:12px;">
+              <div style="width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#8B4513,#D2691E);flex-shrink:0;"></div>
+              <div><div style="font-size:14px;font-weight:600;">Osteria del Sole</div><div class="tiny">Revenue Sharing · 18-22% IRR</div></div>
+            </div>
+
+            <div style="text-align:center;padding:20px 0 8px;">
+              <div class="tiny" style="margin-bottom:4px;">Amount</div>
+              <div id="investAmount" style="font-size:48px;font-weight:800;letter-spacing:-0.03em;">€25,000</div>
+            </div>
+
+            <input type="range" class="amount-slider" id="amountSlider" min="5000" max="100000" value="25000" step="1000" oninput="updateAmount(this.value)">
+            <div style="display:flex;justify-content:space-between;padding:4px 20px 0;"><span class="tiny">€5,000</span><span class="tiny">€100,000</span></div>
+
+            <div class="quick-amounts">
+              <button class="quick-amt" onclick="setAmount(5000)">€5K</button>
+              <button class="quick-amt" onclick="setAmount(10000)">€10K</button>
+              <button class="quick-amt active" onclick="setAmount(25000)">€25K</button>
+              <button class="quick-amt" onclick="setAmount(50000)">€50K</button>
+              <button class="quick-amt" onclick="setAmount(100000)">€100K</button>
+            </div>
+
+            <div class="s-separator"></div>
+
+            <div class="s-pad" style="padding-top:16px;">
+              <div class="s-section-title" style="margin-bottom:8px;">Summary</div>
+              <div class="detail-row"><span class="detail-label">Amount</span><span class="detail-value" id="summaryAmt">€25,000</span></div>
+              <div class="detail-row"><span class="detail-label">Instrument</span><span class="detail-value">Revenue Sharing</span></div>
+              <div class="detail-row"><span class="detail-label">Expected Return</span><span class="detail-value">18-22% IRR</span></div>
+              <div class="detail-row"><span class="detail-label">Duration</span><span class="detail-value">36 months</span></div>
+              <div class="detail-row"><span class="detail-label">First Distribution</span><span class="detail-value">Q3 2026</span></div>
+              <div class="detail-row"><span class="detail-label">Est. Return</span><span class="detail-value green" id="estReturn">€13,500 – €16,500</span></div>
+            </div>
+
+            <button class="btn-blue" onclick="confirmInvest()" id="confirmBtn">Confirm Investment</button>
+            <div style="text-align:center;padding:4px 0 20px;"><span class="tiny">🔒 Secure payment · Funds in escrow</span></div>
+          </div>
+        </div>
+
+        <!-- ═══ SCREEN: SUCCESS ═══ -->
+        <div class="screen hidden-right" id="screen-success">
+          <div class="screen-content" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;text-align:center;padding:0 32px;">
+            <div style="font-size:64px;margin-bottom:24px;">✓</div>
+            <div style="font-size:24px;font-weight:700;margin-bottom:8px;">Investment Confirmed</div>
+            <div class="muted" style="font-size:14px;margin-bottom:32px;">€25,000 invested in Osteria del Sole.<br>You'll receive a confirmation email shortly.</div>
+            <button class="btn-blue" style="width:auto;padding:14px 48px;" onclick="navigateTo('home')">Back to Portfolio</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Tab Bar -->
+      <div class="tab-bar">
+        <div class="tab-item active" id="tab-home" onclick="navigateTo('home')">
+          <div class="tab-icon">⌂</div>
+          <div class="tab-label">Home</div>
+        </div>
+        <div class="tab-item" id="tab-explore" onclick="navigateTo('explore')">
+          <div class="tab-icon">◎</div>
+          <div class="tab-label">Explore</div>
+        </div>
+        <div class="tab-item" id="tab-portfolio" onclick="navigateTo('portfolio')">
+          <div class="tab-icon">◈</div>
+          <div class="tab-label">Portfolio</div>
+        </div>
+        <div class="tab-item" id="tab-profile" onclick="navigateTo('profile')">
+          <div class="tab-icon">●</div>
+          <div class="tab-label">Profile</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sim-hint">
+    Click on deals to see details · Navigate with the tab bar · Try investing
+  </div>
+</div>
+
+<script>
+  // ── State ──
+  let currentScreen = 'home';
+  let screenHistory = [];
+  const mainTabs = ['home', 'explore', 'portfolio', 'profile'];
+
+  // ── Deal Data ──
+  const deals = {
+    osteria: {
+      name: 'Osteria del Sole', sector: 'Premium Restaurant · Naples',
+      color: 'linear-gradient(135deg,#8B4513,#D2691E)',
+      score: 'A+', scoreBg: 'rgba(48,209,88,0.9)',
+      target: '€1.2M', funded: '72%', irr: '18-22%', investors: '127', days: '14',
+      instrument: 'Revenue Sharing', duration: '36 months', min: '€5,000', dist: 'Quarterly', protection: 'Real guarantee',
+      story: 'Premium restaurant chain founded in Naples in 2012. 3 locations, €2.8M revenue, EBITDA 22%. Seeking €1.2M to expand to Rome, Milan, and Florence.',
+      metrics: [['Revenue','€2.8M','+34%'],['EBITDA','€616K','22%'],['Customers','48K+','+28%']]
+    },
+    tessuti: {
+      name: 'Tessuti Morandi', sector: 'Luxury Textile · Como',
+      color: 'linear-gradient(135deg,#1E3A5F,#4169E1)',
+      score: 'A', scoreBg: 'rgba(0,113,227,0.9)',
+      target: '€800K', funded: '58%', irr: '14-18%', investors: '89', days: '21',
+      instrument: 'Equity', duration: '48 months', min: '€5,000', dist: 'Annual', protection: 'Board seat >€50K',
+      story: 'Third-generation silk and premium textile manufacturer in Como. Supplies to major fashion houses. Seeking growth capital for new production line and Asian export.',
+      metrics: [['Revenue','€3.4M','+22%'],['EBITDA','€510K','15%'],['B2B Clients','120+','+18%']]
+    },
+    borgo: {
+      name: 'Borgo Luxury Hotels', sector: 'Hospitality · Tuscany',
+      color: 'linear-gradient(135deg,#8B6914,#DAA520)',
+      score: 'A+', scoreBg: 'rgba(48,209,88,0.9)',
+      target: '€2.5M', funded: '45%', irr: '20-25%', investors: '64', days: '32',
+      instrument: 'Revenue Sharing', duration: '60 months', min: '€10,000', dist: 'Quarterly', protection: 'Real estate collateral',
+      story: 'Boutique luxury hotel group in Tuscany. 2 properties with 94% occupancy. Acquiring a third property in Val d\'Orcia — a UNESCO heritage site.',
+      metrics: [['Revenue','€4.1M','+28%'],['Occupancy','94%','avg'],['ADR','€380','+15%']]
+    },
+    sapori: {
+      name: 'Sapori d\'Italia', sector: 'Food & Beverage · Milan',
+      color: 'linear-gradient(135deg,#2D5016,#4CAF50)',
+      score: 'A', scoreBg: 'rgba(0,113,227,0.9)',
+      target: '€600K', funded: '83%', irr: '16-20%', investors: '156', days: '7',
+      instrument: 'Equity', duration: '36 months', min: '€5,000', dist: 'Semi-annual', protection: 'Anti-dilution clause',
+      story: 'D2C Italian premium food brand — olive oil, pasta, conserves. 48K online customers, expanding into UK and German markets via Selfridges and KaDeWe.',
+      metrics: [['Revenue','€1.8M','+52%'],['Customers','48K','+45%'],['Markets','3','+2 new']]
+    }
+  };
+
+  // ── Navigation ──
+  function navigateTo(screen, pushHistory = true) {
+    if (screen === currentScreen) return;
+
+    const current = document.getElementById('screen-' + currentScreen);
+    const next = document.getElementById('screen-' + screen);
+    if (!current || !next) return;
+
+    const isTab = mainTabs.includes(screen);
+    const currentIdx = mainTabs.indexOf(currentScreen);
+    const nextIdx = mainTabs.indexOf(screen);
+
+    if (isTab) {
+      // Tab navigation — slide direction based on position
+      if (nextIdx > currentIdx || currentIdx === -1) {
+        current.className = 'screen hidden-left';
+        next.className = 'screen hidden-right';
+      } else {
+        current.className = 'screen hidden-right';
+        next.className = 'screen hidden-left';
+      }
+      setTimeout(() => { next.className = 'screen active'; }, 20);
+
+      // Update tab bar
+      document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+      const tab = document.getElementById('tab-' + screen);
+      if (tab) tab.classList.add('active');
+
+      screenHistory = [];
+    } else {
+      // Push navigation (deal detail, invest, etc.)
+      if (pushHistory) screenHistory.push(currentScreen);
+      current.className = 'screen hidden-left';
+      next.className = 'screen hidden-right';
+      setTimeout(() => { next.className = 'screen active'; }, 20);
+    }
+
+    // Scroll to top
+    next.scrollTop = 0;
+    currentScreen = screen;
+  }
+
+  function goBack() {
+    if (screenHistory.length > 0) {
+      const prev = screenHistory.pop();
+      const current = document.getElementById('screen-' + currentScreen);
+      const next = document.getElementById('screen-' + prev);
+      current.className = 'screen hidden-right';
+      next.className = 'screen hidden-left';
+      setTimeout(() => { next.className = 'screen active'; }, 20);
+      next.scrollTop = 0;
+      currentScreen = prev;
+
+      if (mainTabs.includes(prev)) {
+        document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+        const tab = document.getElementById('tab-' + prev);
+        if (tab) tab.classList.add('active');
+      }
+    }
+  }
+
+  // ── Deal Detail ──
+  function showDeal(dealId) {
+    const d = deals[dealId];
+    if (!d) return;
+
+    const html = `
+      <div style="height:200px;${d.color};position:relative;">
+        <div style="position:absolute;top:0;left:0;right:0;padding:52px 20px 0;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <div class="back-nav" style="padding:0;color:#fff;" onclick="goBack()"><span style="color:#fff;">‹ Explore</span></div>
+            <div style="background:${d.scoreBg};padding:6px 14px;border-radius:14px;font-size:13px;font-weight:700;">${d.score}</div>
+          </div>
+        </div>
+        <div style="position:absolute;bottom:0;left:0;right:0;height:80px;background:linear-gradient(transparent,#000);"></div>
+      </div>
+
+      <div class="s-pad" style="margin-top:-20px;position:relative;z-index:1;">
+        <div style="font-size:24px;font-weight:700;margin-bottom:4px;">${d.name}</div>
+        <div class="muted" style="font-size:13px;">${d.sector}</div>
+      </div>
+
+      <div style="display:flex;padding:16px 20px;gap:8px;">
+        ${[['Target', d.target], ['Funded', d.funded], ['IRR', d.irr], ['Left', d.days + 'd']].map(([l,v]) =>
+          `<div style="flex:1;"><div style="font-size:16px;font-weight:700;">${v}</div><div class="tiny">${l}</div></div>`
+        ).join('')}
+      </div>
+
+      <div class="s-pad"><div class="progress-bar"><div class="progress-fill" style="width:${d.funded};"></div></div></div>
+      <div class="s-pad"><div class="tiny green" style="margin-top:4px;">✓ AI Verified · 200+ checks completed</div></div>
+
+      <div class="s-separator" style="margin-top:12px;"></div>
+
+      <div class="s-pad" style="padding-top:16px;">
+        <div class="s-section-title" style="margin-bottom:8px;">Details</div>
+        <div class="detail-row"><span class="detail-label">Instrument</span><span class="detail-value">${d.instrument}</span></div>
+        <div class="detail-row"><span class="detail-label">Expected Return</span><span class="detail-value">${d.irr} IRR</span></div>
+        <div class="detail-row"><span class="detail-label">Duration</span><span class="detail-value">${d.duration}</span></div>
+        <div class="detail-row"><span class="detail-label">Minimum</span><span class="detail-value">${d.min}</span></div>
+        <div class="detail-row"><span class="detail-label">Distribution</span><span class="detail-value">${d.dist}</span></div>
+        <div class="detail-row"><span class="detail-label">Protection</span><span class="detail-value">${d.protection}</span></div>
+      </div>
+
+      <div class="s-separator" style="margin-top:4px;"></div>
+
+      <div class="s-pad" style="padding-top:16px;">
+        <div class="s-section-title" style="margin-bottom:8px;">The Story</div>
+        <div style="font-size:14px;color:#9B9BA0;line-height:1.6;">${d.story}</div>
+      </div>
+
+      <div style="display:flex;padding:16px 20px;gap:16px;">
+        ${d.metrics.map(([l,v,g]) =>
+          `<div><div class="tiny">${l}</div><div style="font-size:15px;font-weight:700;">${v} <span class="green" style="font-size:11px;">${g}</span></div></div>`
+        ).join('')}
+      </div>
+
+      <button class="btn-blue" onclick="navigateTo('invest')">Invest Now</button>
+
+      <div style="display:flex;gap:12px;padding:0 20px 20px;">
+        <button class="btn-outline" style="flex:1;">Data Room</button>
+        <button class="btn-outline" style="flex:1;">Call CEO</button>
+      </div>
+    `;
+
+    document.getElementById('dealContent').innerHTML = html;
+    navigateTo('deal');
+  }
+
+  // ── Invest Flow ──
+  function updateAmount(val) {
+    val = parseInt(val);
+    document.getElementById('investAmount').textContent = '€' + val.toLocaleString('en-US');
+    document.getElementById('summaryAmt').textContent = '€' + val.toLocaleString('en-US');
+
+    const low = Math.round(val * 0.18 * 3);
+    const high = Math.round(val * 0.22 * 3);
+    document.getElementById('estReturn').textContent = '€' + low.toLocaleString('en-US') + ' – €' + high.toLocaleString('en-US');
+
+    document.querySelectorAll('.quick-amt').forEach(btn => {
+      const btnVal = parseInt(btn.textContent.replace(/[^0-9]/g, '')) * 1000;
+      btn.classList.toggle('active', btnVal === val);
+    });
+  }
+
+  function setAmount(val) {
+    document.getElementById('amountSlider').value = val;
+    updateAmount(val);
+  }
+
+  function confirmInvest() {
+    const btn = document.getElementById('confirmBtn');
+    btn.textContent = 'Processing...';
+    btn.style.opacity = '0.6';
+    setTimeout(() => {
+      btn.textContent = 'Confirm Investment';
+      btn.style.opacity = '1';
+      navigateTo('success');
+    }, 1500);
+  }
+
+  // Period pill interactivity
+  document.querySelectorAll('.period-pill').forEach(pill => {
+    pill.addEventListener('click', function() {
+      this.parentElement.querySelectorAll('.period-pill').forEach(p => p.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+
+  // Filter pill interactivity
+  document.querySelectorAll('.filter-pill').forEach(pill => {
+    pill.addEventListener('click', function() {
+      this.parentElement.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>
