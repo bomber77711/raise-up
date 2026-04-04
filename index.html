@@ -322,6 +322,8 @@
             height: 160px;
             position: relative;
             overflow: hidden;
+            background-size: cover;
+            background-position: center;
         }
         .deal-card-score {
             position: absolute;
@@ -385,7 +387,7 @@
             grid-template-columns: 1fr 1fr;
         }
         .featured-deal:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
-        name: 'Osteria del Sole', sector: 'Premium Restaurant', location: 'Naples',                img: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80',
+        .featured-deal-img { min-height: 280px; position: relative; background-size: cover; background-position: center; }
         .featured-deal-body { padding: 36px; display: flex; flex-direction: column; justify-content: center; }
         .featured-badge {
             display: inline-flex;
@@ -413,6 +415,8 @@
             position: relative;
             overflow: hidden;
             margin-bottom: 28px;
+            background-size: cover;
+            background-position: center;
         }
         .deal-detail-hero-overlay {
             position: absolute;
@@ -849,7 +853,7 @@
 
                 <!-- Featured -->
                 <div class="featured-deal" onclick="showDeal('osteria')">
-                    <div class="name: 'Osteria del Sole', sector: 'Premium Restaurant', location: 'Naples',                img: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80',></div>
+                    <div class="featured-deal-img" style="background-image:url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80');background-color:#E8E8ED;"></div>
                     <div class="featured-deal-body">
                         <div class="featured-badge">★ Featured · AI Score A+</div>
                         <div class="featured-name">Osteria del Sole</div>
@@ -875,7 +879,8 @@
                     <button class="filter-pill" onclick="filterDeals(this)">Textile</button>
                     <button class="filter-pill" onclick="filterDeals(this)">Hospitality</button>
                     <button class="filter-pill" onclick="filterDeals(this)">Food & Bev</button>
-                    <button class="filter-pill" onclick="name: 'Osteria del Sole', sector: 'Premium Restaurant', location: 'Naples',                img: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80',
+                    <button class="filter-pill" onclick="filterDeals(this)">Health</button>
+                    <button class="filter-pill" onclick="filterDeals(this)">Individual</button>
                 </div>
 
                 <!-- Deals Grid -->
@@ -1184,7 +1189,8 @@
         // ── Deal Data ──
         const deals = {
             osteria: {
-                name: 'Osteria del Sole', sector: 'Premium Restaurant', location: 'Naples',                img: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80',
+                name: 'Osteria del Sole', sector: 'Premium Restaurant', location: 'Naples',
+                img: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80',
                 color: 'linear-gradient(135deg,#8B4513 0%,#D2691E 50%,#4A2000 100%)',
                 score: 'A+', scoreBg: '#30D158', target: '€1.2M', funded: 72, irr: '18-22%',
                 investors: 127, days: 14, instrument: 'Revenue Sharing', duration: '36 months',
@@ -1194,7 +1200,8 @@
                 highlights: ['Michelin-recommended since 2019','34% YoY revenue growth','Chef-owner with 20+ years experience','Signed LOIs for Rome & Milan locations']
             },
             tessuti: {
-                name: 'Osteria del Sole', sector: 'Premium Restaurant', location: 'Naples',                img: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80',
+                name: 'Tessuti Morandi', sector: 'Luxury Textile', location: 'Como',
+                img: 'https://images.unsplash.com/photo-1558171813-4c088753af8f?w=800&q=80',
                 color: 'linear-gradient(135deg,#1E3A5F 0%,#4169E1 50%,#0A1628 100%)',
                 score: 'A', scoreBg: '#0071E3', target: '€800K', funded: 58, irr: '14-18%',
                 investors: 89, days: 21, instrument: 'Equity', duration: '48 months',
@@ -1204,7 +1211,8 @@
                 highlights: ['3rd generation family business, est. 1962','Supplies to 2 top-10 global luxury brands','New Japanese distribution agreement signed','Sustainable silk certification obtained']
             },
             borgo: {
-                name: 'Osteria del Sole', sector: 'Premium Restaurant', location: 'Naples',                img: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80',
+                name: 'Borgo Luxury Hotels', sector: 'Hospitality', location: 'Tuscany',
+                img: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80',
                 color: 'linear-gradient(135deg,#8B6914 0%,#DAA520 50%,#4A3500 100%)',
                 score: 'A+', scoreBg: '#30D158', target: '€2.5M', funded: 45, irr: '20-25%',
                 investors: 64, days: 32, instrument: 'Revenue Sharing', duration: '60 months',
@@ -1214,7 +1222,8 @@
                 highlights: ['94% occupancy — top 5% in Tuscany','€380 ADR with premium positioning','UNESCO heritage site acquisition in progress','Real estate collateral protects investors']
             },
             sapori: {
-                name: 'Osteria del Sole', sector: 'Premium Restaurant', location: 'Naples',                img: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80',
+                name: "Sapori d'Italia", sector: 'Food & Beverage', location: 'Milan',
+                img: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80',
                 color: 'linear-gradient(135deg,#2D5016 0%,#4CAF50 50%,#1A3009 100%)',
                 score: 'A', scoreBg: '#0071E3', target: '€600K', funded: 83, irr: '16-20%',
                 investors: 156, days: 7, instrument: 'Equity', duration: '36 months',
@@ -1224,7 +1233,8 @@
                 highlights: ['52% revenue growth YoY','Selfridges & KaDeWe partnerships signed','68% customer repeat rate','Organic & DOP certified product line']
             },
             clinic: {
-                name: 'Osteria del Sole', sector: 'Premium Restaurant', location: 'Naples',                img: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80',
+                name: 'Milano Clinic+', sector: 'Healthcare', location: 'Milan',
+                img: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=800&q=80',
                 color: 'linear-gradient(135deg,#87CEEB 0%,#B0E0E6 50%,#4682B4 100%)',
                 score: 'B+', scoreBg: '#FF9F0A', target: '€1M', funded: 34, irr: '12-15%',
                 investors: 42, days: 45, instrument: 'Debt Note', duration: '30 months',
@@ -1234,7 +1244,8 @@
                 highlights: ['87 NPS — top 10% in Italian healthcare','18% YoY revenue growth','Equipment collateral on all notes','Monthly income distributions']
             },
             vigneto: {
-                name: 'Osteria del Sole', sector: 'Premium Restaurant', location: 'Naples',                img: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80',
+                name: 'Vigneto Reale', sector: 'Wine & Agriculture', location: 'Piedmont',
+                img: 'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=800&q=80',
                 color: 'linear-gradient(135deg,#722F37 0%,#8B0000 50%,#3D0000 100%)',
                 score: 'A', scoreBg: '#0071E3', target: '€1.5M', funded: 28, irr: '15-19%',
                 investors: 38, days: 52, instrument: 'Revenue Sharing', duration: '48 months',
@@ -1283,7 +1294,7 @@
                 const d = deals[id];
                 html += `
                 <div class="deal-card" onclick="showDeal('${id}')">
-                    <div class="name: 'Osteria del Sole', sector: 'Premium Restaurant', location: 'Naples',                img: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80',
+                    <div class="deal-card-img" style="background-image:url('${d.img}');background-color:#E8E8ED;">
                         <div class="deal-card-score" style="background:${d.scoreBg};">${d.score}</div>
                         <div class="deal-card-tag">${d.sector}</div>
                     </div>
@@ -1313,7 +1324,7 @@
             currentDeal = dealId;
 
             const html = `
-            <div class="name: 'Osteria del Sole', sector: 'Premium Restaurant', location: 'Naples',                img: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80',
+            <div class="deal-detail-hero" style="background-image:url('${d.img}');background-color:#E8E8ED;">
                 <div class="deal-detail-score-big" style="background:${d.scoreBg};">AI Score: ${d.score}</div>
                 <div class="deal-detail-hero-overlay">
                     <h1>${d.name}</h1>
