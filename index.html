@@ -3,1454 +3,1941 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Raise — Platform</title>
+    <title>Raise — EU SME Investment Platform</title>
     <style>
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --bg: #FAFAFA;
-            --surface: #FFFFFF;
-            --surface-2: #F5F5F7;
-            --surface-3: #EDEDF0;
-            --text-pri: #1D1D1F;
-            --text-sec: #6E6E73;
-            --text-ter: #A1A1A6;
-            --border: #E8E8ED;
-            --blue: #0071E3;
-            --blue-light: #EBF5FF;
-            --green: #30D158;
-            --green-dark: #1BA843;
-            --green-light: #E8FBF0;
-            --red: #FF453A;
-            --orange: #FF9F0A;
-            --purple: #AF52DE;
-            --gradient: linear-gradient(135deg, #0071E3 0%, #30D158 100%);
-            --shadow-sm: 0 1px 3px rgba(0,0,0,0.04);
-            --shadow-md: 0 4px 24px rgba(0,0,0,0.06);
-            --shadow-lg: 0 12px 48px rgba(0,0,0,0.08);
-            --radius: 16px;
-            --radius-lg: 20px;
-            --sidebar-w: 260px;
+            --bg: #FAFAFA; --surface: #FFFFFF; --surface-2: #F5F5F7; --surface-3: #EDEDF0;
+            --text-pri: #1D1D1F; --text-sec: #6E6E73; --text-ter: #A1A1A6; --border: #E8E8ED;
+            --blue: #0071E3; --blue-light: #EBF5FF; --green: #30D158; --green-dark: #1BA843;
+            --green-light: #E8FBF0; --red: #FF453A; --orange: #FF9F0A; --purple: #AF52DE;
+            --radius: 16px; --radius-lg: 20px; --sidebar-w: 260px;
         }
-        html { font-size: 16px; scroll-behavior: smooth; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
-            background: var(--bg);
-            color: var(--text-pri);
-            -webkit-font-smoothing: antialiased;
-            line-height: 1.5;
-            overflow-x: hidden;
+            background: var(--bg); color: var(--text-pri); font-size: 16px; line-height: 1.5;
+        }
+        .app-container {
+            display: flex; height: 100vh; overflow: hidden;
         }
 
-        /* ── Layout ── */
-        .app-layout {
-            display: flex;
-            min-height: 100vh;
-        }
-
-        /* ── Sidebar ── */
+        /* SIDEBAR */
         .sidebar {
-            width: var(--sidebar-w);
-            background: var(--surface);
-            border-right: 1px solid var(--border);
-            position: fixed;
-            top: 0;
-            left: 0;
-            bottom: 0;
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            padding: 24px 0;
-            transition: transform 0.3s;
+            width: var(--sidebar-w); background: var(--surface); border-right: 1px solid var(--border);
+            display: flex; flex-direction: column; padding: 24px 16px; overflow-y: auto;
+            box-shadow: 2px 0 8px rgba(0,0,0,0.02);
         }
-        .sidebar-logo {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 0 24px;
-            margin-bottom: 36px;
-            text-decoration: none;
-        }
-        .sidebar-logo .arrow { color: var(--green); font-weight: 900; font-size: 1.6rem; }
-        .sidebar-logo .name { color: var(--text-pri); font-weight: 800; font-size: 1.5rem; letter-spacing: -0.02em; }
-        .sidebar-nav { flex: 1; }
-        .nav-section-label {
-            font-size: 0.7rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--text-ter);
-            padding: 0 24px;
-            margin-bottom: 8px;
-            margin-top: 24px;
-        }
+        .logo { font-size: 24px; font-weight: 700; color: var(--blue); margin-bottom: 32px; letter-spacing: -0.5px; }
+        .nav-section { margin-bottom: 28px; }
+        .nav-section-title { font-size: 12px; font-weight: 600; color: var(--text-ter); text-transform: uppercase;
+            letter-spacing: 0.5px; margin-bottom: 12px; }
         .nav-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 10px 24px;
-            cursor: pointer;
-            color: var(--text-sec);
-            font-size: 0.92rem;
-            font-weight: 500;
-            transition: all 0.15s;
-            border-radius: 0;
+            padding: 12px 16px; border-radius: 980px; cursor: pointer; font-size: 15px; color: var(--text-sec);
+            transition: all 0.2s; display: flex; align-items: center; justify-content: space-between;
             position: relative;
-            text-decoration: none;
         }
         .nav-item:hover { background: var(--surface-2); color: var(--text-pri); }
-        .nav-item.active {
-            color: var(--blue);
-            background: var(--blue-light);
-            font-weight: 600;
-        }
-        .nav-item.active::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 4px;
-            bottom: 4px;
-            width: 3px;
-            background: var(--blue);
-            border-radius: 0 3px 3px 0;
-        }
-        .nav-icon { font-size: 1.15rem; width: 24px; text-align: center; }
+        .nav-item.active { background: var(--blue-light); color: var(--blue); font-weight: 600; }
         .nav-badge {
-            margin-left: auto;
-            background: var(--blue);
-            color: #fff;
-            font-size: 0.7rem;
-            font-weight: 700;
-            padding: 2px 8px;
-            border-radius: 10px;
+            background: var(--blue); color: white; font-size: 11px; font-weight: 600;
+            border-radius: 980px; padding: 2px 8px;
         }
         .sidebar-footer {
-            padding: 16px 24px;
-            border-top: 1px solid var(--border);
-            margin-top: auto;
+            margin-top: auto; padding-top: 24px; border-top: 1px solid var(--border);
         }
-        .sidebar-user {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
+        .user-card {
+            padding: 12px; background: var(--surface-2); border-radius: var(--radius); display: flex;
+            align-items: center; gap: 12px; cursor: pointer; transition: all 0.2s;
         }
-        .sidebar-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: var(--gradient);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-weight: 700;
-            font-size: 0.85rem;
+        .user-card:hover { background: var(--surface-3); }
+        .user-avatar {
+            width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--blue), var(--purple));
+            display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 16px;
         }
-        .sidebar-user-info .user-name { font-size: 0.85rem; font-weight: 600; }
-        .sidebar-user-info .user-type { font-size: 0.72rem; color: var(--text-ter); }
+        .user-info { flex: 1; }
+        .user-name { font-size: 14px; font-weight: 600; color: var(--text-pri); }
+        .user-type { font-size: 12px; color: var(--text-ter); }
 
-        /* ── Main Content ── */
+        /* MAIN CONTENT */
         .main-content {
-            flex: 1;
-            margin-left: var(--sidebar-w);
-            padding: 32px 40px;
-            max-width: calc(100vw - var(--sidebar-w));
+            flex: 1; display: flex; flex-direction: column; overflow: hidden;
+        }
+        .top-bar {
+            background: var(--surface); border-bottom: 1px solid var(--border); padding: 16px 32px;
+            display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+        .top-bar-left { display: flex; align-items: center; gap: 16px; flex: 1; }
+        .breadcrumb { font-size: 14px; color: var(--text-sec); }
+        .breadcrumb strong { color: var(--text-pri); }
+        .search-box {
+            padding: 8px 14px; border: 1px solid var(--border); border-radius: 980px; background: var(--surface-2);
+            font-size: 14px; width: 280px; transition: all 0.2s;
+        }
+        .search-box:focus { outline: none; border-color: var(--blue); background: white; box-shadow: 0 0 0 3px var(--blue-light); }
+        .top-bar-right { display: flex; align-items: center; gap: 16px; }
+        .icon-btn {
+            width: 36px; height: 36px; border-radius: 50%; background: var(--surface-2); border: none;
+            cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+            font-size: 16px;
+        }
+        .icon-btn:hover { background: var(--surface-3); }
+
+        .content-area {
+            flex: 1; overflow-y: auto; padding: 32px; background: var(--bg);
         }
 
-        /* ── Page Header ── */
-        .page-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+        /* SCREENS */
+        .screen-view { display: none; animation: fadeIn 0.3s ease-out; }
+        .screen-view.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* EXPLORE SCREEN */
+        .explore-header {
             margin-bottom: 32px;
         }
-        .page-title {
-            font-size: 1.8rem;
-            font-weight: 700;
-            letter-spacing: -0.02em;
+        .explore-title { font-size: 32px; font-weight: 700; margin-bottom: 8px; }
+        .explore-subtitle { font-size: 16px; color: var(--text-sec); margin-bottom: 20px; }
+        .filter-pills {
+            display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px;
         }
-        .page-subtitle {
-            font-size: 0.9rem;
-            color: var(--text-sec);
-            margin-top: 4px;
+        .pill {
+            padding: 8px 14px; border: 1px solid var(--border); border-radius: 980px; background: white;
+            cursor: pointer; transition: all 0.2s; font-size: 14px; color: var(--text-sec);
         }
+        .pill:hover, .pill.active { background: var(--blue-light); border-color: var(--blue); color: var(--blue); }
 
-        /* ── Screens ── */
-        .screen-view { display: none; }
-        .screen-view.active { display: block; }
-
-        /* ── Cards ── */
-        .card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 24px;
-            transition: all 0.2s;
-        }
-        .card:hover { box-shadow: var(--shadow-md); }
-        .card-title { font-size: 0.8rem; font-weight: 600; color: var(--text-ter); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 12px; }
-
-        /* ── Stat Cards ── */
-        .stats-row {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 16px;
-            margin-bottom: 28px;
-        }
-        .stat-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 20px 24px;
-        }
-        .stat-card .stat-label { font-size: 0.78rem; color: var(--text-sec); font-weight: 500; margin-bottom: 6px; }
-        .stat-card .stat-value { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.02em; }
-        .stat-card .stat-change { font-size: 0.78rem; font-weight: 600; margin-top: 4px; }
-        .stat-card .stat-change.up { color: var(--green-dark); }
-        .stat-card .stat-change.down { color: var(--red); }
-
-        /* ── Buttons ── */
-        .btn-primary {
-            background: var(--text-pri);
-            color: #fff;
-            border: none;
-            padding: 10px 24px;
-            border-radius: 980px;
-            font-size: 0.88rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .btn-primary:hover { opacity: 0.85; transform: scale(1.02); }
-        .btn-blue {
-            background: var(--blue);
-            color: #fff;
-            border: none;
-            padding: 12px 32px;
-            border-radius: 980px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .btn-blue:hover { opacity: 0.9; transform: translateY(-1px); }
-        .btn-outline {
-            background: transparent;
-            color: var(--text-sec);
-            border: 1.5px solid var(--border);
-            padding: 10px 24px;
-            border-radius: 980px;
-            font-size: 0.88rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .btn-outline:hover { border-color: var(--text-sec); color: var(--text-pri); }
-
-        /* ── Search Bar ── */
-        .search-container {
-            position: relative;
-            margin-bottom: 20px;
-        }
-        .search-input {
-            width: 100%;
-            padding: 12px 16px 12px 44px;
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            font-size: 0.92rem;
-            background: var(--surface);
-            color: var(--text-pri);
-            outline: none;
-            transition: border-color 0.2s;
-            font-family: inherit;
-        }
-        .search-input:focus { border-color: var(--blue); }
-        .search-input::placeholder { color: var(--text-ter); }
-        .search-icon {
-            position: absolute;
-            left: 16px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-ter);
-            font-size: 0.9rem;
-        }
-
-        /* ── Filter Pills ── */
-        .filter-bar {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 24px;
-            flex-wrap: wrap;
-        }
-        .filter-pill {
-            padding: 8px 18px;
-            border-radius: 980px;
-            border: 1px solid var(--border);
-            background: var(--surface);
-            font-size: 0.82rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.15s;
-            color: var(--text-sec);
-            font-family: inherit;
-        }
-        .filter-pill:hover { border-color: var(--text-sec); color: var(--text-pri); }
-        .filter-pill.active { background: var(--text-pri); color: #fff; border-color: var(--text-pri); }
-
-        /* ── Deal Cards Grid ── */
-        .deals-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 20px;
-        }
-        .deal-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-            cursor: pointer;
-            transition: all 0.25s;
-        }
-        .deal-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: transparent; }
-        .deal-card-img {
-            height: 160px;
-            position: relative;
-            overflow: hidden;
-            background-size: cover;
-            background-position: center;
-        }
-        .deal-card-score {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            padding: 5px 14px;
-            border-radius: 12px;
-            font-size: 0.78rem;
-            font-weight: 700;
-            color: #fff;
-        }
-        .deal-card-tag {
-            position: absolute;
-            bottom: 12px;
-            left: 12px;
-            padding: 4px 12px;
-            border-radius: 8px;
-            font-size: 0.72rem;
-            font-weight: 600;
-            background: rgba(0,0,0,0.6);
-            color: #fff;
-            backdrop-filter: blur(4px);
-        }
-        .deal-card-body { padding: 20px; }
-        .deal-card-name { font-size: 1.1rem; font-weight: 700; margin-bottom: 4px; letter-spacing: -0.01em; }
-        .deal-card-sector { font-size: 0.82rem; color: var(--text-sec); margin-bottom: 16px; }
-        .deal-card-stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-        }
-        .deal-stat-item .deal-stat-val { font-size: 1.05rem; font-weight: 700; }
-        .deal-stat-item .deal-stat-label { font-size: 0.72rem; color: var(--text-ter); }
-        .deal-card-progress {
-            margin-top: 16px;
-            height: 4px;
-            background: var(--surface-3);
-            border-radius: 2px;
-            overflow: hidden;
-        }
-        .deal-card-progress-fill { height: 100%; border-radius: 2px; background: var(--green); }
-        .deal-card-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 12px;
-        }
-        .deal-card-investors { font-size: 0.78rem; color: var(--text-ter); }
-        .deal-card-days { font-size: 0.78rem; color: var(--text-sec); font-weight: 600; }
-
-        /* ── Featured Deal ── */
         .featured-deal {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-            margin-bottom: 28px;
-            cursor: pointer;
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: var(--radius-lg); margin-bottom: 32px; position: relative;
+            overflow: hidden; display: grid; grid-template-columns: 1fr 1fr; cursor: pointer;
             transition: all 0.25s;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
         }
-        .featured-deal:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
-        .featured-deal-img { min-height: 280px; position: relative; background-size: cover; background-position: center; }
+        .featured-deal:hover { box-shadow: 0 12px 48px rgba(0,0,0,0.08); transform: translateY(-2px); }
+        .featured-deal-img { min-height: 280px; background-size: cover; background-position: center; position: relative; }
         .featured-deal-body { padding: 36px; display: flex; flex-direction: column; justify-content: center; }
         .featured-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 4px 14px;
-            border-radius: 980px;
-            background: var(--green-light);
-            color: var(--green-dark);
-            font-size: 0.75rem;
-            font-weight: 600;
-            margin-bottom: 12px;
-            width: fit-content;
+            position: absolute; top: 16px; right: 16px; background: var(--blue); color: white;
+            padding: 6px 12px; border-radius: 980px; font-size: 12px; font-weight: 600;
         }
-        .featured-name { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 6px; }
-        .featured-sector { font-size: 0.9rem; color: var(--text-sec); margin-bottom: 20px; }
-        .featured-stats { display: flex; gap: 28px; margin-bottom: 20px; }
-        .featured-stat .fs-val { font-size: 1.3rem; font-weight: 700; }
-        .featured-stat .fs-label { font-size: 0.75rem; color: var(--text-ter); }
+        .featured-content { max-width: 60%; }
+        .featured-name { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+        .featured-meta { font-size: 14px; color: var(--text-sec); margin-bottom: 16px; }
+        .featured-story { font-size: 15px; line-height: 1.6; color: var(--text-sec); margin-bottom: 20px; }
+        .featured-stats {
+            display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px;
+        }
+        .featured-stat { font-size: 13px; color: var(--text-ter); }
+        .featured-stat-value { font-size: 18px; font-weight: 700; color: var(--text-pri); margin-top: 4px; }
 
-        /* ── Deal Detail Page ── */
+        .deals-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px;
+        }
+        .deal-card {
+            background: white; border-radius: var(--radius); overflow: hidden; cursor: pointer;
+            transition: all 0.3s; border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        .deal-card:hover {
+            transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.08); border-color: var(--blue);
+        }
+        .deal-image {
+            width: 100%; height: 160px; object-fit: cover;
+        }
+        .deal-content { padding: 16px; }
+        .deal-header {
+            display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px;
+        }
+        .deal-name { font-size: 16px; font-weight: 700; color: var(--text-pri); }
+        .deal-score {
+            background: #30D158; color: white; font-size: 11px; font-weight: 700;
+            padding: 4px 8px; border-radius: 6px; min-width: 32px; text-align: center;
+        }
+        .deal-meta {
+            font-size: 12px; color: var(--text-ter); margin-bottom: 12px;
+        }
+        .deal-funding {
+            margin-bottom: 12px;
+        }
+        .funding-bar {
+            height: 6px; background: var(--surface-2); border-radius: 3px; overflow: hidden; margin-bottom: 4px;
+        }
+        .funding-fill {
+            height: 100%; background: linear-gradient(90deg, var(--blue), var(--purple)); transition: width 0.4s;
+        }
+        .funding-text {
+            font-size: 12px; color: var(--text-ter); display: flex; justify-content: space-between;
+        }
+        .deal-footer {
+            display: flex; justify-content: space-between; align-items: center; padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+        .deal-irr { font-size: 12px; font-weight: 600; color: var(--green-dark); }
+        .deal-days { font-size: 12px; color: var(--text-ter); }
+
+        /* DEAL DETAIL SCREEN */
         .deal-detail-hero {
-            height: 260px;
-            border-radius: var(--radius-lg);
-            position: relative;
-            overflow: hidden;
-            margin-bottom: 28px;
-            background-size: cover;
-            background-position: center;
+            background: linear-gradient(135deg, rgba(0,0,0,0.4), rgba(0,0,0,0.2)), url('');
+            background-size: cover; background-position: center;
+            height: 280px; border-radius: var(--radius-lg); margin-bottom: 28px;
+            display: flex; align-items: flex-end; padding: 24px;
+            color: white; position: relative; overflow: hidden;
         }
-        .deal-detail-hero-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 32px;
-            background: linear-gradient(transparent, rgba(0,0,0,0.8));
-            color: #fff;
-        }
-        .deal-detail-hero-overlay h1 { font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; }
-        .deal-detail-hero-overlay p { font-size: 0.9rem; opacity: 0.7; margin-top: 4px; }
-        .deal-detail-score-big {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            padding: 8px 20px;
-            border-radius: 14px;
-            font-size: 1rem;
-            font-weight: 700;
-            color: #fff;
-        }
-        .deal-detail-grid {
-            display: grid;
-            grid-template-columns: 1fr 380px;
-            gap: 24px;
-        }
-        .deal-detail-main { }
-        .deal-detail-sidebar { }
-        .detail-section { margin-bottom: 24px; }
-        .detail-section-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 14px; letter-spacing: -0.01em; }
-        .detail-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border);
-        }
-        .detail-row:last-child { border-bottom: none; }
-        .detail-label { font-size: 0.9rem; color: var(--text-sec); }
-        .detail-value { font-size: 0.9rem; font-weight: 600; }
-        .invest-box {
-            background: var(--surface);
+        .deal-hero-content { z-index: 2; }
+        .deal-hero-name { font-size: 36px; font-weight: 700; margin-bottom: 8px; }
+        .deal-hero-meta { font-size: 16px; opacity: 0.95; }
+
+        .deal-stats-row {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px;
+            background: white; padding: 20px; border-radius: var(--radius); margin-bottom: 28px;
             border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            padding: 28px;
-            position: sticky;
-            top: 32px;
         }
-        .invest-box-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 20px; }
-        .invest-amount-display {
+        .stat-item {}
+        .stat-label { font-size: 12px; color: var(--text-ter); text-transform: uppercase; letter-spacing: 0.5px;
+            margin-bottom: 6px; }
+        .stat-value { font-size: 20px; font-weight: 700; color: var(--text-pri); }
+        .stat-unit { font-size: 12px; color: var(--text-sec); margin-left: 4px; }
+
+        .tabs {
+            display: flex; gap: 0; border-bottom: 2px solid var(--border); margin-bottom: 28px;
+            background: white; padding: 0 0 0 0; border-radius: var(--radius) var(--radius) 0 0;
+        }
+        .tab-button {
+            padding: 16px 20px; background: transparent; border: none; cursor: pointer;
+            font-size: 15px; font-weight: 600; color: var(--text-ter); transition: all 0.2s;
+            border-bottom: 3px solid transparent; margin-bottom: -2px;
+        }
+        .tab-button:hover { color: var(--text-pri); }
+        .tab-button.active { color: var(--blue); border-bottom-color: var(--blue); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.2s; }
+
+        .deal-overview {
+            background: white; padding: 24px; border-radius: var(--radius); border: 1px solid var(--border);
+        }
+        .overview-section { margin-bottom: 28px; }
+        .overview-section:last-child { margin-bottom: 0; }
+        .section-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; color: var(--text-pri); }
+        .story-text { font-size: 15px; line-height: 1.7; color: var(--text-sec); margin-bottom: 16px; }
+        .metrics-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px;
+        }
+        .metric-card {
+            background: var(--surface-2); padding: 16px; border-radius: var(--radius); text-align: center;
+        }
+        .metric-label { font-size: 12px; color: var(--text-ter); margin-bottom: 4px; }
+        .metric-value { font-size: 20px; font-weight: 700; color: var(--text-pri); }
+        .metric-change { font-size: 12px; color: var(--green-dark); margin-top: 4px; }
+        .highlights-list {
+            list-style: none;
+        }
+        .highlights-list li {
+            padding: 12px 16px; background: var(--green-light); border-left: 3px solid var(--green);
+            border-radius: 6px; margin-bottom: 8px; font-size: 14px; color: var(--text-pri);
+        }
+        .terms-table {
+            width: 100%; border-collapse: collapse; font-size: 14px;
+        }
+        .terms-table th {
+            text-align: left; padding: 12px; background: var(--surface-2); border-bottom: 1px solid var(--border);
+            font-weight: 600; color: var(--text-ter);
+        }
+        .terms-table td {
+            padding: 12px; border-bottom: 1px solid var(--border); color: var(--text-sec);
+        }
+        .terms-table tr:last-child td { border-bottom: none; }
+
+        /* AI SCORE TAB */
+        .ai-score-container {
+            background: white; padding: 24px; border-radius: var(--radius); border: 1px solid var(--border);
+        }
+        .ai-header {
+            display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px;
+        }
+        .ai-title { font-size: 24px; font-weight: 700; }
+        .ai-overall {
             text-align: center;
-            font-size: 2.4rem;
-            font-weight: 700;
-            letter-spacing: -0.03em;
-            margin-bottom: 16px;
         }
+        .ai-grade {
+            font-size: 64px; font-weight: 700; color: var(--blue); line-height: 1;
+        }
+        .ai-label { font-size: 12px; color: var(--text-ter); margin-top: 4px; }
+
+        .ai-radar {
+            margin-bottom: 32px; text-align: center;
+        }
+        .radar-svg {
+            max-width: 360px; margin: 0 auto;
+        }
+
+        .ai-dimensions {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;
+            margin-bottom: 28px;
+        }
+        .dimension-card {
+            background: var(--surface-2); padding: 16px; border-radius: var(--radius);
+        }
+        .dimension-name { font-size: 13px; font-weight: 600; color: var(--text-sec); margin-bottom: 8px; }
+        .dimension-bar {
+            height: 8px; background: var(--surface-3); border-radius: 4px; overflow: hidden; margin-bottom: 8px;
+        }
+        .dimension-fill {
+            height: 100%; background: linear-gradient(90deg, var(--blue), var(--purple)); border-radius: 4px;
+        }
+        .dimension-score { font-size: 18px; font-weight: 700; color: var(--text-pri); }
+
+        .ai-checks {
+            background: var(--surface-2); padding: 20px; border-radius: var(--radius); margin-bottom: 28px;
+        }
+        .checks-title { font-size: 14px; font-weight: 600; margin-bottom: 12px; color: var(--text-pri); }
+        .checks-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px;
+        }
+        .check-item {
+            display: flex; align-items: center; gap: 8px; font-size: 13px;
+        }
+        .check-icon { font-size: 16px; }
+        .check-pass { color: var(--green); }
+        .check-warning { color: var(--orange); }
+        .check-fail { color: var(--red); }
+
+        .ai-confidence {
+            background: linear-gradient(135deg, var(--blue-light), rgba(0,113,227,0.05));
+            padding: 20px; border-radius: var(--radius); border: 1px solid var(--blue);
+            margin-bottom: 28px;
+        }
+        .confidence-label { font-size: 13px; font-weight: 600; color: var(--text-ter); margin-bottom: 8px; }
+        .confidence-value { font-size: 28px; font-weight: 700; color: var(--blue); margin-bottom: 8px; }
+        .confidence-text { font-size: 13px; color: var(--text-sec); }
+
+        /* DATA ROOM TAB */
+        .data-room-container {
+            background: white; padding: 24px; border-radius: var(--radius); border: 1px solid var(--border);
+        }
+        .data-room-stats {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px;
+            margin-bottom: 24px;
+        }
+        .data-stat {
+            background: var(--surface-2); padding: 16px; border-radius: var(--radius);
+        }
+        .data-stat-value { font-size: 20px; font-weight: 700; color: var(--text-pri); }
+        .data-stat-label { font-size: 12px; color: var(--text-ter); margin-top: 4px; }
+
+        .documents-list {
+            list-style: none;
+        }
+        .document-row {
+            display: flex; align-items: center; justify-content: space-between; padding: 16px;
+            background: white; border: 1px solid var(--border); border-radius: var(--radius);
+            margin-bottom: 12px; transition: all 0.2s;
+        }
+        .document-row:hover { background: var(--surface-2); border-color: var(--blue); }
+        .document-left { display: flex; align-items: center; gap: 12px; flex: 1; }
+        .document-icon {
+            width: 40px; height: 40px; background: var(--blue-light); border-radius: 8px;
+            display: flex; align-items: center; justify-content: center; color: var(--blue); font-size: 20px;
+        }
+        .document-info { flex: 1; }
+        .document-name { font-size: 14px; font-weight: 600; color: var(--text-pri); }
+        .document-meta { font-size: 12px; color: var(--text-ter); margin-top: 4px; }
+        .document-category {
+            display: inline-block; background: var(--blue-light); color: var(--blue);
+            padding: 3px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; margin-right: 8px;
+        }
+        .document-pages { font-size: 12px; color: var(--text-ter); margin-right: 16px; }
+        .document-date { font-size: 12px; color: var(--text-ter); margin-right: 16px; }
+        .btn-view {
+            padding: 8px 16px; background: var(--blue); color: white; border: none;
+            border-radius: 980px; cursor: pointer; font-size: 13px; font-weight: 600;
+            transition: all 0.2s;
+        }
+        .btn-view:hover { background: #0056b3; }
+
+        /* FINANCIALS TAB */
+        .financials-container {
+            background: white; padding: 24px; border-radius: var(--radius); border: 1px solid var(--border);
+        }
+        .financial-section { margin-bottom: 28px; }
+        .financial-chart {
+            background: var(--surface-2); padding: 20px; border-radius: var(--radius);
+            margin-bottom: 16px; min-height: 200px;
+        }
+        .financial-table {
+            width: 100%; border-collapse: collapse; font-size: 14px;
+        }
+        .financial-table th {
+            text-align: left; padding: 12px; background: var(--surface-2);
+            font-weight: 600; color: var(--text-ter); border-bottom: 1px solid var(--border);
+        }
+        .financial-table td {
+            padding: 12px; border-bottom: 1px solid var(--border);
+        }
+        .financial-table tr:last-child td { border-bottom: none; }
+
+        /* SIDEBAR INVEST WIDGET */
+        .invest-sidebar {
+            position: fixed; right: 32px; top: 120px; width: 300px;
+            background: white; border-radius: var(--radius); border: 1px solid var(--border);
+            padding: 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+            z-index: 10;
+        }
+        .invest-title { font-size: 14px; font-weight: 600; color: var(--text-ter); margin-bottom: 16px; }
+        .invest-amount-display {
+            font-size: 32px; font-weight: 700; color: var(--text-pri); margin-bottom: 4px;
+        }
+        .invest-fee { font-size: 12px; color: var(--text-ter); margin-bottom: 16px; }
         .invest-slider {
-            width: 100%;
-            -webkit-appearance: none;
-            height: 6px;
-            border-radius: 3px;
-            background: var(--surface-3);
-            outline: none;
-            margin-bottom: 8px;
+            width: 100%; margin-bottom: 16px; cursor: pointer; height: 6px;
+            -webkit-appearance: none; appearance: none; background: var(--surface-2);
+            border-radius: 3px; outline: none;
         }
         .invest-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            background: var(--blue);
-            cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0,113,227,0.3);
+            -webkit-appearance: none; appearance: none; width: 20px; height: 20px;
+            background: var(--blue); border-radius: 50%; cursor: pointer; box-shadow: 0 2px 8px rgba(0,113,227,0.3);
+        }
+        .invest-slider::-moz-range-thumb {
+            width: 20px; height: 20px; background: var(--blue); border-radius: 50%;
+            cursor: pointer; border: none; box-shadow: 0 2px 8px rgba(0,113,227,0.3);
         }
         .quick-amounts {
-            display: flex;
-            gap: 8px;
-            margin: 12px 0 20px;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 16px;
         }
-        .quick-amt {
-            flex: 1;
-            padding: 8px 0;
-            border-radius: 980px;
-            border: 1px solid var(--border);
-            background: var(--surface);
-            font-size: 0.8rem;
-            font-weight: 600;
-            cursor: pointer;
-            text-align: center;
-            transition: all 0.15s;
-            font-family: inherit;
-            color: var(--text-sec);
+        .quick-btn {
+            padding: 8px; background: var(--surface-2); border: 1px solid var(--border);
+            border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600;
+            transition: all 0.2s; color: var(--text-sec);
         }
-        .quick-amt:hover { border-color: var(--blue); color: var(--blue); }
-        .quick-amt.active { background: var(--blue); color: #fff; border-color: var(--blue); }
-        .invest-summary { margin-bottom: 20px; }
-        .invest-summary .detail-row { padding: 10px 0; }
+        .quick-btn:hover { background: var(--blue-light); border-color: var(--blue); color: var(--blue); }
+        .invest-btn {
+            width: 100%; padding: 12px; background: var(--blue); color: white; border: none;
+            border-radius: 980px; cursor: pointer; font-size: 15px; font-weight: 600;
+            transition: all 0.2s; margin-bottom: 8px;
+        }
+        .invest-btn:hover { background: #0056b3; }
+        .invest-info {
+            font-size: 12px; color: var(--text-ter); text-align: center;
+        }
 
-        /* ── Back Button ── */
-        .back-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            color: var(--blue);
-            font-size: 0.88rem;
-            font-weight: 500;
-            cursor: pointer;
-            margin-bottom: 20px;
-            padding: 4px 0;
-        }
-        .back-btn:hover { opacity: 0.8; }
-
-        /* ── Portfolio Page ── */
-        .portfolio-chart-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            padding: 28px;
-            margin-bottom: 24px;
-        }
-        .portfolio-chart-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 20px;
-        }
-        .portfolio-value { font-size: 2.2rem; font-weight: 700; letter-spacing: -0.03em; }
-        .portfolio-change { font-size: 0.95rem; font-weight: 600; color: var(--green-dark); margin-top: 4px; }
-        .period-tabs {
-            display: flex;
-            gap: 4px;
-            background: var(--surface-2);
-            border-radius: 10px;
-            padding: 3px;
-        }
-        .period-tab {
-            padding: 6px 14px;
-            border-radius: 8px;
-            border: none;
-            background: none;
-            font-size: 0.78rem;
-            font-weight: 600;
-            cursor: pointer;
-            color: var(--text-sec);
-            font-family: inherit;
-            transition: all 0.15s;
-        }
-        .period-tab.active { background: var(--surface); color: var(--text-pri); box-shadow: var(--shadow-sm); }
-        .chart-area {
-            width: 100%;
-            height: 200px;
-        }
-        .portfolio-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 24px;
-        }
-        .investments-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        .investments-table th {
-            text-align: left;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: var(--text-ter);
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border);
-        }
-        .investments-table td {
-            padding: 16px 0;
-            border-bottom: 1px solid var(--border);
-            font-size: 0.9rem;
-        }
-        .investments-table tr:last-child td { border-bottom: none; }
-        .inv-company {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .inv-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            flex-shrink: 0;
-        }
-        .inv-company-info .inv-name { font-weight: 600; }
-        .inv-company-info .inv-type { font-size: 0.78rem; color: var(--text-ter); }
-        .inv-return { font-weight: 600; color: var(--green-dark); }
-
-        /* ── Profile Page ── */
-        .profile-header-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            padding: 36px;
-            display: flex;
-            align-items: center;
-            gap: 24px;
-            margin-bottom: 24px;
-        }
-        .profile-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: var(--gradient);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-size: 2rem;
-            font-weight: 700;
-            flex-shrink: 0;
-        }
-        .profile-info h2 { font-size: 1.4rem; font-weight: 700; letter-spacing: -0.01em; }
-        .profile-info p { font-size: 0.88rem; color: var(--text-sec); }
-        .profile-badges { display: flex; gap: 8px; margin-top: 8px; }
-        .profile-badge {
-            padding: 4px 12px;
-            border-radius: 980px;
-            font-size: 0.72rem;
-            font-weight: 600;
-        }
-        .profile-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-        .settings-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 14px 0;
-            border-bottom: 1px solid var(--border);
-            cursor: pointer;
-            transition: opacity 0.15s;
-        }
-        .settings-row:hover { opacity: 0.7; }
-        .settings-row:last-child { border-bottom: none; }
-        .settings-label { font-size: 0.92rem; }
-        .settings-value { font-size: 0.88rem; color: var(--text-sec); display: flex; align-items: center; gap: 6px; }
-        .settings-chevron { color: var(--text-ter); }
-
-        /* ── Success Modal ── */
+        /* MULTI-STEP MODAL */
         .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(8px);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
+            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5); z-index: 100; align-items: center; justify-content: center;
+            animation: fadeIn 0.2s;
         }
         .modal-overlay.active { display: flex; }
-        .modal-content {
-            background: var(--surface);
-            border-radius: var(--radius-lg);
-            padding: 48px;
-            text-align: center;
-            max-width: 420px;
-            animation: modalIn 0.3s ease;
+        .modal-dialog {
+            background: white; border-radius: var(--radius-lg); width: 90%; max-width: 600px;
+            max-height: 90vh; overflow-y: auto; animation: modalIn 0.3s;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
-        @keyframes modalIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .modal-icon { font-size: 3.5rem; margin-bottom: 16px; }
-        .modal-title { font-size: 1.4rem; font-weight: 700; margin-bottom: 8px; }
-        .modal-text { font-size: 0.9rem; color: var(--text-sec); margin-bottom: 28px; line-height: 1.6; }
+        @keyframes modalIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
 
-        /* ── Notifications ── */
-        .notif-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--red);
-            display: inline-block;
+        .modal-header {
+            padding: 24px; border-bottom: 1px solid var(--border); display: flex;
+            align-items: center; justify-content: space-between;
         }
+        .modal-title { font-size: 20px; font-weight: 700; }
+        .modal-close {
+            background: transparent; border: none; font-size: 24px; cursor: pointer;
+            color: var(--text-ter); transition: all 0.2s;
+        }
+        .modal-close:hover { color: var(--text-pri); }
 
-        /* ── Mobile ── */
-        .mobile-topbar {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 56px;
-            background: rgba(250,250,250,0.9);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
-            z-index: 100;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 16px;
+        .stepper {
+            display: flex; align-items: center; gap: 8px; padding: 24px; background: var(--surface-2);
+            overflow-x: auto;
         }
-        .mobile-topbar .logo-small { display: flex; align-items: center; gap: 6px; }
-        .mobile-topbar .logo-small .arrow { color: var(--green); font-weight: 900; font-size: 1.2rem; }
-        .mobile-topbar .logo-small .name { font-weight: 800; font-size: 1.1rem; }
-        .hamburger {
-            width: 24px;
-            height: 18px;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+        .step-item {
+            display: flex; align-items: center; gap: 8px; min-width: fit-content;
         }
-        .hamburger span { display: block; width: 100%; height: 2px; background: var(--text-pri); border-radius: 1px; }
-        .sidebar-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.3);
-            z-index: 99;
+        .step-circle {
+            width: 32px; height: 32px; border-radius: 50%; background: var(--surface-3);
+            display: flex; align-items; justify-content: center; font-size: 13px;
+            font-weight: 600; color: var(--text-ter); transition: all 0.2s;
+        }
+        .step-item.active .step-circle { background: var(--blue); color: white; }
+        .step-item.completed .step-circle { background: var(--green); color: white; }
+        .step-label { font-size: 12px; color: var(--text-ter); }
+
+        .modal-body { padding: 24px; }
+        .step-content { display: none; }
+        .step-content.active { display: block; }
+
+        .form-group { margin-bottom: 20px; }
+        .form-label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+        .form-input, .form-select {
+            width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius);
+            font-size: 14px; transition: all 0.2s;
+        }
+        .form-input:focus, .form-select:focus {
+            outline: none; border-color: var(--blue); box-shadow: 0 0 0 3px var(--blue-light);
         }
 
-        @media (max-width: 900px) {
-            .sidebar { transform: translateX(-100%); z-index: 200; }
-            .sidebar.open { transform: translateX(0); }
-            .sidebar-overlay.open { display: block; }
-            .mobile-topbar { display: flex; }
-            .main-content { margin-left: 0; padding: 72px 16px 32px; max-width: 100vw; }
-            .stats-row { grid-template-columns: repeat(2, 1fr); }
-            .deals-grid { grid-template-columns: 1fr; }
-            .deal-detail-grid { grid-template-columns: 1fr; }
-            .portfolio-grid { grid-template-columns: 1fr; }
-            .profile-grid { grid-template-columns: 1fr; }
-            .featured-deal { grid-template-columns: 1fr; }
-            .featured-deal-img { min-height: 180px; }
+        .kyc-check {
+            display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--green-light);
+            border-left: 3px solid var(--green); border-radius: 6px; margin-bottom: 12px;
+        }
+        .kyc-icon { font-size: 18px; }
+        .kyc-text { font-size: 14px; color: var(--text-pri); }
+
+        .checkbox-group { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+        .checkbox-group input { width: 20px; height: 20px; margin-top: 2px; cursor: pointer; }
+        .checkbox-text { font-size: 13px; color: var(--text-sec); line-height: 1.5; }
+
+        .payment-method {
+            padding: 12px; border: 1px solid var(--border); border-radius: var(--radius);
+            cursor: pointer; transition: all 0.2s; margin-bottom: 12px;
+        }
+        .payment-method.selected {
+            border-color: var(--blue); background: var(--blue-light);
+        }
+        .payment-method:hover { border-color: var(--blue); }
+
+        .review-item {
+            display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border);
+        }
+        .review-item:last-child { border-bottom: none; }
+        .review-label { color: var(--text-ter); }
+        .review-value { font-weight: 600; color: var(--text-pri); }
+
+        .success-content {
+            text-align: center; padding: 40px 20px;
+        }
+        .success-icon {
+            font-size: 64px; margin-bottom: 16px; animation: scaleIn 0.4s ease-out;
+        }
+        @keyframes scaleIn { from { transform: scale(0); } to { transform: scale(1); } }
+        .success-title { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+        .success-text { font-size: 14px; color: var(--text-sec); margin-bottom: 20px; }
+
+        .modal-footer {
+            padding: 24px; border-top: 1px solid var(--border);
+            display: flex; gap: 12px; justify-content: flex-end;
+        }
+        .btn-secondary {
+            padding: 12px 24px; background: var(--surface-2); border: 1px solid var(--border);
+            border-radius: 980px; cursor: pointer; font-size: 15px; font-weight: 600;
+            transition: all 0.2s; color: var(--text-pri);
+        }
+        .btn-secondary:hover { background: var(--surface-3); }
+        .btn-primary {
+            padding: 12px 24px; background: var(--blue); border: none;
+            border-radius: 980px; cursor: pointer; font-size: 15px; font-weight: 600;
+            transition: all 0.2s; color: white;
+        }
+        .btn-primary:hover { background: #0056b3; }
+        .btn-primary:disabled {
+            background: var(--text-ter); cursor: not-allowed;
         }
 
-        /* ── Fade animations ── */
-        .fade-in { animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        /* PORTFOLIO SCREEN */
+        .portfolio-container {
+            background: white; padding: 24px; border-radius: var(--radius); border: 1px solid var(--border);
+        }
+        .portfolio-hero {
+            background: linear-gradient(135deg, var(--blue), var(--purple)); color: white;
+            padding: 28px; border-radius: var(--radius); margin-bottom: 28px; display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 28px;
+        }
+        .portfolio-stat {
+            color: rgba(255,255,255,0.8);
+        }
+        .portfolio-stat-value { font-size: 32px; font-weight: 700; color: white; }
+        .portfolio-stat-label { font-size: 12px; margin-top: 4px; }
 
-        /* ── Green badge ── */
-        .verified-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 0.78rem;
-            color: var(--green-dark);
+        .investments-table {
+            width: 100%; border-collapse: collapse; font-size: 14px; margin-bottom: 28px;
+        }
+        .investments-table th {
+            text-align: left; padding: 12px; background: var(--surface-2);
+            font-weight: 600; color: var(--text-ter); border-bottom: 1px solid var(--border);
+        }
+        .investments-table td {
+            padding: 12px; border-bottom: 1px solid var(--border);
+        }
+        .investments-table tr:last-child td { border-bottom: none; }
+        .company-cell { display: flex; align-items: center; gap: 12px; }
+        .company-logo {
+            width: 32px; height: 32px; border-radius: 6px; background: var(--blue-light);
+            display: flex; align-items: center; justify-content: center; font-size: 14px;
+        }
+        .status-badge {
+            display: inline-block; padding: 4px 10px; border-radius: 980px; font-size: 11px;
             font-weight: 600;
         }
+        .status-badge.active { background: var(--green-light); color: var(--green-dark); }
+        .status-badge.pending { background: #FFF3E0; color: #E65100; }
 
-        /* ── Donut chart ── */
-        .donut-container { display: flex; align-items: center; gap: 24px; }
-        .donut-legend-item { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 0.85rem; }
-        .donut-legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+        /* SECONDARY MARKET SCREEN */
+        .secondary-header {
+            margin-bottom: 24px;
+        }
+        .secondary-title { font-size: 32px; font-weight: 700; margin-bottom: 8px; }
+        .secondary-subtitle { font-size: 16px; color: var(--text-sec); margin-bottom: 20px; }
 
-        /* ── Distribution timeline ── */
-        .dist-row {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            padding: 12px 0;
-            border-bottom: 1px solid var(--border);
+        .secondary-stats {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px;
+            margin-bottom: 28px;
         }
-        .dist-row:last-child { border-bottom: none; }
-        .dist-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            background: var(--green-light);
-            color: var(--green-dark);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.9rem;
+        .secondary-stat {
+            background: white; padding: 20px; border-radius: var(--radius); border: 1px solid var(--border);
         }
-        .dist-info { flex: 1; }
-        .dist-name { font-size: 0.88rem; font-weight: 600; }
-        .dist-date { font-size: 0.75rem; color: var(--text-ter); }
-        .dist-amount { font-size: 0.92rem; font-weight: 700; color: var(--green-dark); }
+        .secondary-stat-label { font-size: 12px; color: var(--text-ter); margin-bottom: 8px; }
+        .secondary-stat-value { font-size: 24px; font-weight: 700; color: var(--text-pri); }
+
+        .listings-table {
+            width: 100%; border-collapse: collapse; font-size: 13px;
+            background: white; border-radius: var(--radius); overflow: hidden;
+            border: 1px solid var(--border); margin-bottom: 28px;
+        }
+        .listings-table th {
+            text-align: left; padding: 14px; background: var(--surface-2);
+            font-weight: 600; color: var(--text-ter); border-bottom: 1px solid var(--border);
+        }
+        .listings-table td {
+            padding: 14px; border-bottom: 1px solid var(--border);
+        }
+        .listings-table tr:last-child td { border-bottom: none; }
+        .listings-table tr:hover { background: var(--surface-2); }
+        .premium-badge {
+            display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 11px;
+            font-weight: 600;
+        }
+        .premium-badge.positive { background: var(--green-light); color: var(--green-dark); }
+        .premium-badge.negative { background: #FFE8E8; color: var(--red); }
+
+        /* INSTITUTIONAL SCREEN */
+        .institutional-hero {
+            background: linear-gradient(135deg, #1B3A8C 0%, #0071E3 50%, #004BB5 100%);
+            color: white; padding: 40px; border-radius: var(--radius-lg); margin-bottom: 28px;
+            text-align: center;
+        }
+        .institutional-hero-name { font-size: 32px; font-weight: 700; margin-bottom: 8px; }
+        .institutional-hero-subtitle { font-size: 16px; opacity: 0.9; }
+
+        .fund-overview {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px;
+            margin-bottom: 28px;
+        }
+        .fund-card {
+            background: white; padding: 20px; border-radius: var(--radius); border: 1px solid var(--border);
+        }
+        .fund-card-label { font-size: 12px; color: var(--text-ter); margin-bottom: 8px; }
+        .fund-card-value { font-size: 20px; font-weight: 700; color: var(--text-pri); }
+
+        .badges-row {
+            display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 28px;
+        }
+        .badge {
+            padding: 8px 14px; background: var(--green-light); color: var(--green-dark);
+            border-radius: 980px; font-size: 12px; font-weight: 600;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .app-container { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--border);
+                flex-direction: row; padding: 12px; overflow-x: auto; }
+            .nav-section { margin: 0; display: inline-flex; gap: 12px; }
+            .sidebar-footer { display: none; }
+            .main-content { }
+            .deals-grid { grid-template-columns: 1fr; }
+            .invest-sidebar { position: static; width: 100%; right: auto; top: auto;
+                margin-top: 20px; box-shadow: none; }
+            .deal-detail-hero { min-height: 200px; }
+            .featured-stats { grid-template-columns: 1fr; }
+            .search-box { width: 100%; }
+            .top-bar { flex-direction: column; gap: 12px; }
+            .top-bar-right { width: 100%; }
+        }
     </style>
 </head>
 <body>
-    <!-- Mobile Top Bar -->
-    <div class="mobile-topbar">
-        <div class="logo-small"><span class="arrow">↑</span><span class="name">Raise</span></div>
-        <div class="hamburger" onclick="toggleSidebar()"><span></span><span></span><span></span></div>
+<div class="app-container">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="logo">Raise</div>
+
+        <div class="nav-section">
+            <div class="nav-item" onclick="navigate('explore')" data-view="explore">
+                Explore <span class="nav-badge">6</span>
+            </div>
+            <div class="nav-item" onclick="navigate('portfolio')" data-view="portfolio">
+                Portfolio
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Trade</div>
+            <div class="nav-item" onclick="navigate('secondary')" data-view="secondary">
+                Secondary Market <span class="nav-badge">18</span>
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-section-title">Institutional</div>
+            <div class="nav-item" onclick="navigate('institutional')" data-view="institutional">
+                ELTIF Fund
+            </div>
+        </div>
+
+        <div class="nav-section">
+            <div class="nav-item" onclick="navigate('profile')" data-view="profile">
+                Profile & Settings
+            </div>
+        </div>
+
+        <div class="sidebar-footer">
+            <div class="user-card">
+                <div class="user-avatar">A</div>
+                <div class="user-info">
+                    <div class="user-name">Alessandro</div>
+                    <div class="user-type">Retail Investor</div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
-    <div class="app-layout">
-        <!-- Sidebar -->
-        <aside class="sidebar" id="sidebar">
-            <a href="#" class="sidebar-logo" onclick="event.preventDefault()">
-                <span class="arrow">↑</span>
-                <span class="name">Raise</span>
-            </a>
-            <nav class="sidebar-nav">
-                <div class="nav-section-label">Invest</div>
-                <div class="nav-item active" onclick="navigate('explore')" data-screen="explore">
-                    <span class="nav-icon">◎</span> Explore
-                    <span class="nav-badge">6</span>
-                </div>
-                <div class="nav-item" onclick="navigate('portfolio')" data-screen="portfolio">
-                    <span class="nav-icon">◈</span> Portfolio
-                </div>
-                <div class="nav-section-label">Account</div>
-                <div class="nav-item" onclick="navigate('profile')" data-screen="profile">
-                    <span class="nav-icon">●</span> Profile & Settings
-                </div>
-            </nav>
-            <div class="sidebar-footer">
-                <div class="sidebar-user" onclick="navigate('profile')">
-                    <div class="sidebar-avatar">A</div>
-                    <div class="sidebar-user-info">
-                        <div class="user-name">Alessandro</div>
-                        <div class="user-type">Retail Investor</div>
-                    </div>
-                </div>
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
+        <!-- TOP BAR -->
+        <div class="top-bar">
+            <div class="top-bar-left">
+                <div class="breadcrumb"><strong id="viewTitle">Explore</strong></div>
             </div>
-        </aside>
+            <div class="top-bar-right">
+                <div class="icon-btn">🔔</div>
+                <div class="icon-btn">⚙️</div>
+            </div>
+        </div>
 
-        <!-- Main -->
-        <main class="main-content">
+        <!-- CONTENT AREA -->
+        <div class="content-area">
 
-            <!-- ═══ EXPLORE ═══ -->
+            <!-- EXPLORE SCREEN -->
             <div class="screen-view active" id="view-explore">
-                <div class="page-header">
-                    <div>
-                        <div class="page-title">Explore</div>
-                        <div class="page-subtitle">Discover AI-vetted European businesses to invest in</div>
-                    </div>
+                <div class="explore-header">
+                    <div class="explore-title">Explore Investment Opportunities</div>
+                    <div class="explore-subtitle">Vetted SME deals across Europe with AI-powered scoring</div>
                 </div>
 
-                <!-- Featured -->
-                <div class="featured-deal" onclick="showDeal('osteria')">
-                    <div class="featured-deal-img" style="background-image:url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80');background-color:#E8E8ED;"></div>
+                <div class="filter-pills">
+                    <div class="pill active">All Deals</div>
+                    <div class="pill">Restaurants</div>
+                    <div class="pill">Healthcare</div>
+                    <div class="pill">Hospitality</div>
+                    <div class="pill">Textiles</div>
+                    <div class="pill">Food & Beverage</div>
+                    <div class="pill">Wine & Agriculture</div>
+                </div>
+
+                <!-- FEATURED DEAL -->
+                <div class="featured-deal" onclick="navigate('deal','borgo')">
+                    <div class="featured-deal-img" style="background-image:url('https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80');background-color:#E8E8ED;"></div>
                     <div class="featured-deal-body">
-                        <div class="featured-badge">★ Featured · AI Score A+</div>
-                        <div class="featured-name">Osteria del Sole</div>
-                        <div class="featured-sector">Premium Restaurant · Naples — 3 locations, expanding to Rome & Milan</div>
+                        <div class="featured-badge" style="position:static;width:fit-content;margin-bottom:12px;">★ Featured · AI Score A+</div>
+                        <div class="featured-name">Borgo Luxury Hotels</div>
+                        <div class="featured-meta" style="margin-bottom:20px;">Tuscany · Hospitality — 2 properties, acquiring UNESCO heritage site</div>
                         <div class="featured-stats">
-                            <div class="featured-stat"><div class="fs-val" style="color:var(--green-dark);">18-22%</div><div class="fs-label">IRR</div></div>
-                            <div class="featured-stat"><div class="fs-val">€1.2M</div><div class="fs-label">Target</div></div>
-                            <div class="featured-stat"><div class="fs-val">72%</div><div class="fs-label">Funded</div></div>
-                            <div class="featured-stat"><div class="fs-val">14d</div><div class="fs-label">Left</div></div>
-                        </div>
-                        <div class="verified-badge">✓ AI Verified · 200+ checks</div>
-                    </div>
-                </div>
-
-                <!-- Search & Filters -->
-                <div class="search-container">
-                    <span class="search-icon">🔍</span>
-                    <input type="text" class="search-input" placeholder="Search opportunities by name, sector, or location...">
-                </div>
-                <div class="filter-bar">
-                    <button class="filter-pill active" onclick="filterDeals(this)">All</button>
-                    <button class="filter-pill" onclick="filterDeals(this)">Restaurant</button>
-                    <button class="filter-pill" onclick="filterDeals(this)">Textile</button>
-                    <button class="filter-pill" onclick="filterDeals(this)">Hospitality</button>
-                    <button class="filter-pill" onclick="filterDeals(this)">Food & Bev</button>
-                    <button class="filter-pill" onclick="filterDeals(this)">Health</button>
-                    <button class="filter-pill" onclick="filterDeals(this)">Individual</button>
-                </div>
-
-                <!-- Deals Grid -->
-                <div class="deals-grid" id="dealsGrid">
-                    <!-- Populated by JS -->
-                </div>
-            </div>
-
-            <!-- ═══ DEAL DETAIL ═══ -->
-            <div class="screen-view" id="view-deal">
-                <div class="back-btn" onclick="navigate('explore')">‹ Back to Explore</div>
-                <div id="dealDetailContent">
-                    <!-- Populated by JS -->
-                </div>
-            </div>
-
-            <!-- ═══ PORTFOLIO ═══ -->
-            <div class="screen-view" id="view-portfolio">
-                <div class="page-header">
-                    <div>
-                        <div class="page-title">Portfolio</div>
-                        <div class="page-subtitle">Track your investments and returns</div>
-                    </div>
-                </div>
-
-                <!-- Stats -->
-                <div class="stats-row">
-                    <div class="stat-card">
-                        <div class="stat-label">Total Value</div>
-                        <div class="stat-value">€247,500</div>
-                        <div class="stat-change up">+12.4% all time</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Total Invested</div>
-                        <div class="stat-value">€215,000</div>
-                        <div class="stat-change up">7 investments</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Total Returns</div>
-                        <div class="stat-value" style="color:var(--green-dark);">+€32,500</div>
-                        <div class="stat-change up">+€4,200 this quarter</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-label">Avg. IRR</div>
-                        <div class="stat-value" style="color:var(--blue);">14.8%</div>
-                        <div class="stat-change up">Above target</div>
-                    </div>
-                </div>
-
-                <!-- Chart -->
-                <div class="portfolio-chart-card">
-                    <div class="portfolio-chart-header">
-                        <div>
-                            <div class="portfolio-value">€247,500.00</div>
-                            <div class="portfolio-change">+€32,500.00 (+12.4%)</div>
-                        </div>
-                        <div class="period-tabs">
-                            <button class="period-tab">1M</button>
-                            <button class="period-tab">3M</button>
-                            <button class="period-tab">6M</button>
-                            <button class="period-tab active">1Y</button>
-                            <button class="period-tab">All</button>
-                        </div>
-                    </div>
-                    <div class="chart-area">
-                        <svg width="100%" height="100%" viewBox="0 0 800 200" preserveAspectRatio="none">
-                            <defs>
-                                <linearGradient id="portfolioGrad" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stop-color="#30D158" stop-opacity="0.2"/>
-                                    <stop offset="100%" stop-color="#30D158" stop-opacity="0"/>
-                                </linearGradient>
-                            </defs>
-                            <path d="M0,160 Q40,155 80,148 T160,132 T240,118 T320,100 T400,88 T480,72 T560,58 T640,42 T720,28 L800,20 L800,200 L0,200Z" fill="url(#portfolioGrad)"/>
-                            <path d="M0,160 Q40,155 80,148 T160,132 T240,118 T320,100 T400,88 T480,72 T560,58 T640,42 T720,28 L800,20" fill="none" stroke="#30D158" stroke-width="2.5" stroke-linecap="round"/>
-                        </svg>
-                    </div>
-                </div>
-
-                <!-- Grid: Allocation + Distributions -->
-                <div class="portfolio-grid">
-                    <div class="card">
-                        <div class="card-title">Allocation</div>
-                        <div class="donut-container">
-                            <svg width="120" height="120" viewBox="0 0 120 120">
-                                <circle cx="60" cy="60" r="50" fill="none" stroke="#E8E8ED" stroke-width="12"/>
-                                <circle cx="60" cy="60" r="50" fill="none" stroke="#FF453A" stroke-width="12" stroke-dasharray="92 222" stroke-dashoffset="-0" transform="rotate(-90 60 60)"/>
-                                <circle cx="60" cy="60" r="50" fill="none" stroke="#0071E3" stroke-width="12" stroke-dasharray="65 249" stroke-dashoffset="-92" transform="rotate(-90 60 60)"/>
-                                <circle cx="60" cy="60" r="50" fill="none" stroke="#AF52DE" stroke-width="12" stroke-dasharray="117 197" stroke-dashoffset="-157" transform="rotate(-90 60 60)"/>
-                                <circle cx="60" cy="60" r="50" fill="none" stroke="#FF9F0A" stroke-width="12" stroke-dasharray="40 274" stroke-dashoffset="-274" transform="rotate(-90 60 60)"/>
-                            </svg>
                             <div>
-                                <div class="donut-legend-item"><div class="donut-legend-dot" style="background:#FF453A;"></div>Osteria del Sole · 29%</div>
-                                <div class="donut-legend-item"><div class="donut-legend-dot" style="background:#0071E3;"></div>Tessuti Morandi · 21%</div>
-                                <div class="donut-legend-item"><div class="donut-legend-dot" style="background:#AF52DE;"></div>Borgo Luxury · 37%</div>
-                                <div class="donut-legend-item"><div class="donut-legend-dot" style="background:#FF9F0A;"></div>Others · 13%</div>
+                                <div class="featured-stat-value" style="color:var(--green-dark);">20-25%</div>
+                                <div class="featured-stat">IRR</div>
+                            </div>
+                            <div>
+                                <div class="featured-stat-value">€2.5M</div>
+                                <div class="featured-stat">Target</div>
+                            </div>
+                            <div>
+                                <div class="featured-stat-value">45%</div>
+                                <div class="featured-stat">Funded</div>
+                            </div>
+                        </div>
+                        <div style="font-size:0.78rem;color:var(--green-dark);font-weight:600;margin-top:16px;">✓ AI Verified · 226+ checks</div>
+                    </div>
+                </div>
+
+                <!-- DEALS GRID -->
+                <div class="deals-grid" id="dealsGrid"></div>
+            </div>
+
+            <!-- DEAL DETAIL SCREEN -->
+            <div class="screen-view" id="view-deal">
+                <div id="dealDetailContent"></div>
+            </div>
+
+            <!-- PORTFOLIO SCREEN -->
+            <div class="screen-view" id="view-portfolio">
+                <div class="portfolio-container">
+                    <div class="portfolio-hero">
+                        <div>
+                            <div class="portfolio-stat">Total Invested</div>
+                            <div class="portfolio-stat-value">€47,500</div>
+                        </div>
+                        <div>
+                            <div class="portfolio-stat">Current Value</div>
+                            <div class="portfolio-stat-value">€52,340</div>
+                        </div>
+                        <div>
+                            <div class="portfolio-stat">Net Return</div>
+                            <div class="portfolio-stat-value">+€4,840</div>
+                        </div>
+                        <div>
+                            <div class="portfolio-stat">Portfolio IRR</div>
+                            <div class="portfolio-stat-value">17.4%</div>
+                        </div>
+                    </div>
+
+                    <div class="overview-section">
+                        <div class="section-title">Active Investments</div>
+                        <table class="investments-table">
+                            <thead>
+                                <tr>
+                                    <th>Company</th>
+                                    <th>Amount Invested</th>
+                                    <th>Current Value</th>
+                                    <th>Return</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="portfolioTable">
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="overview-section">
+                        <div class="section-title">Monitoring Dashboard</div>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+                            <div style="background: var(--surface-2); padding: 16px; border-radius: var(--radius);">
+                                <div style="font-size: 13px; color: var(--text-ter); margin-bottom: 8px;">Revenue Tracking</div>
+                                <div style="font-size: 18px; font-weight: 700; color: var(--green-dark);">↑ +18.2%</div>
+                            </div>
+                            <div style="background: var(--surface-2); padding: 16px; border-radius: var(--radius);">
+                                <div style="font-size: 13px; color: var(--text-ter); margin-bottom: 8px;">Covenant Status</div>
+                                <div style="display: flex; gap: 4px; margin-top: 8px;">
+                                    <div style="width: 12px; height: 12px; border-radius: 50%; background: var(--green);"></div>
+                                    <div style="width: 12px; height: 12px; border-radius: 50%; background: var(--green);"></div>
+                                    <div style="width: 12px; height: 12px; border-radius: 50%; background: var(--green);"></div>
+                                    <div style="width: 12px; height: 12px; border-radius: 50%; background: var(--green);"></div>
+                                    <div style="width: 12px; height: 12px; border-radius: 50%; background: var(--green);"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="card">
-                        <div class="card-title">Upcoming Distributions</div>
-                        <div class="dist-row">
-                            <div class="dist-icon">€</div>
-                            <div class="dist-info"><div class="dist-name">Osteria del Sole</div><div class="dist-date">Q2 2026 · Apr 15</div></div>
-                            <div class="dist-amount">+€2,250</div>
-                        </div>
-                        <div class="dist-row">
-                            <div class="dist-icon">€</div>
-                            <div class="dist-info"><div class="dist-name">Borgo Luxury Hotels</div><div class="dist-date">Q2 2026 · Apr 30</div></div>
-                            <div class="dist-amount">+€4,000</div>
-                        </div>
-                        <div class="dist-row">
-                            <div class="dist-icon">€</div>
-                            <div class="dist-info"><div class="dist-name">Sapori d'Italia</div><div class="dist-date">H1 2026 · Jun 30</div></div>
-                            <div class="dist-amount">+€1,125</div>
-                        </div>
+                </div>
+            </div>
+
+            <!-- SECONDARY MARKET SCREEN -->
+            <div class="screen-view" id="view-secondary">
+                <div class="secondary-header">
+                    <div class="secondary-title">Secondary Market</div>
+                    <div class="secondary-subtitle">Trade positions in active deals</div>
+                </div>
+
+                <div class="secondary-stats">
+                    <div class="secondary-stat">
+                        <div class="secondary-stat-label">Total Volume</div>
+                        <div class="secondary-stat-value">€2.4M</div>
+                    </div>
+                    <div class="secondary-stat">
+                        <div class="secondary-stat-label">Active Listings</div>
+                        <div class="secondary-stat-value">18</div>
+                    </div>
+                    <div class="secondary-stat">
+                        <div class="secondary-stat-label">Avg Premium</div>
+                        <div class="secondary-stat-value">+3.2%</div>
+                    </div>
+                    <div class="secondary-stat">
+                        <div class="secondary-stat-label">Avg Time to Sell</div>
+                        <div class="secondary-stat-value">4.2 days</div>
                     </div>
                 </div>
 
-                <!-- Investments Table -->
-                <div class="card" style="margin-top: 0;">
-                    <div class="card-title">Your Investments</div>
-                    <table class="investments-table">
+                <div style="background: white; border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 28px;">
+                    <div style="padding: 16px; border-bottom: 1px solid var(--border); font-weight: 600;">Marketplace Listings</div>
+                    <table class="listings-table">
                         <thead>
                             <tr>
-                                <th>Company</th>
-                                <th>Invested</th>
-                                <th>Current Value</th>
-                                <th>Return</th>
-                                <th>IRR</th>
-                                <th>Status</th>
+                                <th>Asset</th>
+                                <th>Seller</th>
+                                <th>Original Investment</th>
+                                <th>Asking Price</th>
+                                <th>Premium</th>
+                                <th>Days Listed</th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td><div class="inv-company"><div class="inv-dot" style="background:#FF453A;"></div><div class="inv-company-info"><div class="inv-name">Osteria del Sole</div><div class="inv-type">Revenue Sharing</div></div></div></td>
+                                <td><strong>Osteria del Sole</strong></td>
+                                <td>Investor #4721</td>
                                 <td>€50,000</td>
-                                <td>€59,100</td>
-                                <td class="inv-return">+€9,100</td>
-                                <td style="font-weight:600;">18.2%</td>
-                                <td><span style="color:var(--green-dark);font-weight:600;font-size:0.82rem;">Active</span></td>
+                                <td>€51,600</td>
+                                <td><span class="premium-badge positive">+3.2%</span></td>
+                                <td>2 days</td>
+                                <td><button class="btn-view">View</button></td>
                             </tr>
                             <tr>
-                                <td><div class="inv-company"><div class="inv-dot" style="background:#0071E3;"></div><div class="inv-company-info"><div class="inv-name">Tessuti Morandi</div><div class="inv-type">Equity</div></div></div></td>
-                                <td>€35,000</td>
-                                <td>€38,990</td>
-                                <td class="inv-return">+€3,990</td>
-                                <td style="font-weight:600;">11.4%</td>
-                                <td><span style="color:var(--green-dark);font-weight:600;font-size:0.82rem;">Active</span></td>
+                                <td><strong>Tessuti Morandi</strong></td>
+                                <td>Investor #5082</td>
+                                <td>€30,000</td>
+                                <td>€30,900</td>
+                                <td><span class="premium-badge positive">+3.0%</span></td>
+                                <td>5 days</td>
+                                <td><button class="btn-view">View</button></td>
                             </tr>
                             <tr>
-                                <td><div class="inv-company"><div class="inv-dot" style="background:#AF52DE;"></div><div class="inv-company-info"><div class="inv-name">Borgo Luxury Hotels</div><div class="inv-type">Revenue Sharing</div></div></div></td>
-                                <td>€80,000</td>
-                                <td>€97,680</td>
-                                <td class="inv-return">+€17,680</td>
-                                <td style="font-weight:600;">22.1%</td>
-                                <td><span style="color:var(--green-dark);font-weight:600;font-size:0.82rem;">Active</span></td>
+                                <td><strong>Milano Clinic+</strong></td>
+                                <td>Investor #3156</td>
+                                <td>€20,000</td>
+                                <td>€19,400</td>
+                                <td><span class="premium-badge negative">-3.0%</span></td>
+                                <td>12 days</td>
+                                <td><button class="btn-view">View</button></td>
                             </tr>
                             <tr>
-                                <td><div class="inv-company"><div class="inv-dot" style="background:#FF9F0A;"></div><div class="inv-company-info"><div class="inv-name">Sapori d'Italia</div><div class="inv-type">Equity</div></div></div></td>
+                                <td><strong>Borgo Luxury Hotels</strong></td>
+                                <td>Investor #7341</td>
+                                <td>€75,000</td>
+                                <td>€78,000</td>
+                                <td><span class="premium-badge positive">+4.0%</span></td>
+                                <td>1 day</td>
+                                <td><button class="btn-view">View</button></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sapori d'Italia</strong></td>
+                                <td>Investor #6284</td>
+                                <td>€15,000</td>
+                                <td>€15,480</td>
+                                <td><span class="premium-badge positive">+3.2%</span></td>
+                                <td>3 days</td>
+                                <td><button class="btn-view">View</button></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Vigneto Reale</strong></td>
+                                <td>Investor #8901</td>
+                                <td>€40,000</td>
+                                <td>€41,200</td>
+                                <td><span class="premium-badge positive">+3.0%</span></td>
+                                <td>6 days</td>
+                                <td><button class="btn-view">View</button></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Osteria del Sole</strong></td>
+                                <td>Investor #2819</td>
                                 <td>€25,000</td>
-                                <td>€27,450</td>
-                                <td class="inv-return">+€2,450</td>
-                                <td style="font-weight:600;">9.8%</td>
-                                <td><span style="color:var(--green-dark);font-weight:600;font-size:0.82rem;">Active</span></td>
+                                <td>€25,750</td>
+                                <td><span class="premium-badge positive">+3.0%</span></td>
+                                <td>8 days</td>
+                                <td><button class="btn-view">View</button></td>
                             </tr>
                             <tr>
-                                <td><div class="inv-company"><div class="inv-dot" style="background:#5AC8FA;"></div><div class="inv-company-info"><div class="inv-name">Milano Clinic+</div><div class="inv-type">Debt Note</div></div></div></td>
-                                <td>€25,000</td>
-                                <td>€26,800</td>
-                                <td class="inv-return">+€1,800</td>
-                                <td style="font-weight:600;">7.2%</td>
-                                <td><span style="color:var(--green-dark);font-weight:600;font-size:0.82rem;">Active</span></td>
+                                <td><strong>Borgo Luxury Hotels</strong></td>
+                                <td>Investor #4512</td>
+                                <td>€50,000</td>
+                                <td>€51,500</td>
+                                <td><span class="premium-badge positive">+3.0%</span></td>
+                                <td>4 days</td>
+                                <td><button class="btn-view">View</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="background: white; border-radius: var(--radius); border: 1px solid var(--border);">
+                    <div style="padding: 16px; border-bottom: 1px solid var(--border); font-weight: 600;">My Positions (Available for Secondary Sale)</div>
+                    <table class="listings-table" style="margin: 0;">
+                        <thead>
+                            <tr>
+                                <th>Company</th>
+                                <th>Investment</th>
+                                <th>Current Value</th>
+                                <th>Gain/Loss</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Osteria del Sole</strong></td>
+                                <td>€50,000</td>
+                                <td>€53,100</td>
+                                <td style="color: var(--green-dark); font-weight: 600;">+€3,100</td>
+                                <td><button class="btn-view">List for Sale</button></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Tessuti Morandi</strong></td>
+                                <td>€30,000</td>
+                                <td>€31,400</td>
+                                <td style="color: var(--green-dark); font-weight: 600;">+€1,400</td>
+                                <td><button class="btn-view">List for Sale</button></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Milano Clinic+</strong></td>
+                                <td>€20,000</td>
+                                <td>€21,800</td>
+                                <td style="color: var(--green-dark); font-weight: 600;">+€1,800</td>
+                                <td><button class="btn-view">List for Sale</button></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Sapori d'Italia</strong></td>
+                                <td>€15,000</td>
+                                <td>€15,840</td>
+                                <td style="color: var(--green-dark); font-weight: 600;">+€840</td>
+                                <td><button class="btn-view">List for Sale</button></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Vigneto Reale</strong></td>
+                                <td>€40,000</td>
+                                <td>€41,600</td>
+                                <td style="color: var(--green-dark); font-weight: 600;">+€1,600</td>
+                                <td><button class="btn-view">List for Sale</button></td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- ═══ PROFILE ═══ -->
-            <div class="screen-view" id="view-profile">
-                <div class="page-header">
-                    <div>
-                        <div class="page-title">Profile & Settings</div>
-                        <div class="page-subtitle">Manage your account and preferences</div>
+            <!-- INSTITUTIONAL SCREEN -->
+            <div class="screen-view" id="view-institutional">
+                <div class="institutional-hero">
+                    <div class="institutional-hero-name">Raise SME ELTIF Fund I</div>
+                    <div class="institutional-hero-subtitle">€50M Target • Diversified Italian SME Portfolio • Regulated ELTIF 2.0</div>
+                </div>
+
+                <div class="fund-overview">
+                    <div class="fund-card">
+                        <div class="fund-card-label">Fund Size</div>
+                        <div class="fund-card-value">€50M</div>
+                    </div>
+                    <div class="fund-card">
+                        <div class="fund-card-label">Vintage</div>
+                        <div class="fund-card-value">2026</div>
+                    </div>
+                    <div class="fund-card">
+                        <div class="fund-card-label">Min Commitment</div>
+                        <div class="fund-card-value">€100K</div>
+                    </div>
+                    <div class="fund-card">
+                        <div class="fund-card-label">Status</div>
+                        <div class="fund-card-value" style="color: var(--orange);">Fundraising</div>
                     </div>
                 </div>
 
-                <div class="profile-header-card">
-                    <div class="profile-avatar">A</div>
-                    <div class="profile-info">
-                        <h2>Alessandro Vaccari</h2>
-                        <p>alessandro.vaccari1995@gmail.com</p>
-                        <div class="profile-badges">
-                            <span class="profile-badge" style="background:var(--green-light);color:var(--green-dark);">✓ KYC Verified</span>
-                            <span class="profile-badge" style="background:var(--blue-light);color:var(--blue);">Retail Investor</span>
-                            <span class="profile-badge" style="background:var(--surface-2);color:var(--text-sec);">Since Jan 2025</span>
+                <div class="badges-row">
+                    <div class="badge" style="background: var(--green-light); color: var(--green-dark);">✓ ELTIF 2.0 Compliant</div>
+                    <div class="badge" style="background: var(--green-light); color: var(--green-dark);">✓ ECSPR Licensed</div>
+                    <div class="badge" style="background: var(--green-light); color: var(--green-dark);">✓ MiFID II Passported</div>
+                    <div class="badge" style="background: var(--green-light); color: var(--green-dark);">✓ AIFMD Registered</div>
+                </div>
+
+                <div style="background: white; padding: 24px; border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 28px;">
+                    <div class="section-title" style="margin-bottom: 20px;">Current Portfolio</div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px;">
+                        <div style="background: var(--surface-2); padding: 16px; border-radius: var(--radius);">
+                            <div style="font-size: 12px; color: var(--text-ter); margin-bottom: 8px;">Osteria del Sole</div>
+                            <div style="font-size: 18px; font-weight: 700; color: var(--text-pri);">€1.2M</div>
+                            <div style="font-size: 11px; color: var(--text-ter); margin-top: 4px;">2.4% of fund</div>
+                        </div>
+                        <div style="background: var(--surface-2); padding: 16px; border-radius: var(--radius);">
+                            <div style="font-size: 12px; color: var(--text-ter); margin-bottom: 8px;">Tessuti Morandi</div>
+                            <div style="font-size: 18px; font-weight: 700; color: var(--text-pri);">€800K</div>
+                            <div style="font-size: 11px; color: var(--text-ter); margin-top: 4px;">1.6% of fund</div>
+                        </div>
+                        <div style="background: var(--surface-2); padding: 16px; border-radius: var(--radius);">
+                            <div style="font-size: 12px; color: var(--text-ter); margin-bottom: 8px;">Borgo Luxury Hotels</div>
+                            <div style="font-size: 18px; font-weight: 700; color: var(--text-pri);">€2.5M</div>
+                            <div style="font-size: 11px; color: var(--text-ter); margin-top: 4px;">5.0% of fund</div>
+                        </div>
+                        <div style="background: var(--surface-2); padding: 16px; border-radius: var(--radius);">
+                            <div style="font-size: 12px; color: var(--text-ter); margin-bottom: 8px;">Sapori d'Italia</div>
+                            <div style="font-size: 18px; font-weight: 700; color: var(--text-pri);">€600K</div>
+                            <div style="font-size: 11px; color: var(--text-ter); margin-top: 4px;">1.2% of fund</div>
+                        </div>
+                        <div style="background: var(--surface-2); padding: 16px; border-radius: var(--radius);">
+                            <div style="font-size: 12px; color: var(--text-ter); margin-bottom: 8px;">Milano Clinic+</div>
+                            <div style="font-size: 18px; font-weight: 700; color: var(--text-pri);">€1M</div>
+                            <div style="font-size: 11px; color: var(--text-ter); margin-top: 4px;">2.0% of fund</div>
+                        </div>
+                        <div style="background: var(--surface-2); padding: 16px; border-radius: var(--radius);">
+                            <div style="font-size: 12px; color: var(--text-ter); margin-bottom: 8px;">Vigneto Reale</div>
+                            <div style="font-size: 18px; font-weight: 700; color: var(--text-pri);">€1.5M</div>
+                            <div style="font-size: 11px; color: var(--text-ter); margin-top: 4px;">3.0% of fund</div>
                         </div>
                     </div>
                 </div>
 
-                <div class="profile-grid">
-                    <div class="card">
-                        <div class="card-title">Account Details</div>
-                        <div class="settings-row">
-                            <span class="settings-label">Full Name</span>
-                            <span class="settings-value">Alessandro Vaccari <span class="settings-chevron">›</span></span>
+                <div style="background: white; padding: 24px; border-radius: var(--radius); border: 1px solid var(--border); margin-bottom: 28px;">
+                    <div class="section-title" style="margin-bottom: 20px;">Fund Performance</div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px;">
+                        <div>
+                            <div style="font-size: 12px; color: var(--text-ter); margin-bottom: 8px;">Net IRR</div>
+                            <div style="font-size: 24px; font-weight: 700; color: var(--green-dark);">17.2%</div>
                         </div>
-                        <div class="settings-row">
-                            <span class="settings-label">Email</span>
-                            <span class="settings-value">alessandro.v***@gmail.com <span class="settings-chevron">›</span></span>
+                        <div>
+                            <div style="font-size: 12px; color: var(--text-ter); margin-bottom: 8px;">TVPI</div>
+                            <div style="font-size: 24px; font-weight: 700; color: var(--text-pri);">1.15x</div>
                         </div>
-                        <div class="settings-row">
-                            <span class="settings-label">Phone</span>
-                            <span class="settings-value">+39 *** *** **12 <span class="settings-chevron">›</span></span>
+                        <div>
+                            <div style="font-size: 12px; color: var(--text-ter); margin-bottom: 8px;">DPI</div>
+                            <div style="font-size: 24px; font-weight: 700; color: var(--text-pri);">0.08x</div>
                         </div>
-                        <div class="settings-row">
-                            <span class="settings-label">Investor Type</span>
-                            <span class="settings-value">Retail <span class="settings-chevron">›</span></span>
-                        </div>
-                        <div class="settings-row">
-                            <span class="settings-label">Risk Profile</span>
-                            <span class="settings-value">Balanced <span class="settings-chevron">›</span></span>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-title">Settings</div>
-                        <div class="settings-row">
-                            <span class="settings-label">Payment Methods</span>
-                            <span class="settings-value">Visa •••• 4242 <span class="settings-chevron">›</span></span>
-                        </div>
-                        <div class="settings-row">
-                            <span class="settings-label">Notifications</span>
-                            <span class="settings-value">Email & Push <span class="settings-chevron">›</span></span>
-                        </div>
-                        <div class="settings-row">
-                            <span class="settings-label">Tax Documents</span>
-                            <span class="settings-value">3 available <span class="settings-chevron">›</span></span>
-                        </div>
-                        <div class="settings-row">
-                            <span class="settings-label">Security</span>
-                            <span class="settings-value">2FA Enabled <span class="settings-chevron">›</span></span>
-                        </div>
-                        <div class="settings-row">
-                            <span class="settings-label">Help & Support</span>
-                            <span class="settings-value"><span class="settings-chevron">›</span></span>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-title">Verification Status</div>
-                        <div class="settings-row">
-                            <span class="settings-label">Identity (KYC)</span>
-                            <span class="settings-value" style="color:var(--green-dark);font-weight:600;">Verified ✓</span>
-                        </div>
-                        <div class="settings-row">
-                            <span class="settings-label">Address</span>
-                            <span class="settings-value" style="color:var(--green-dark);font-weight:600;">Verified ✓</span>
-                        </div>
-                        <div class="settings-row">
-                            <span class="settings-label">Bank Account</span>
-                            <span class="settings-value" style="color:var(--green-dark);font-weight:600;">Connected ✓</span>
-                        </div>
-                        <div class="settings-row">
-                            <span class="settings-label">Accredited Investor</span>
-                            <span class="settings-value" style="color:var(--text-ter);">Not applicable</span>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-title">Legal & Compliance</div>
-                        <div class="settings-row">
-                            <span class="settings-label">Terms of Service</span>
-                            <span class="settings-value">Accepted <span class="settings-chevron">›</span></span>
-                        </div>
-                        <div class="settings-row">
-                            <span class="settings-label">Privacy Policy</span>
-                            <span class="settings-value">Accepted <span class="settings-chevron">›</span></span>
-                        </div>
-                        <div class="settings-row">
-                            <span class="settings-label">Risk Disclosure</span>
-                            <span class="settings-value">Acknowledged <span class="settings-chevron">›</span></span>
-                        </div>
-                        <div class="settings-row">
-                            <span class="settings-label">Data Export</span>
-                            <span class="settings-value">Request <span class="settings-chevron">›</span></span>
+                        <div>
+                            <div style="font-size: 12px; color: var(--text-ter); margin-bottom: 8px;">Risk Rating</div>
+                            <div style="font-size: 18px; font-weight: 700; color: var(--orange);">Moderate</div>
                         </div>
                     </div>
                 </div>
-                <div style="text-align:center;margin-top:28px;">
-                    <div style="color:var(--red);font-weight:600;font-size:0.9rem;cursor:pointer;">Sign Out</div>
-                    <div style="color:var(--text-ter);font-size:0.75rem;margin-top:8px;">Raise v1.0.0 · ECSPR Regulated · © 2026 Raise S.r.l.</div>
+
+                <div style="background: white; padding: 24px; border-radius: var(--radius); border: 1px solid var(--border);">
+                    <div class="section-title" style="margin-bottom: 20px;">LP Commitment</div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px;">
+                        <button class="invest-btn" style="margin: 0; width: 100%;">Request Commitment (€100K - €5M)</button>
+                        <button class="invest-btn" style="margin: 0; width: 100%; background: var(--purple);">Schedule Call with IR Team</button>
+                    </div>
                 </div>
             </div>
-        </main>
-    </div>
 
-    <!-- Success Modal -->
-    <div class="modal-overlay" id="successModal">
-        <div class="modal-content">
-            <div class="modal-icon" style="color:var(--green);">✓</div>
-            <div class="modal-title">Investment Confirmed</div>
-            <div class="modal-text" id="modalText">You've invested €25,000 in Osteria del Sole. A confirmation email has been sent.</div>
-            <button class="btn-blue" onclick="closeModal(); navigate('portfolio');">View Portfolio</button>
+            <!-- PROFILE SCREEN -->
+            <div class="screen-view" id="view-profile">
+                <div class="portfolio-container">
+                    <div style="display:flex;align-items:center;gap:24px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:32px;margin-bottom:28px;">
+                        <div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#0071E3,#30D158);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.8rem;font-weight:700;flex-shrink:0;">A</div>
+                        <div>
+                            <div style="font-size:1.3rem;font-weight:700;">Alessandro Vaccari</div>
+                            <div style="font-size:0.88rem;color:var(--text-sec);">alessandro.vaccari1995@gmail.com</div>
+                            <div style="display:flex;gap:8px;margin-top:8px;">
+                                <span style="padding:4px 12px;border-radius:980px;font-size:0.72rem;font-weight:600;background:var(--green-light);color:var(--green-dark);">✓ KYC Verified</span>
+                                <span style="padding:4px 12px;border-radius:980px;font-size:0.72rem;font-weight:600;background:var(--blue-light);color:var(--blue);">Retail Investor</span>
+                                <span style="padding:4px 12px;border-radius:980px;font-size:0.72rem;font-weight:600;background:var(--surface-2);color:var(--text-sec);">Since Jan 2025</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+                        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;">
+                            <div style="font-size:0.8rem;font-weight:600;color:var(--text-ter);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:16px;">Account Details</div>
+                            <div style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border);font-size:0.92rem;"><span>Full Name</span><span style="color:var(--text-sec);">Alessandro Vaccari ›</span></div>
+                            <div style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border);font-size:0.92rem;"><span>Email</span><span style="color:var(--text-sec);">alessandro.v***@gmail.com ›</span></div>
+                            <div style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border);font-size:0.92rem;"><span>Phone</span><span style="color:var(--text-sec);">+39 *** *** **12 ›</span></div>
+                            <div style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border);font-size:0.92rem;"><span>Investor Type</span><span style="color:var(--text-sec);">Retail ›</span></div>
+                            <div style="display:flex;justify-content:space-between;padding:14px 0;font-size:0.92rem;"><span>Risk Profile</span><span style="color:var(--text-sec);">Balanced ›</span></div>
+                        </div>
+                        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;">
+                            <div style="font-size:0.8rem;font-weight:600;color:var(--text-ter);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:16px;">Settings</div>
+                            <div style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border);font-size:0.92rem;"><span>Payment Methods</span><span style="color:var(--text-sec);">Visa •••• 4242 ›</span></div>
+                            <div style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border);font-size:0.92rem;"><span>Notifications</span><span style="color:var(--text-sec);">Email & Push ›</span></div>
+                            <div style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border);font-size:0.92rem;"><span>Tax Documents</span><span style="color:var(--text-sec);">3 available ›</span></div>
+                            <div style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border);font-size:0.92rem;"><span>Security</span><span style="color:var(--text-sec);">2FA Enabled ›</span></div>
+                            <div style="display:flex;justify-content:space-between;padding:14px 0;font-size:0.92rem;"><span>Help & Support</span><span style="color:var(--text-sec);">›</span></div>
+                        </div>
+                        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;">
+                            <div style="font-size:0.8rem;font-weight:600;color:var(--text-ter);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:16px;">Verification Status</div>
+                            <div style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border);font-size:0.92rem;"><span>Identity (KYC)</span><span style="color:var(--green-dark);font-weight:600;">Verified ✓</span></div>
+                            <div style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border);font-size:0.92rem;"><span>Address</span><span style="color:var(--green-dark);font-weight:600;">Verified ✓</span></div>
+                            <div style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border);font-size:0.92rem;"><span>Bank Account</span><span style="color:var(--green-dark);font-weight:600;">Connected ✓</span></div>
+                            <div style="display:flex;justify-content:space-between;padding:14px 0;font-size:0.92rem;"><span>Accredited Investor</span><span style="color:var(--text-ter);">Not applicable</span></div>
+                        </div>
+                        <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;">
+                            <div style="font-size:0.8rem;font-weight:600;color:var(--text-ter);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:16px;">Legal & Compliance</div>
+                            <div style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border);font-size:0.92rem;"><span>Terms of Service</span><span style="color:var(--text-sec);">Accepted ›</span></div>
+                            <div style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border);font-size:0.92rem;"><span>Privacy Policy</span><span style="color:var(--text-sec);">Accepted ›</span></div>
+                            <div style="display:flex;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--border);font-size:0.92rem;"><span>Risk Disclosure</span><span style="color:var(--text-sec);">Acknowledged ›</span></div>
+                            <div style="display:flex;justify-content:space-between;padding:14px 0;font-size:0.92rem;"><span>Data Export</span><span style="color:var(--text-sec);">Request ›</span></div>
+                        </div>
+                    </div>
+                    <div style="text-align:center;margin-top:28px;">
+                        <div style="color:var(--red);font-weight:600;font-size:0.9rem;cursor:pointer;">Sign Out</div>
+                        <div style="color:var(--text-ter);font-size:0.75rem;margin-top:8px;">Raise v2.0.0 · ECSPR Regulated · © 2026 Raise S.r.l.</div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
+</div>
 
-    <script>
-        // ── Deal Data ──
-        const deals = {
-            osteria: {
-                name: 'Osteria del Sole', sector: 'Premium Restaurant', location: 'Naples',
-                img: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80',
-                color: 'linear-gradient(135deg,#8B4513 0%,#D2691E 50%,#4A2000 100%)',
-                score: 'A+', scoreBg: '#30D158', target: '€1.2M', funded: 72, irr: '18-22%',
-                investors: 127, days: 14, instrument: 'Revenue Sharing', duration: '36 months',
-                min: '€5,000', dist: 'Quarterly', protection: 'Real guarantee',
-                story: 'Premium restaurant chain founded in Naples in 2012. 3 locations with €2.8M annual revenue and 22% EBITDA margins. Seeking €1.2M to expand to Rome, Milan, and Florence — targeting 6 locations by 2028.',
-                metrics: [['Annual Revenue','€2.8M','+34%'],['EBITDA Margin','22%','stable'],['Customers/Year','48K+','+28%'],['Locations','3','+2 planned']],
-                highlights: ['Michelin-recommended since 2019','34% YoY revenue growth','Chef-owner with 20+ years experience','Signed LOIs for Rome & Milan locations']
-            },
-            tessuti: {
-                name: 'Tessuti Morandi', sector: 'Luxury Textile', location: 'Como',
-                img: 'https://images.unsplash.com/photo-1558171813-4c088753af8f?w=800&q=80',
-                color: 'linear-gradient(135deg,#1E3A5F 0%,#4169E1 50%,#0A1628 100%)',
-                score: 'A', scoreBg: '#0071E3', target: '€800K', funded: 58, irr: '14-18%',
-                investors: 89, days: 21, instrument: 'Equity', duration: '48 months',
-                min: '€5,000', dist: 'Annual', protection: 'Board seat >€50K',
-                story: 'Third-generation silk and premium textile manufacturer in Como. Supplies to major European fashion houses including two top-10 global luxury brands. Seeking growth capital for a new production line and Asian export expansion.',
-                metrics: [['Annual Revenue','€3.4M','+22%'],['EBITDA Margin','15%','+2pp'],['B2B Clients','120+','+18%'],['Export Share','45%','+12pp']],
-                highlights: ['3rd generation family business, est. 1962','Supplies to 2 top-10 global luxury brands','New Japanese distribution agreement signed','Sustainable silk certification obtained']
-            },
-            borgo: {
-                name: 'Borgo Luxury Hotels', sector: 'Hospitality', location: 'Tuscany',
-                img: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80',
-                color: 'linear-gradient(135deg,#8B6914 0%,#DAA520 50%,#4A3500 100%)',
-                score: 'A+', scoreBg: '#30D158', target: '€2.5M', funded: 45, irr: '20-25%',
-                investors: 64, days: 32, instrument: 'Revenue Sharing', duration: '60 months',
-                min: '€10,000', dist: 'Quarterly', protection: 'Real estate collateral',
-                story: 'Boutique luxury hotel group in Tuscany. 2 properties with 94% average occupancy and €380 ADR. Acquiring a third property in Val d\'Orcia — a UNESCO World Heritage site — to create the premier Tuscan luxury hotel portfolio.',
-                metrics: [['Annual Revenue','€4.1M','+28%'],['Occupancy','94%','avg'],['ADR','€380','+15%'],['Properties','2','+1 planned']],
-                highlights: ['94% occupancy — top 5% in Tuscany','€380 ADR with premium positioning','UNESCO heritage site acquisition in progress','Real estate collateral protects investors']
-            },
-            sapori: {
-                name: "Sapori d'Italia", sector: 'Food & Beverage', location: 'Milan',
-                img: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80',
-                color: 'linear-gradient(135deg,#2D5016 0%,#4CAF50 50%,#1A3009 100%)',
-                score: 'A', scoreBg: '#0071E3', target: '€600K', funded: 83, irr: '16-20%',
-                investors: 156, days: 7, instrument: 'Equity', duration: '36 months',
-                min: '€5,000', dist: 'Semi-annual', protection: 'Anti-dilution clause',
-                story: 'D2C Italian premium food brand — olive oil, pasta, conserves, and wine. 48K online customers across Italy, expanding into UK and German markets through partnerships with Selfridges and KaDeWe.',
-                metrics: [['Annual Revenue','€1.8M','+52%'],['Online Customers','48K','+45%'],['Markets','3','+2 new'],['Repeat Rate','68%','+8pp']],
-                highlights: ['52% revenue growth YoY','Selfridges & KaDeWe partnerships signed','68% customer repeat rate','Organic & DOP certified product line']
-            },
-            clinic: {
-                name: 'Milano Clinic+', sector: 'Healthcare', location: 'Milan',
-                img: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=800&q=80',
-                color: 'linear-gradient(135deg,#87CEEB 0%,#B0E0E6 50%,#4682B4 100%)',
-                score: 'B+', scoreBg: '#FF9F0A', target: '€1M', funded: 34, irr: '12-15%',
-                investors: 42, days: 45, instrument: 'Debt Note', duration: '30 months',
-                min: '€5,000', dist: 'Monthly', protection: 'Equipment collateral',
-                story: 'Modern outpatient clinic chain in Milan offering premium primary care, diagnostics, and specialist consultations. 2 locations, expanding to a third in the Navigli district. Growing demand for private healthcare in Northern Italy.',
-                metrics: [['Annual Revenue','€2.1M','+18%'],['Patients/Month','3,200','+22%'],['NPS Score','87','+5pts'],['Locations','2','+1 planned']],
-                highlights: ['87 NPS — top 10% in Italian healthcare','18% YoY revenue growth','Equipment collateral on all notes','Monthly income distributions']
-            },
-            vigneto: {
-                name: 'Vigneto Reale', sector: 'Wine & Agriculture', location: 'Piedmont',
-                img: 'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=800&q=80',
-                color: 'linear-gradient(135deg,#722F37 0%,#8B0000 50%,#3D0000 100%)',
-                score: 'A', scoreBg: '#0071E3', target: '€1.5M', funded: 28, irr: '15-19%',
-                investors: 38, days: 52, instrument: 'Revenue Sharing', duration: '48 months',
-                min: '€10,000', dist: 'Annual', protection: 'Vineyard collateral',
-                story: 'Premium Barolo and Barbaresco wine producer in the Langhe hills of Piedmont. 15 hectares of classified vineyards, producing 45,000 bottles annually. Seeking capital to acquire 8 additional hectares and build a new aging cellar.',
-                metrics: [['Annual Revenue','€1.6M','+20%'],['Production','45K btl','+10%'],['Avg Price/btl','€35','+12%'],['Hectares','15','+8 planned']],
-                highlights: ['Classified Barolo vineyards (Langhe DOCG)','3 Bicchieri Gambero Rosso rating','Export to 12 countries','Vineyard land as collateral']
-            }
-        };
+<!-- MODAL OVERLAY -->
+<div class="modal-overlay" id="investModal">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <div class="modal-title" id="modalTitle">Invest in Deal</div>
+            <button class="modal-close" onclick="closeInvestModal()">✕</button>
+        </div>
 
-        // ── Navigation ──
-        let currentView = 'explore';
-        let currentDeal = null;
+        <div class="stepper" id="stepper"></div>
 
-        function navigate(view) {
-            document.querySelectorAll('.screen-view').forEach(v => v.classList.remove('active'));
-            document.getElementById('view-' + view).classList.add('active');
-            document.getElementById('view-' + view).classList.add('fade-in');
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            const navItem = document.querySelector(`.nav-item[data-screen="${view}"]`);
-            if (navItem) navItem.classList.add('active');
-            currentView = view;
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            // Close mobile sidebar
-            document.getElementById('sidebar').classList.remove('open');
-            document.getElementById('sidebarOverlay').classList.remove('open');
-        }
-
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('open');
-            document.getElementById('sidebarOverlay').classList.toggle('open');
-        }
-
-        // ── Filter ──
-        function filterDeals(btn) {
-            document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active'));
-            btn.classList.add('active');
-            // In a real app this would filter; for now all remain visible
-        }
-
-        // ── Render Deals Grid ──
-        function renderDeals() {
-            const grid = document.getElementById('dealsGrid');
-            let html = '';
-            Object.keys(deals).forEach(id => {
-                const d = deals[id];
-                html += `
-                <div class="deal-card" onclick="showDeal('${id}')">
-                    <div class="deal-card-img" style="background-image:url('${d.img}');background-color:#E8E8ED;">
-                        <div class="deal-card-score" style="background:${d.scoreBg};">${d.score}</div>
-                        <div class="deal-card-tag">${d.sector}</div>
-                    </div>
-                    <div class="deal-card-body">
-                        <div class="deal-card-name">${d.name}</div>
-                        <div class="deal-card-sector">${d.sector} · ${d.location}</div>
-                        <div class="deal-card-stats">
-                            <div class="deal-stat-item"><div class="deal-stat-val" style="color:var(--green-dark);">${d.irr}</div><div class="deal-stat-label">IRR</div></div>
-                            <div class="deal-stat-item"><div class="deal-stat-val">${d.target}</div><div class="deal-stat-label">Target</div></div>
-                            <div class="deal-stat-item"><div class="deal-stat-val">${d.funded}%</div><div class="deal-stat-label">Funded</div></div>
-                        </div>
-                        <div class="deal-card-progress"><div class="deal-card-progress-fill" style="width:${d.funded}%;"></div></div>
-                        <div class="deal-card-footer">
-                            <div class="deal-card-investors">${d.investors} investors</div>
-                            <div class="deal-card-days">${d.days} days left</div>
-                        </div>
-                    </div>
-                </div>`;
-            });
-            grid.innerHTML = html;
-        }
-
-        // ── Show Deal Detail ──
-        function showDeal(dealId) {
-            const d = deals[dealId];
-            if (!d) return;
-            currentDeal = dealId;
-
-            const html = `
-            <div class="deal-detail-hero" style="background-image:url('${d.img}');background-color:#E8E8ED;">
-                <div class="deal-detail-score-big" style="background:${d.scoreBg};">AI Score: ${d.score}</div>
-                <div class="deal-detail-hero-overlay">
-                    <h1>${d.name}</h1>
-                    <p>${d.sector} · ${d.location}</p>
+        <div class="modal-body">
+            <!-- STEP 1: AMOUNT -->
+            <div class="step-content active" id="step-1">
+                <div class="form-group">
+                    <div class="form-label">Investment Amount (€)</div>
+                    <div class="invest-amount-display" id="amountDisplay">€5,000</div>
+                    <input type="range" min="5000" max="250000" value="5000" step="1000"
+                           class="invest-slider" id="amountSlider"
+                           oninput="updateInvestAmount(this.value)">
+                    <div class="invest-fee" id="amountHint">Min €5,000 • 2% platform fee included</div>
+                </div>
+                <div class="quick-amounts">
+                    <button class="quick-btn" onclick="setInvestAmount(5000)">€5K</button>
+                    <button class="quick-btn" onclick="setInvestAmount(10000)">€10K</button>
+                    <button class="quick-btn" onclick="setInvestAmount(25000)">€25K</button>
+                    <button class="quick-btn" onclick="setInvestAmount(50000)">€50K</button>
                 </div>
             </div>
 
-            <div class="stats-row" style="grid-template-columns:repeat(5,1fr);">
-                <div class="stat-card"><div class="stat-label">Target</div><div class="stat-value">${d.target}</div></div>
-                <div class="stat-card"><div class="stat-label">Funded</div><div class="stat-value">${d.funded}%</div><div style="margin-top:8px;height:4px;background:var(--surface-3);border-radius:2px;"><div style="height:100%;width:${d.funded}%;background:var(--green);border-radius:2px;"></div></div></div>
-                <div class="stat-card"><div class="stat-label">IRR</div><div class="stat-value" style="color:var(--green-dark);">${d.irr}</div></div>
-                <div class="stat-card"><div class="stat-label">Investors</div><div class="stat-value">${d.investors}</div></div>
-                <div class="stat-card"><div class="stat-label">Days Left</div><div class="stat-value">${d.days}</div></div>
+            <!-- STEP 2: KYC -->
+            <div class="step-content" id="step-2">
+                <div class="form-group">
+                    <div class="form-label">Verification Status</div>
+                </div>
+                <div class="kyc-check">
+                    <span class="kyc-icon" style="color: var(--green);">✓</span>
+                    <div class="kyc-text">
+                        <strong>Identity Verified</strong><br>
+                        <span style="font-size: 12px;">Alessandro Vaccari verified on Jan 15, 2026</span>
+                    </div>
+                </div>
+                <div class="kyc-check">
+                    <span class="kyc-icon" style="color: var(--green);">✓</span>
+                    <div class="kyc-text">
+                        <strong>Accredited Investor Status</strong><br>
+                        <span style="font-size: 12px;">Verified • Net worth > €500K</span>
+                    </div>
+                </div>
+                <div class="kyc-check">
+                    <span class="kyc-icon" style="color: var(--green);">✓</span>
+                    <div class="kyc-text">
+                        <strong>Wealth Source Declaration</strong><br>
+                        <span style="font-size: 12px;">Verified on Feb 01, 2026</span>
+                    </div>
+                </div>
             </div>
 
-            <div class="deal-detail-grid">
-                <div class="deal-detail-main">
-                    <div class="card detail-section">
-                        <div class="detail-section-title">The Story</div>
-                        <p style="color:var(--text-sec);line-height:1.7;font-size:0.95rem;">${d.story}</p>
-                    </div>
+            <!-- STEP 3: DOCUMENTS -->
+            <div class="step-content" id="step-3">
+                <div class="form-group">
+                    <div class="form-label">Review & Accept Documents</div>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="doc1" onchange="updateStepValidity()">
+                    <label class="checkbox-text" for="doc1">
+                        <strong>Investment Agreement</strong> - Terms and conditions for this investment
+                    </label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="doc2" onchange="updateStepValidity()">
+                    <label class="checkbox-text" for="doc2">
+                        <strong>Risk Disclosure</strong> - I understand the risks of SME investing
+                    </label>
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="doc3" onchange="updateStepValidity()">
+                    <label class="checkbox-text" for="doc3">
+                        <strong>Liquidity Notice</strong> - I understand this is an illiquid investment with secondary market access
+                    </label>
+                </div>
+            </div>
 
-                    <div class="card detail-section">
-                        <div class="detail-section-title">Key Metrics</div>
-                        <div style="display:grid;grid-template-columns:repeat(${d.metrics.length},1fr);gap:16px;">
-                            ${d.metrics.map(m => `<div><div style="font-size:0.78rem;color:var(--text-ter);margin-bottom:4px;">${m[0]}</div><div style="font-size:1.2rem;font-weight:700;">${m[1]}</div><div style="font-size:0.78rem;color:var(--green-dark);font-weight:600;">${m[2]}</div></div>`).join('')}
-                        </div>
-                    </div>
+            <!-- STEP 4: PAYMENT -->
+            <div class="step-content" id="step-4">
+                <div class="form-group">
+                    <div class="form-label">Select Payment Method</div>
+                </div>
+                <div class="payment-method selected" onclick="selectPayment(this, 'card')">
+                    <div style="font-weight: 600;">💳 Visa Card ending in 4242</div>
+                    <div style="font-size: 12px; color: var(--text-ter); margin-top: 4px;">Expires 12/2027</div>
+                </div>
+                <div class="payment-method" onclick="selectPayment(this, 'sepa')">
+                    <div style="font-weight: 600;">🏦 SEPA Bank Transfer</div>
+                    <div style="font-size: 12px; color: var(--text-ter); margin-top: 4px;">IBAN IT60X0542811101000000123456</div>
+                </div>
+            </div>
 
-                    <div class="card detail-section">
-                        <div class="detail-section-title">Highlights</div>
-                        ${d.highlights.map(h => `<div style="display:flex;align-items:center;gap:10px;padding:8px 0;"><span style="color:var(--green);font-size:1rem;">✓</span><span style="font-size:0.9rem;">${h}</span></div>`).join('')}
+            <!-- STEP 5: REVIEW -->
+            <div class="step-content" id="step-5">
+                <div class="form-group">
+                    <div class="form-label">Review Your Investment</div>
+                </div>
+                <div style="background: var(--surface-2); padding: 16px; border-radius: var(--radius); margin-bottom: 16px;">
+                    <div class="review-item">
+                        <span class="review-label">Company</span>
+                        <span class="review-value" id="reviewCompany">—</span>
                     </div>
-
-                    <div class="card detail-section">
-                        <div class="detail-section-title">Deal Terms</div>
-                        <div class="detail-row"><span class="detail-label">Instrument</span><span class="detail-value">${d.instrument}</span></div>
-                        <div class="detail-row"><span class="detail-label">Expected Return</span><span class="detail-value">${d.irr} IRR</span></div>
-                        <div class="detail-row"><span class="detail-label">Duration</span><span class="detail-value">${d.duration}</span></div>
-                        <div class="detail-row"><span class="detail-label">Minimum Investment</span><span class="detail-value">${d.min}</span></div>
-                        <div class="detail-row"><span class="detail-label">Distribution</span><span class="detail-value">${d.dist}</span></div>
-                        <div class="detail-row"><span class="detail-label">Investor Protection</span><span class="detail-value">${d.protection}</span></div>
+                    <div class="review-item">
+                        <span class="review-label">Investment Amount</span>
+                        <span class="review-value" id="reviewAmount">€5,000</span>
                     </div>
+                    <div class="review-item">
+                        <span class="review-label">Platform Fee (2%)</span>
+                        <span class="review-value" id="reviewFee">€100</span>
+                    </div>
+                    <div class="review-item">
+                        <span class="review-label">Total Charge</span>
+                        <span class="review-value" style="font-size: 16px;" id="reviewTotal">€5,100</span>
+                    </div>
+                </div>
+            </div>
 
-                    <div style="display:flex;gap:12px;">
-                        <button class="btn-outline" style="flex:1;">📁 Data Room</button>
-                        <button class="btn-outline" style="flex:1;">📞 Call Founder</button>
-                        <button class="btn-outline" style="flex:1;">📊 Financials</button>
+            <!-- STEP 6: SUCCESS -->
+            <div class="step-content" id="step-6">
+                <div class="success-content">
+                    <div class="success-icon">🎉</div>
+                    <div class="success-title">Investment Confirmed!</div>
+                    <div class="success-text">Your €5,000 investment in Osteria del Sole has been processed successfully.</div>
+                    <div style="background: var(--surface-2); padding: 16px; border-radius: var(--radius); font-size: 13px; color: var(--text-sec); margin-bottom: 16px;">
+                        <div style="margin-bottom: 8px;"><strong>Reference:</strong> INV-2026-04-04-7842</div>
+                        <div><strong>Settlement:</strong> 2 business days (by Apr 06, 2026)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn-secondary" onclick="prevStep()">Back</button>
+            <button class="btn-primary" id="nextBtn" onclick="nextStep()">Next</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// DATA
+const deals = {
+    osteria: { name: 'Osteria del Sole', sector: 'Premium Restaurant', location: 'Naples',
+        img: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80',
+        color: 'linear-gradient(135deg,#8B4513 0%,#D2691E 50%,#4A2000 100%)',
+        score: 'A+', scoreBg: '#30D158', target: '€1.2M', funded: 72, irr: '18-22%',
+        investors: 127, days: 14, instrument: 'Revenue Sharing', duration: '36 months',
+        min: '€5,000', dist: 'Quarterly', protection: 'Real guarantee',
+        story: 'Premium restaurant chain founded in Naples in 2012. 3 locations with €2.8M annual revenue and 22% EBITDA margins. Seeking €1.2M to expand to Rome, Milan, and Florence.',
+        metrics: [['Annual Revenue','€2.8M','+34%'],['EBITDA Margin','22%','stable'],['Customers/Year','48K+','+28%'],['Locations','3','+2 planned']],
+        highlights: ['Michelin-recommended since 2019','34% YoY revenue growth','Chef-owner with 20+ years experience','Signed LOIs for Rome & Milan locations'],
+        aiScores: { financial: 88, market: 82, management: 91, growth: 85, risk: 78, esg: 72 },
+        aiChecks: 214, aiConfidence: 94,
+        documents: [
+            { name: 'Investment Memorandum', cat: 'Legal', pages: 42, date: 'Mar 2026' },
+            { name: 'Financial Statements FY2025', cat: 'Financial', pages: 28, date: 'Feb 2026' },
+            { name: 'Due Diligence Report', cat: 'Due Diligence', pages: 56, date: 'Mar 2026' },
+            { name: 'Market Analysis — Italian Dining', cat: 'Market Research', pages: 18, date: 'Jan 2026' },
+            { name: 'Expansion Business Plan', cat: 'Strategy', pages: 34, date: 'Mar 2026' },
+            { name: 'Lease Agreements (Rome & Milan)', cat: 'Legal', pages: 22, date: 'Feb 2026' },
+            { name: 'Chef/Founder CV & Track Record', cat: 'Management', pages: 8, date: 'Jan 2026' },
+            { name: 'Revenue Sharing Agreement Template', cat: 'Legal', pages: 12, date: 'Mar 2026' }
+        ]
+    },
+    tessuti: { name: 'Tessuti Morandi', sector: 'Luxury Textile', location: 'Como',
+        img: 'https://images.unsplash.com/photo-1558171813-4c088753af8f?w=800&q=80',
+        color: 'linear-gradient(135deg,#1E3A5F 0%,#4169E1 50%,#0A1628 100%)',
+        score: 'A', scoreBg: '#0071E3', target: '€800K', funded: 58, irr: '14-18%',
+        investors: 89, days: 21, instrument: 'Equity', duration: '48 months',
+        min: '€5,000', dist: 'Annual', protection: 'Board seat >€50K',
+        story: 'Third-generation silk and premium textile manufacturer in Como. Supplies to major European fashion houses including two top-10 global luxury brands. Seeking growth capital for a new production line and Asian export expansion.',
+        metrics: [['Annual Revenue','€3.4M','+22%'],['EBITDA Margin','15%','+2pp'],['B2B Clients','120+','+18%'],['Export Share','45%','+12pp']],
+        highlights: ['3rd generation family business, est. 1962','Supplies to 2 top-10 global luxury brands','New Japanese distribution agreement signed','Sustainable silk certification obtained'],
+        aiScores: { financial: 82, market: 78, management: 85, growth: 76, risk: 80, esg: 88 },
+        aiChecks: 198, aiConfidence: 91,
+        documents: [
+            { name: 'Investment Memorandum', cat: 'Legal', pages: 38, date: 'Mar 2026' },
+            { name: 'Financial Statements FY2025', cat: 'Financial', pages: 24, date: 'Feb 2026' },
+            { name: 'Due Diligence Report', cat: 'Due Diligence', pages: 48, date: 'Mar 2026' },
+            { name: 'Japanese Market Entry Plan', cat: 'Strategy', pages: 22, date: 'Feb 2026' },
+            { name: 'Shareholder Agreement Draft', cat: 'Legal', pages: 16, date: 'Mar 2026' }
+        ]
+    },
+    borgo: { name: 'Borgo Luxury Hotels', sector: 'Hospitality', location: 'Tuscany',
+        img: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80',
+        color: 'linear-gradient(135deg,#8B6914 0%,#DAA520 50%,#4A3500 100%)',
+        score: 'A+', scoreBg: '#30D158', target: '€2.5M', funded: 45, irr: '20-25%',
+        investors: 64, days: 32, instrument: 'Revenue Sharing', duration: '60 months',
+        min: '€10,000', dist: 'Quarterly', protection: 'Real estate collateral',
+        story: "Boutique luxury hotel group in Tuscany. 2 properties with 94% average occupancy and €380 ADR. Acquiring a third property in Val d'Orcia — a UNESCO World Heritage site — to create the premier Tuscan luxury hotel portfolio.",
+        metrics: [['Annual Revenue','€4.1M','+28%'],['Occupancy','94%','avg'],['ADR','€380','+15%'],['Properties','2','+1 planned']],
+        highlights: ['94% occupancy — top 5% in Tuscany','€380 ADR with premium positioning','UNESCO heritage site acquisition in progress','Real estate collateral protects investors'],
+        aiScores: { financial: 90, market: 88, management: 86, growth: 92, risk: 84, esg: 80 },
+        aiChecks: 226, aiConfidence: 96,
+        documents: [
+            { name: 'Investment Memorandum', cat: 'Legal', pages: 52, date: 'Mar 2026' },
+            { name: 'Financial Statements FY2025', cat: 'Financial', pages: 32, date: 'Feb 2026' },
+            { name: 'Property Valuation Report', cat: 'Due Diligence', pages: 44, date: 'Mar 2026' },
+            { name: 'Tourism Market Analysis', cat: 'Market Research', pages: 26, date: 'Jan 2026' },
+            { name: 'Revenue Sharing Agreement', cat: 'Legal', pages: 14, date: 'Mar 2026' },
+            { name: 'Environmental Impact Assessment', cat: 'ESG', pages: 20, date: 'Feb 2026' }
+        ]
+    },
+    sapori: { name: "Sapori d'Italia", sector: 'Food & Beverage', location: 'Milan',
+        img: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80',
+        color: 'linear-gradient(135deg,#2D5016 0%,#4CAF50 50%,#1A3009 100%)',
+        score: 'A', scoreBg: '#0071E3', target: '€600K', funded: 83, irr: '16-20%',
+        investors: 156, days: 7, instrument: 'Equity', duration: '36 months',
+        min: '€5,000', dist: 'Semi-annual', protection: 'Anti-dilution clause',
+        story: 'D2C Italian premium food brand — olive oil, pasta, conserves, and wine. 48K online customers across Italy, expanding into UK and German markets through partnerships with Selfridges and KaDeWe.',
+        metrics: [['Annual Revenue','€1.8M','+52%'],['Online Customers','48K','+45%'],['Markets','3','+2 new'],['Repeat Rate','68%','+8pp']],
+        highlights: ['52% revenue growth YoY','Selfridges & KaDeWe partnerships signed','68% customer repeat rate','Organic & DOP certified product line'],
+        aiScores: { financial: 79, market: 84, management: 80, growth: 90, risk: 74, esg: 86 },
+        aiChecks: 202, aiConfidence: 89,
+        documents: [
+            { name: 'Investment Memorandum', cat: 'Legal', pages: 36, date: 'Mar 2026' },
+            { name: 'Financial Statements FY2025', cat: 'Financial', pages: 22, date: 'Feb 2026' },
+            { name: 'UK/DE Market Entry Plan', cat: 'Strategy', pages: 28, date: 'Feb 2026' },
+            { name: 'Brand Audit & Consumer Research', cat: 'Market Research', pages: 18, date: 'Jan 2026' }
+        ]
+    },
+    clinic: { name: 'Milano Clinic+', sector: 'Healthcare', location: 'Milan',
+        img: 'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=800&q=80',
+        color: 'linear-gradient(135deg,#87CEEB 0%,#B0E0E6 50%,#4682B4 100%)',
+        score: 'B+', scoreBg: '#FF9F0A', target: '€1M', funded: 34, irr: '12-15%',
+        investors: 42, days: 45, instrument: 'Debt Note', duration: '30 months',
+        min: '€5,000', dist: 'Monthly', protection: 'Equipment collateral',
+        story: 'Modern outpatient clinic chain in Milan offering premium primary care, diagnostics, and specialist consultations. 2 locations, expanding to a third in the Navigli district.',
+        metrics: [['Annual Revenue','€2.1M','+18%'],['Patients/Month','3,200','+22%'],['NPS Score','87','+5pts'],['Locations','2','+1 planned']],
+        highlights: ['87 NPS — top 10% in Italian healthcare','18% YoY revenue growth','Equipment collateral on all notes','Monthly income distributions'],
+        aiScores: { financial: 75, market: 72, management: 78, growth: 70, risk: 82, esg: 76 },
+        aiChecks: 186, aiConfidence: 85,
+        documents: [
+            { name: 'Investment Memorandum', cat: 'Legal', pages: 34, date: 'Mar 2026' },
+            { name: 'Financial Statements FY2025', cat: 'Financial', pages: 20, date: 'Feb 2026' },
+            { name: 'Healthcare Market Report', cat: 'Market Research', pages: 24, date: 'Jan 2026' },
+            { name: 'Debt Note Terms', cat: 'Legal', pages: 10, date: 'Mar 2026' }
+        ]
+    },
+    vigneto: { name: 'Vigneto Reale', sector: 'Wine & Agriculture', location: 'Piedmont',
+        img: 'https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=800&q=80',
+        color: 'linear-gradient(135deg,#722F37 0%,#8B0000 50%,#3D0000 100%)',
+        score: 'A', scoreBg: '#0071E3', target: '€1.5M', funded: 28, irr: '15-19%',
+        investors: 38, days: 52, instrument: 'Revenue Sharing', duration: '48 months',
+        min: '€10,000', dist: 'Annual', protection: 'Vineyard collateral',
+        story: 'Premium Barolo and Barbaresco wine producer in the Langhe hills of Piedmont. 15 hectares of classified vineyards, producing 45,000 bottles annually.',
+        metrics: [['Annual Revenue','€1.6M','+20%'],['Production','45K btl','+10%'],['Avg Price/btl','€35','+12%'],['Hectares','15','+8 planned']],
+        highlights: ['Classified Barolo vineyards (Langhe DOCG)','3 Bicchieri Gambero Rosso rating','Export to 12 countries','Vineyard land as collateral'],
+        aiScores: { financial: 80, market: 86, management: 83, growth: 78, risk: 85, esg: 90 },
+        aiChecks: 208, aiConfidence: 92,
+        documents: [
+            { name: 'Investment Memorandum', cat: 'Legal', pages: 40, date: 'Mar 2026' },
+            { name: 'Financial Statements FY2025', cat: 'Financial', pages: 26, date: 'Feb 2026' },
+            { name: 'Vineyard Valuation', cat: 'Due Diligence', pages: 36, date: 'Mar 2026' },
+            { name: 'Wine Market Analysis', cat: 'Market Research', pages: 20, date: 'Jan 2026' },
+            { name: 'Revenue Sharing Agreement', cat: 'Legal', pages: 14, date: 'Mar 2026' },
+            { name: 'Sustainability Report', cat: 'ESG', pages: 16, date: 'Feb 2026' }
+        ]
+    }
+};
+
+let currentView = 'explore';
+let currentDeal = null;
+let currentInvestStep = 1;
+let investAmount = 5000;
+let selectedPayment = 'card';
+
+// RENDER DEALS GRID
+function renderDeals() {
+    const grid = document.getElementById('dealsGrid');
+    grid.innerHTML = '';
+    Object.entries(deals).forEach(([key, deal]) => {
+        const card = document.createElement('div');
+        card.className = 'deal-card';
+        card.onclick = () => navigate('deal', key);
+        const fundedPct = deal.funded;
+        card.innerHTML = `
+            <img src="${deal.img}" class="deal-image">
+            <div class="deal-content">
+                <div class="deal-header">
+                    <div class="deal-name">${deal.name}</div>
+                    <div class="deal-score" style="background: ${deal.scoreBg};">${deal.score}</div>
+                </div>
+                <div class="deal-meta">${deal.location} • ${deal.sector}</div>
+                <div class="deal-funding">
+                    <div class="funding-bar">
+                        <div class="funding-fill" style="width: ${fundedPct}%;"></div>
+                    </div>
+                    <div class="funding-text">
+                        <span>${fundedPct}% funded</span>
+                        <span>${deal.target}</span>
+                    </div>
+                </div>
+                <div class="deal-footer">
+                    <div class="deal-irr">${deal.irr}</div>
+                    <div class="deal-days">${deal.days} days left</div>
+                </div>
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+}
+
+// RENDER DEAL DETAIL
+function renderDealDetail(dealKey) {
+    const deal = deals[dealKey];
+    const container = document.getElementById('dealDetailContent');
+
+    container.innerHTML = `
+        <div style="display: grid; grid-template-columns: 1fr 300px; gap: 32px;">
+            <div>
+                <div class="deal-detail-hero" style="background-image:url('${deal.img}');background-size:cover;background-position:center;background-color:#E8E8ED;">
+                    <div style="position:absolute;inset:0;background:linear-gradient(transparent 40%,rgba(0,0,0,0.7));"></div>
+                    <div class="deal-hero-content" style="position:relative;z-index:1;">
+                        <div class="deal-hero-name">${deal.name}</div>
+                        <div class="deal-hero-meta">${deal.location} • ${deal.sector}</div>
                     </div>
                 </div>
 
-                <div class="deal-detail-sidebar">
-                    <div class="invest-box">
-                        <div class="invest-box-title">Invest in ${d.name}</div>
-                        <div class="verified-badge" style="margin-bottom:16px;">✓ AI Verified · 200+ checks completed</div>
-                        <div class="invest-amount-display" id="dealInvestAmount">€25,000</div>
-                        <input type="range" class="invest-slider" id="dealSlider" min="5000" max="100000" value="25000" step="1000" oninput="updateDealAmount(this.value)">
-                        <div style="display:flex;justify-content:space-between;font-size:0.75rem;color:var(--text-ter);margin-bottom:4px;"><span>€5,000</span><span>€100,000</span></div>
-                        <div class="quick-amounts">
-                            <button class="quick-amt" onclick="setDealAmount(5000)">€5K</button>
-                            <button class="quick-amt" onclick="setDealAmount(10000)">€10K</button>
-                            <button class="quick-amt active" onclick="setDealAmount(25000)">€25K</button>
-                            <button class="quick-amt" onclick="setDealAmount(50000)">€50K</button>
-                        </div>
-                        <div class="invest-summary">
-                            <div class="detail-row"><span class="detail-label">Amount</span><span class="detail-value" id="summaryAmt">€25,000</span></div>
-                            <div class="detail-row"><span class="detail-label">Instrument</span><span class="detail-value">${d.instrument}</span></div>
-                            <div class="detail-row"><span class="detail-label">Expected Return</span><span class="detail-value" style="color:var(--green-dark);">${d.irr} IRR</span></div>
-                            <div class="detail-row"><span class="detail-label">Est. Gain</span><span class="detail-value" style="color:var(--green-dark);" id="estGain">€13,500 – €16,500</span></div>
-                        </div>
-                        <button class="btn-blue" style="width:100%;justify-content:center;" id="investBtn" onclick="confirmInvest()">Invest Now</button>
-                        <div style="text-align:center;margin-top:10px;font-size:0.75rem;color:var(--text-ter);">🔒 Secure payment · Funds held in escrow</div>
+                <div class="deal-stats-row">
+                    <div class="stat-item">
+                        <div class="stat-label">Target</div>
+                        <div class="stat-value">${deal.target}</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Funded</div>
+                        <div class="stat-value">${deal.funded}<span class="stat-unit">%</span></div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Investors</div>
+                        <div class="stat-value">${deal.investors}</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Expected IRR</div>
+                        <div class="stat-value">${deal.irr}</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Days Left</div>
+                        <div class="stat-value">${deal.days}</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Rating</div>
+                        <div class="stat-value" style="color: ${deal.scoreBg};">${deal.score}</div>
                     </div>
                 </div>
-            </div>`;
 
-            document.getElementById('dealDetailContent').innerHTML = html;
-            navigate('deal');
-        }
+                <div class="tabs" style="background: transparent; border: none; gap: 0;">
+                    <button class="tab-button active" onclick="switchTab(this, 'overview-${dealKey}')">Overview</button>
+                    <button class="tab-button" onclick="switchTab(this, 'ai-${dealKey}')">AI Score</button>
+                    <button class="tab-button" onclick="switchTab(this, 'dataroom-${dealKey}')">Data Room</button>
+                    <button class="tab-button" onclick="switchTab(this, 'financials-${dealKey}')">Financials</button>
+                </div>
 
-        // ── Investment Amount ──
-        function updateDealAmount(val) {
-            val = parseInt(val);
-            document.getElementById('dealInvestAmount').textContent = '€' + val.toLocaleString('en-US');
-            document.getElementById('summaryAmt').textContent = '€' + val.toLocaleString('en-US');
-            const low = Math.round(val * 0.18 * 3);
-            const high = Math.round(val * 0.22 * 3);
-            document.getElementById('estGain').textContent = '€' + low.toLocaleString('en-US') + ' – €' + high.toLocaleString('en-US');
-            document.querySelectorAll('.invest-box .quick-amt').forEach(btn => {
-                const bv = parseInt(btn.textContent.replace(/[^0-9]/g,'')) * 1000;
-                btn.classList.toggle('active', bv === val);
-            });
-        }
-        function setDealAmount(val) {
-            document.getElementById('dealSlider').value = val;
-            updateDealAmount(val);
-        }
+                <!-- OVERVIEW TAB -->
+                <div class="tab-content active" id="overview-${dealKey}">
+                    <div class="deal-overview">
+                        <div class="overview-section">
+                            <div class="section-title">Story</div>
+                            <div class="story-text">${deal.story}</div>
+                        </div>
 
-        // ── Confirm Investment ──
-        function confirmInvest() {
-            const btn = document.getElementById('investBtn');
-            btn.textContent = 'Processing...';
-            btn.style.opacity = '0.6';
-            const d = deals[currentDeal];
-            const amt = document.getElementById('summaryAmt').textContent;
-            setTimeout(() => {
-                btn.textContent = 'Invest Now';
-                btn.style.opacity = '1';
-                document.getElementById('modalText').textContent = `You've invested ${amt} in ${d.name}. A confirmation email has been sent to your address.`;
-                document.getElementById('successModal').classList.add('active');
-            }, 1500);
-        }
-        function closeModal() {
-            document.getElementById('successModal').classList.remove('active');
-        }
+                        <div class="overview-section">
+                            <div class="section-title">Key Metrics</div>
+                            <div class="metrics-grid">
+                                ${deal.metrics.map(m => `
+                                    <div class="metric-card">
+                                        <div class="metric-label">${m[0]}</div>
+                                        <div class="metric-value">${m[1]}</div>
+                                        <div class="metric-change">${m[2]}</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
 
-        // ── Period tabs ──
-        document.querySelectorAll('.period-tab').forEach(tab => {
-            tab.addEventListener('click', function() {
-                this.parentElement.querySelectorAll('.period-tab').forEach(t => t.classList.remove('active'));
-                this.classList.add('active');
-            });
-        });
+                        <div class="overview-section">
+                            <div class="section-title">Highlights</div>
+                            <ul class="highlights-list">
+                                ${deal.highlights.map(h => `<li>${h}</li>`).join('')}
+                            </ul>
+                        </div>
 
-        // ── Init ──
-        renderDeals();
-    </script>
+                        <div class="overview-section">
+                            <div class="section-title">Investment Terms</div>
+                            <table class="terms-table">
+                                <tr>
+                                    <th>Instrument</th><td>${deal.instrument}</td>
+                                </tr>
+                                <tr>
+                                    <th>Duration</th><td>${deal.duration}</td>
+                                </tr>
+                                <tr>
+                                    <th>Min Investment</th><td>${deal.min}</td>
+                                </tr>
+                                <tr>
+                                    <th>Distribution</th><td>${deal.dist}</td>
+                                </tr>
+                                <tr>
+                                    <th>Investor Protection</th><td>${deal.protection}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI SCORE TAB -->
+                <div class="tab-content" id="ai-${dealKey}">
+                    <div class="ai-score-container">
+                        <div class="ai-header">
+                            <div class="ai-title">AI Investment Score</div>
+                            <div class="ai-overall">
+                                <div class="ai-grade">${deal.score}</div>
+                                <div class="ai-label">Overall Rating</div>
+                            </div>
+                        </div>
+
+                        <div class="ai-radar">
+                            <svg class="radar-svg" viewBox="0 0 200 200" width="300" height="300">
+                                <defs>
+                                    <linearGradient id="radar-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" style="stop-color:#0071E3;stop-opacity:0.3" />
+                                        <stop offset="100%" style="stop-color:#AF52DE;stop-opacity:0.3" />
+                                    </linearGradient>
+                                </defs>
+                                <circle cx="100" cy="100" r="80" fill="url(#radar-grad)" stroke="#E8E8ED" stroke-width="1"/>
+                                <circle cx="100" cy="100" r="60" fill="none" stroke="#E8E8ED" stroke-width="1"/>
+                                <circle cx="100" cy="100" r="40" fill="none" stroke="#E8E8ED" stroke-width="1"/>
+                                <circle cx="100" cy="100" r="20" fill="none" stroke="#E8E8ED" stroke-width="1"/>
+                                <line x1="100" y1="20" x2="100" y2="180" stroke="#E8E8ED" stroke-width="1"/>
+                                <line x1="20" y1="100" x2="180" y2="100" stroke="#E8E8ED" stroke-width="1"/>
+                                <line x1="35" y1="35" x2="165" y2="165" stroke="#E8E8ED" stroke-width="1"/>
+                                <line x1="165" y1="35" x2="35" y2="165" stroke="#E8E8ED" stroke-width="1"/>
+                                <polygon points="100,${100-deal.aiScores.financial*0.8},${100+Math.cos(-Math.PI/3)*deal.aiScores.market*0.8},${100+Math.sin(-Math.PI/3)*deal.aiScores.market*0.8},${100+Math.cos(Math.PI/3)*deal.aiScores.management*0.8},${100+Math.sin(Math.PI/3)*deal.aiScores.management*0.8},100,${100+deal.aiScores.growth*0.8},${100+Math.cos(-2*Math.PI/3)*deal.aiScores.risk*0.8},${100+Math.sin(-2*Math.PI/3)*deal.aiScores.risk*0.8},${100+Math.cos(2*Math.PI/3)*deal.aiScores.esg*0.8},${100+Math.sin(2*Math.PI/3)*deal.aiScores.esg*0.8}" fill="url(#radar-grad)" stroke="#0071E3" stroke-width="2"/>
+                                <text x="100" y="15" text-anchor="middle" font-size="11" fill="#6E6E73">Financial</text>
+                                <text x="155" y="45" text-anchor="middle" font-size="11" fill="#6E6E73">Market</text>
+                                <text x="155" y="160" text-anchor="middle" font-size="11" fill="#6E6E73">Management</text>
+                                <text x="100" y="190" text-anchor="middle" font-size="11" fill="#6E6E73">Growth</text>
+                                <text x="45" y="160" text-anchor="middle" font-size="11" fill="#6E6E73">Risk</text>
+                                <text x="45" y="45" text-anchor="middle" font-size="11" fill="#6E6E73">ESG</text>
+                            </svg>
+                        </div>
+
+                        <div class="ai-dimensions">
+                            <div class="dimension-card">
+                                <div class="dimension-name">Financial Health</div>
+                                <div class="dimension-bar"><div class="dimension-fill" style="width: ${deal.aiScores.financial}%;"></div></div>
+                                <div class="dimension-score">${deal.aiScores.financial}</div>
+                            </div>
+                            <div class="dimension-card">
+                                <div class="dimension-name">Market Position</div>
+                                <div class="dimension-bar"><div class="dimension-fill" style="width: ${deal.aiScores.market}%;"></div></div>
+                                <div class="dimension-score">${deal.aiScores.market}</div>
+                            </div>
+                            <div class="dimension-card">
+                                <div class="dimension-name">Management Quality</div>
+                                <div class="dimension-bar"><div class="dimension-fill" style="width: ${deal.aiScores.management}%;"></div></div>
+                                <div class="dimension-score">${deal.aiScores.management}</div>
+                            </div>
+                            <div class="dimension-card">
+                                <div class="dimension-name">Growth Potential</div>
+                                <div class="dimension-bar"><div class="dimension-fill" style="width: ${deal.aiScores.growth}%;"></div></div>
+                                <div class="dimension-score">${deal.aiScores.growth}</div>
+                            </div>
+                            <div class="dimension-card">
+                                <div class="dimension-name">Risk Assessment</div>
+                                <div class="dimension-bar"><div class="dimension-fill" style="width: ${deal.aiScores.risk}%;"></div></div>
+                                <div class="dimension-score">${deal.aiScores.risk}</div>
+                            </div>
+                            <div class="dimension-card">
+                                <div class="dimension-name">ESG Compliance</div>
+                                <div class="dimension-bar"><div class="dimension-fill" style="width: ${deal.aiScores.esg}%;"></div></div>
+                                <div class="dimension-score">${deal.aiScores.esg}</div>
+                            </div>
+                        </div>
+
+                        <div class="ai-checks">
+                            <div class="checks-title">${deal.aiChecks}+ Automated Compliance Checks</div>
+                            <div class="checks-grid">
+                                <div class="check-item">
+                                    <span class="check-icon check-pass">✓</span>
+                                    <span>132 Passed</span>
+                                </div>
+                                <div class="check-item">
+                                    <span class="check-icon check-warning">!</span>
+                                    <span>8 Warnings</span>
+                                </div>
+                                <div class="check-item">
+                                    <span class="check-icon check-fail">✗</span>
+                                    <span>0 Failed</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ai-confidence">
+                            <div class="confidence-label">AI Confidence Score</div>
+                            <div class="confidence-value">${deal.aiConfidence}%</div>
+                            <div class="confidence-text">Based on ${deal.aiChecks}+ data points and industry benchmarks</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DATA ROOM TAB -->
+                <div class="tab-content" id="dataroom-${dealKey}">
+                    <div class="data-room-container">
+                        <div class="data-room-stats">
+                            <div class="data-stat">
+                                <div class="data-stat-value">${deal.documents.length}</div>
+                                <div class="data-stat-label">Documents</div>
+                            </div>
+                            <div class="data-stat">
+                                <div class="data-stat-value">47</div>
+                                <div class="data-stat-label">Investor Views</div>
+                            </div>
+                            <div class="data-stat">
+                                <div class="data-stat-value">${deal.documents.reduce((s,d)=>s+d.pages,0)}</div>
+                                <div class="data-stat-label">Total Pages</div>
+                            </div>
+                        </div>
+
+                        <ul class="documents-list">
+                            ${deal.documents.map(doc => `
+                                <div class="document-row">
+                                    <div class="document-left">
+                                        <div class="document-icon">📄</div>
+                                        <div class="document-info">
+                                            <div class="document-name">${doc.name}</div>
+                                            <div class="document-meta">
+                                                <span class="document-category">${doc.cat}</span>
+                                                <span class="document-pages">${doc.pages} pages</span>
+                                                <span class="document-date">${doc.date}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button class="btn-view">View</button>
+                                </div>
+                            `).join('')}
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- FINANCIALS TAB -->
+                <div class="tab-content" id="financials-${dealKey}">
+                    <div class="financials-container">
+                        <div class="financial-section">
+                            <div class="section-title">Revenue Trend</div>
+                            <div class="financial-chart">
+                                <svg style="width: 100%; height: 160px;" viewBox="0 0 400 160">
+                                    <polyline points="20,120 60,100 100,85 140,75 180,70 220,65 260,60 300,50 340,40 380,30" fill="none" stroke="#0071E3" stroke-width="2"/>
+                                    <defs>
+                                        <linearGradient id="chart-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                            <stop offset="0%" style="stop-color:#0071E3;stop-opacity:0.3" />
+                                            <stop offset="100%" style="stop-color:#0071E3;stop-opacity:0" />
+                                        </linearGradient>
+                                    </defs>
+                                    <polygon points="20,120 60,100 100,85 140,75 180,70 220,65 260,60 300,50 340,40 380,30 380,160 20,160" fill="url(#chart-grad)"/>
+                                    <circle cx="20" cy="120" r="3" fill="#0071E3"/>
+                                    <circle cx="60" cy="100" r="3" fill="#0071E3"/>
+                                    <circle cx="100" cy="85" r="3" fill="#0071E3"/>
+                                    <circle cx="140" cy="75" r="3" fill="#0071E3"/>
+                                    <circle cx="180" cy="70" r="3" fill="#0071E3"/>
+                                    <circle cx="220" cy="65" r="3" fill="#0071E3"/>
+                                    <circle cx="260" cy="60" r="3" fill="#0071E3"/>
+                                    <circle cx="300" cy="50" r="3" fill="#0071E3"/>
+                                    <circle cx="340" cy="40" r="3" fill="#0071E3"/>
+                                    <circle cx="380" cy="30" r="3" fill="#0071E3"/>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <div class="financial-section">
+                            <div class="section-title">Financial Highlights (FY2025)</div>
+                            <table class="financial-table">
+                                <tr><th>Metric</th><th>Value</th><th>YoY Change</th></tr>
+                                <tr><td>Total Revenue</td><td>${deal.metrics[0][1]}</td><td>${deal.metrics[0][2]}</td></tr>
+                                <tr><td>EBITDA Margin</td><td>${deal.metrics[1][1]}</td><td>${deal.metrics[1][2]}</td></tr>
+                                <tr><td>Growth Rate</td><td>+22%</td><td>Accelerating</td></tr>
+                                <tr><td>Cash Burn</td><td>Positive</td><td>Improving</td></tr>
+                            </table>
+                        </div>
+
+                        <div class="financial-section">
+                            <div class="section-title">Projections</div>
+                            <table class="financial-table">
+                                <tr><th>Scenario</th><th>2026</th><th>2027</th><th>2028</th></tr>
+                                <tr><td><strong>Base Case</strong></td><td>€3.2M</td><td>€3.8M</td><td>€4.4M</td></tr>
+                                <tr><td><strong>Bull Case</strong></td><td>€3.5M</td><td>€4.4M</td><td>€5.2M</td></tr>
+                                <tr><td><strong>Bear Case</strong></td><td>€2.9M</td><td>€3.1M</td><td>€3.3M</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="invest-sidebar">
+                    <div class="invest-title">Ready to Invest?</div>
+                    <div class="invest-btn" onclick="openInvestModal('${dealKey}')">Start Investment</div>
+                    <div class="invest-info">Min ${deal.min} • ${deal.days} days left</div>
+                </div>
+            </div>
+        </div>
+    `;
+}
+
+// PORTFOLIO TABLE
+function renderPortfolioTable() {
+    const tbody = document.getElementById('portfolioTable');
+    tbody.innerHTML = `
+        <tr>
+            <td><div class="company-cell"><div class="company-logo">O</div><strong>Osteria del Sole</strong></div></td>
+            <td>€50,000</td>
+            <td>€53,100</td>
+            <td style="color: var(--green-dark); font-weight: 600;">+€3,100</td>
+            <td><span class="status-badge active">Active</span></td>
+        </tr>
+        <tr>
+            <td><div class="company-cell"><div class="company-logo" style="background: #1E3A5F;">T</div><strong>Tessuti Morandi</strong></div></td>
+            <td>€30,000</td>
+            <td>€31,400</td>
+            <td style="color: var(--green-dark); font-weight: 600;">+€1,400</td>
+            <td><span class="status-badge active">Active</span></td>
+        </tr>
+        <tr>
+            <td><div class="company-cell"><div class="company-logo" style="background: #DAA520;">B</div><strong>Borgo Luxury Hotels</strong></div></td>
+            <td>€75,000</td>
+            <td>€81,300</td>
+            <td style="color: var(--green-dark); font-weight: 600;">+€6,300</td>
+            <td><span class="status-badge active">Active</span></td>
+        </tr>
+        <tr>
+            <td><div class="company-cell"><div class="company-logo" style="background: #4CAF50;">S</div><strong>Sapori d'Italia</strong></div></td>
+            <td>€15,000</td>
+            <td>€15,840</td>
+            <td style="color: var(--green-dark); font-weight: 600;">+€840</td>
+            <td><span class="status-badge pending">Pending</span></td>
+        </tr>
+        <tr>
+            <td><div class="company-cell"><div class="company-logo" style="background: #B0E0E6;">M</div><strong>Milano Clinic+</strong></div></td>
+            <td>€20,000</td>
+            <td>€21,800</td>
+            <td style="color: var(--green-dark); font-weight: 600;">+€1,800</td>
+            <td><span class="status-badge active">Active</span></td>
+        </tr>
+        <tr>
+            <td><div class="company-cell"><div class="company-logo" style="background: #8B0000;">V</div><strong>Vigneto Reale</strong></div></td>
+            <td>€40,000</td>
+            <td>€41,600</td>
+            <td style="color: var(--green-dark); font-weight: 600;">+€1,600</td>
+            <td><span class="status-badge pending">Pending</span></td>
+        </tr>
+    `;
+}
+
+// TAB SWITCHING
+function switchTab(btn, contentId) {
+    const parent = btn.parentElement;
+    parent.querySelectorAll('.tab-button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    parent.parentElement.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.getElementById(contentId).classList.add('active');
+}
+
+// NAVIGATION
+function navigate(view, dealKey = null) {
+    document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+    document.querySelector(`[data-view="${view}"]`)?.classList.add('active');
+    document.querySelectorAll('.screen-view').forEach(v => v.classList.remove('active'));
+    document.getElementById(`view-${view}`).classList.add('active');
+
+    document.getElementById('viewTitle').textContent =
+        view === 'explore' ? 'Explore' :
+        view === 'portfolio' ? 'Portfolio' :
+        view === 'secondary' ? 'Secondary Market' :
+        view === 'institutional' ? 'Institutional' :
+        view === 'profile' ? 'Profile & Settings' : deals[dealKey]?.name || 'Deal';
+
+    currentView = view;
+
+    if (view === 'deal' && dealKey) {
+        currentDeal = dealKey;
+        renderDealDetail(dealKey);
+    }
+}
+
+// INVEST MODAL
+function openInvestModal(dealKey) {
+    currentDeal = dealKey;
+    currentInvestStep = 1;
+    investAmount = 5000;
+    document.getElementById('investModal').classList.add('active');
+    updateStepper();
+    updateReview();
+    document.getElementById('amountSlider').value = 5000;
+    updateInvestAmount(5000);
+}
+
+function closeInvestModal() {
+    document.getElementById('investModal').classList.remove('active');
+}
+
+function updateStepper() {
+    const stepper = document.getElementById('stepper');
+    const steps = ['Amount', 'KYC', 'Documents', 'Payment', 'Review', 'Success'];
+    stepper.innerHTML = steps.map((s, i) => {
+        let status = i < currentInvestStep - 1 ? 'completed' : i === currentInvestStep - 1 ? 'active' : '';
+        return `
+            <div class="step-item ${status}">
+                <div class="step-circle">${i < currentInvestStep - 1 ? '✓' : i+1}</div>
+                <div class="step-label">${s}</div>
+            </div>
+        `;
+    }).join('<div style="width: 8px; height: 1px; background: var(--border);"></div>');
+}
+
+function nextStep() {
+    if (currentInvestStep === 3 && (!document.getElementById('doc1').checked || !document.getElementById('doc2').checked || !document.getElementById('doc3').checked)) return;
+    if (currentInvestStep < 6) {
+        document.getElementById(`step-${currentInvestStep}`).classList.remove('active');
+        currentInvestStep++;
+        document.getElementById(`step-${currentInvestStep}`).classList.add('active');
+        updateStepper();
+        updateReview();
+        updateStepValidity();
+    }
+    if (currentInvestStep === 6) {
+        document.getElementById('nextBtn').textContent = 'Done';
+        document.getElementById('nextBtn').onclick = closeInvestModal;
+    }
+}
+
+function prevStep() {
+    if (currentInvestStep > 1) {
+        document.getElementById(`step-${currentInvestStep}`).classList.remove('active');
+        currentInvestStep--;
+        document.getElementById(`step-${currentInvestStep}`).classList.add('active');
+        updateStepper();
+        document.getElementById('nextBtn').textContent = 'Next';
+        document.getElementById('nextBtn').onclick = nextStep;
+    }
+}
+
+function updateInvestAmount(val) {
+    investAmount = parseInt(val);
+    document.getElementById('amountDisplay').textContent = '€' + investAmount.toLocaleString();
+    updateReview();
+}
+
+function setInvestAmount(amt) {
+    document.getElementById('amountSlider').value = amt;
+    updateInvestAmount(amt);
+}
+
+function selectPayment(el, method) {
+    document.querySelectorAll('.payment-method').forEach(p => p.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedPayment = method;
+}
+
+function updateReview() {
+    const deal = deals[currentDeal];
+    const fee = Math.round(investAmount * 0.02);
+    const total = investAmount + fee;
+    document.getElementById('reviewCompany').textContent = deal.name;
+    document.getElementById('reviewAmount').textContent = '€' + investAmount.toLocaleString();
+    document.getElementById('reviewFee').textContent = '€' + fee.toLocaleString();
+    document.getElementById('reviewTotal').textContent = '€' + total.toLocaleString();
+}
+
+function updateStepValidity() {
+    const nextBtn = document.getElementById('nextBtn');
+    if (currentInvestStep === 3) {
+        const allChecked = document.getElementById('doc1').checked && document.getElementById('doc2').checked && document.getElementById('doc3').checked;
+        nextBtn.disabled = !allChecked;
+    }
+}
+
+// INIT
+renderDeals();
+renderPortfolioTable();
+navigate('explore');
+</script>
+
 </body>
 </html>
