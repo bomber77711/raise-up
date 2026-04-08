@@ -566,10 +566,10 @@
                     <div class="map-discover-btn" onclick="map.flyTo([50,10],5,{duration:1});">✨ Discover</div>
                     <!-- Stats bar -->
                     <div class="map-stats">
-                        <span class="map-stat"><strong id="mapDeals">42</strong> Active Deals</span>
-                        <span class="map-stat"><strong>€67M</strong> Total Volume</span>
-                        <span class="map-stat"><strong>4,200+</strong> Investors</span>
-                        <span class="map-stat"><strong>10</strong> Sectors</span>
+                        <span class="map-stat"><strong id="mapDeals">200</strong> Active Deals</span>
+                        <span class="map-stat"><strong>€312M</strong> Total Volume</span>
+                        <span class="map-stat"><strong>18,400+</strong> Investors</span>
+                        <span class="map-stat"><strong>16</strong> Sectors</span>
                     </div>
                 </div>
             </div>
@@ -1448,6 +1448,178 @@ const deals = {
         documents:[{name:'Investment Memorandum',cat:'Legal',pages:40,date:'Mar 2026'}]
     }
 };
+
+// ==================== SYNTHETIC DEAL EXPANSION (to ~200) ====================
+(function expandDeals(){
+    const SECTOR_TEMPLATES = {
+        food:          {sub:['Restaurants','Bakery','Gelateria','Pizzeria','Bistro','Deli','Cafe','Trattoria','Patisserie','Brewpub'], irrs:['13-17%','14-18%','15-19%','16-20%','17-21%'], grades:['B','B+','A-','A'], instruments:['Revenue Sharing','Senior Debt','Convertible Note'], imgs:['https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&q=80','https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=800&q=80','https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&q=80','https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=800&q=80']},
+        hospitality:   {sub:['Boutique Hotel','Resort','B&B','Agriturismo','Spa Hotel','Design Hotel','Wellness Resort','Historic Palazzo'], irrs:['14-18%','15-19%','16-20%','17-21%','18-22%'], grades:['B+','A-','A','A+'], instruments:['Equity','Equity + Revenue Share','Senior Debt + Equity'], imgs:['https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&q=80','https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&q=80','https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=800&q=80','https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=800&q=80']},
+        textiles:      {sub:['Textile Mill','Fashion Atelier','Leather Goods','Silk Manufacturer','Knitwear','Couture House'], irrs:['13-17%','14-18%','15-19%','16-20%'], grades:['B+','A-','A'], instruments:['Convertible Note','Senior Debt','Working Capital Line'], imgs:['https://images.unsplash.com/photo-1534639077088-d702bcf685e7?w=800&q=80','https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=800&q=80','https://images.unsplash.com/photo-1551232864-3f0890e580d9?w=800&q=80']},
+        healthcare:    {sub:['Clinic','Dental Practice','Imaging Center','Specialist Center','Rehab Center','Vet Clinic'], irrs:['12-16%','13-17%','14-18%','15-19%'], grades:['A-','A','A+'], instruments:['Equity','Preferred Equity','Mezzanine'], imgs:['https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=800&q=80','https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=800&q=80','https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&q=80']},
+        production:    {sub:['Pasta Factory','Olive Oil Mill','Cheese Maker','Craft Brewery','Distillery','Chocolate Maker','Bakery Group','Meat Curer'], irrs:['13-17%','14-18%','15-19%','16-20%','17-21%'], grades:['B+','A-','A'], instruments:['Senior Debt','Revenue Sharing','Asset-Backed'], imgs:['https://images.unsplash.com/photo-1551218808-94e220e084d2?w=800&q=80','https://images.unsplash.com/photo-1574323347407-f5e1ad6d020b?w=800&q=80','https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800&q=80']},
+        wine:          {sub:['Vineyard','Winery','Champagne House','Organic Estate','Biodynamic Winery'], irrs:['12-16%','13-17%','14-18%','15-19%'], grades:['A-','A','A+'], instruments:['Equity','Land-backed Loan','Convertible'], imgs:['https://images.unsplash.com/photo-1474722883778-792e7990302f?w=800&q=80','https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=800&q=80','https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=800&q=80']},
+        tech:          {sub:['SaaS Platform','Fintech','HealthTech','AgriTech','PropTech','DevTools','AI Platform','Cybersecurity','EdTech'], irrs:['20-26%','22-28%','24-30%','26-32%','28-35%'], grades:['A','A+','S'], instruments:['Equity','SAFE','Convertible Note'], imgs:['https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&q=80','https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=80','https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b?w=800&q=80']},
+        energy:        {sub:['Solar Farm','Wind Farm','Battery Storage','Hydro','Biogas','Green Hydrogen','EV Charging Network'], irrs:['10-14%','11-15%','12-16%','13-17%','14-18%'], grades:['A','A+'], instruments:['Senior Debt','Project Finance','Green Bond'], imgs:['https://images.unsplash.com/photo-1509391366360-2e959784a276?w=800&q=80','https://images.unsplash.com/photo-1466611653911-95081537e5b7?w=800&q=80','https://images.unsplash.com/photo-1548337138-e87d889cc369?w=800&q=80']},
+        industry:      {sub:['CNC Machining','3D Printing','Precision Engineering','Metal Works','Plastics','Automation','Robotics'], irrs:['11-15%','12-16%','13-17%','14-18%'], grades:['A-','A','A+'], instruments:['Senior Debt','Equipment Finance','Mezzanine'], imgs:['https://images.unsplash.com/photo-1565043589221-1a6fd9ae45c7?w=800&q=80','https://images.unsplash.com/photo-1504917595217-d4dc5ebe6122?w=800&q=80']},
+        retail:        {sub:['Concept Store','Specialty Retail','Pharmacy Chain','Bookshop Group','Beauty Chain'], irrs:['12-16%','13-17%','14-18%','15-19%'], grades:['B+','A-','A'], instruments:['Revenue Sharing','Senior Debt','Working Capital'], imgs:['https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=800&q=80','https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?w=800&q=80']},
+        logistics:     {sub:['Last-Mile Delivery','Cold Chain','Warehouse Automation','Freight Forwarder','Port Services'], irrs:['13-17%','14-18%','15-19%','16-20%'], grades:['A-','A'], instruments:['Senior Debt','Asset-Backed','Equipment Finance'], imgs:['https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?w=800&q=80','https://images.unsplash.com/photo-1601584115197-04ecc0da31e2?w=800&q=80']},
+        education:     {sub:['Language School','Coding Bootcamp','Private School','Tutoring Chain','Childcare Network'], irrs:['12-16%','13-17%','14-18%','15-19%'], grades:['A-','A','A+'], instruments:['Equity','Revenue Sharing','Senior Debt'], imgs:['https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800&q=80','https://images.unsplash.com/photo-1497486751825-1233686d5d80?w=800&q=80']},
+        maritime:      {sub:['Aquaculture','Fishing Cooperative','Marina','Ferry Line','Marine Services'], irrs:['12-16%','13-17%','14-18%','15-19%'], grades:['A-','A'], instruments:['Senior Debt','Asset-Backed','Project Finance'], imgs:['https://images.unsplash.com/photo-1514282401047-d79a71a590e8?w=800&q=80','https://images.unsplash.com/photo-1502700807168-484a3e7889d0?w=800&q=80']},
+        pharma:        {sub:['Biotech','Generic Pharma','CDMO','Nutraceuticals','Medical Devices'], irrs:['16-22%','18-24%','20-26%','22-28%'], grades:['A','A+','S'], instruments:['Equity','Preferred Equity','Convertible Note'], imgs:['https://images.unsplash.com/photo-1582719471384-894fbb16e074?w=800&q=80','https://images.unsplash.com/photo-1631549916768-4119b2e5f926?w=800&q=80']},
+        sport:         {sub:['Padel Club','Gym Chain','Sports Academy','Ski Resort','Golf Club'], irrs:['14-18%','15-19%','16-20%','17-21%'], grades:['B+','A-','A'], instruments:['Equity + Revenue Share','Senior Debt','Franchise Finance'], imgs:['https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80','https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&q=80']},
+        realestate:    {sub:['Senior Living','Student Housing','Co-Living','Build-to-Rent','Logistics Park','Mixed-Use Dev'], irrs:['11-15%','12-16%','13-17%','14-18%','15-19%'], grades:['A-','A','A+'], instruments:['Senior Debt','Preferred Equity','Mezzanine','JV Equity'], imgs:['https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80','https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=800&q=80']}
+    };
+    const CITIES = [
+        {city:'Rome',co:'IT',lat:41.90,lng:12.50},{city:'Naples',co:'IT',lat:40.85,lng:14.27},{city:'Turin',co:'IT',lat:45.07,lng:7.69},{city:'Bologna',co:'IT',lat:44.49,lng:11.34},{city:'Florence',co:'IT',lat:43.77,lng:11.25},{city:'Verona',co:'IT',lat:45.44,lng:10.99},{city:'Genoa',co:'IT',lat:44.41,lng:8.93},{city:'Palermo',co:'IT',lat:38.12,lng:13.36},{city:'Bari',co:'IT',lat:41.12,lng:16.87},{city:'Trieste',co:'IT',lat:45.65,lng:13.78},{city:'Parma',co:'IT',lat:44.80,lng:10.33},{city:'Modena',co:'IT',lat:44.65,lng:10.93},{city:'Lecce',co:'IT',lat:40.35,lng:18.17},{city:'Siena',co:'IT',lat:43.32,lng:11.33},{city:'Catania',co:'IT',lat:37.51,lng:15.09},
+        {city:'Munich',co:'DE',lat:48.14,lng:11.58},{city:'Hamburg',co:'DE',lat:53.55,lng:10.00},{city:'Cologne',co:'DE',lat:50.94,lng:6.96},{city:'Stuttgart',co:'DE',lat:48.78,lng:9.18},{city:'Leipzig',co:'DE',lat:51.34,lng:12.37},{city:'Dresden',co:'DE',lat:51.05,lng:13.74},{city:'Nuremberg',co:'DE',lat:49.45,lng:11.08},{city:'Bremen',co:'DE',lat:53.08,lng:8.80},{city:'Hannover',co:'DE',lat:52.37,lng:9.73},
+        {city:'Utrecht',co:'NL',lat:52.09,lng:5.12},{city:'The Hague',co:'NL',lat:52.07,lng:4.30},{city:'Eindhoven',co:'NL',lat:51.44,lng:5.48},{city:'Groningen',co:'NL',lat:53.22,lng:6.57},
+        {city:'Marseille',co:'FR',lat:43.30,lng:5.37},{city:'Toulouse',co:'FR',lat:43.60,lng:1.44},{city:'Bordeaux',co:'FR',lat:44.84,lng:-0.58},{city:'Nantes',co:'FR',lat:47.22,lng:-1.55},{city:'Strasbourg',co:'FR',lat:48.58,lng:7.75},{city:'Montpellier',co:'FR',lat:43.61,lng:3.88},{city:'Rennes',co:'FR',lat:48.12,lng:-1.68},{city:'Grenoble',co:'FR',lat:45.19,lng:5.72},
+        {city:'Graz',co:'AT',lat:47.07,lng:15.44},{city:'Salzburg',co:'AT',lat:47.80,lng:13.05},{city:'Innsbruck',co:'AT',lat:47.27,lng:11.39},
+        {city:'Tampere',co:'FI',lat:61.50,lng:23.76},{city:'Turku',co:'FI',lat:60.45,lng:22.27},
+        {city:'Valencia',co:'ES',lat:39.47,lng:-0.38},{city:'Seville',co:'ES',lat:37.39,lng:-5.99},{city:'Malaga',co:'ES',lat:36.72,lng:-4.42},{city:'Bilbao',co:'ES',lat:43.26,lng:-2.93},{city:'Zaragoza',co:'ES',lat:41.65,lng:-0.89},{city:'Granada',co:'ES',lat:37.18,lng:-3.60},
+        {city:'Porto',co:'PT',lat:41.15,lng:-8.61},{city:'Lisbon',co:'PT',lat:38.72,lng:-9.14},{city:'Braga',co:'PT',lat:41.55,lng:-8.42},
+        {city:'Wroclaw',co:'PL',lat:51.11,lng:17.04},{city:'Poznan',co:'PL',lat:52.41,lng:16.93},{city:'Gdansk',co:'PL',lat:54.35,lng:18.65},
+        {city:'Gothenburg',co:'SE',lat:57.71,lng:11.97},{city:'Malmo',co:'SE',lat:55.60,lng:13.00},{city:'Uppsala',co:'SE',lat:59.86,lng:17.64},
+        {city:'Aarhus',co:'DK',lat:56.16,lng:10.20},{city:'Odense',co:'DK',lat:55.40,lng:10.40},
+        {city:'Antwerp',co:'BE',lat:51.22,lng:4.40},{city:'Ghent',co:'BE',lat:51.05,lng:3.73},{city:'Liège',co:'BE',lat:50.63,lng:5.57},
+        {city:'Geneva',co:'CH',lat:46.20,lng:6.15},{city:'Basel',co:'CH',lat:47.56,lng:7.59},{city:'Lausanne',co:'CH',lat:46.52,lng:6.63},{city:'Bern',co:'CH',lat:46.95,lng:7.45},
+        {city:'Cork',co:'IE',lat:51.90,lng:-8.47},{city:'Galway',co:'IE',lat:53.27,lng:-9.05},
+        {city:'Thessaloniki',co:'GR',lat:40.64,lng:22.94},{city:'Patras',co:'GR',lat:38.25,lng:21.73},
+        {city:'Brno',co:'CZ',lat:49.20,lng:16.61},{city:'Ostrava',co:'CZ',lat:49.82,lng:18.26},
+        {city:'Oslo',co:'NO',lat:59.91,lng:10.75},{city:'Bergen',co:'NO',lat:60.39,lng:5.32},
+        {city:'Split',co:'HR',lat:43.51,lng:16.44},{city:'Zagreb',co:'HR',lat:45.81,lng:15.98}
+    ];
+    const NAME_PREFIX = {
+        IT:['Bottega','Casa','La','Il','Antica','Nuova','Borgo','Villa','Ca\''],
+        DE:['Haus','Werk','Hof','Das','Neues','Alte','Schloss','Gut'],
+        NL:['De','Het','Huis','Nieuwe','Oude','Villa'],
+        FR:['Maison','Le','La','Château','Domaine','Atelier','Les'],
+        AT:['Haus','Berg','Alm','Schloss','Wiener'],
+        FI:['Talo','Pohjola','Uusi','Suomi'],
+        ES:['Casa','Finca','La','El','Hacienda','Bodega','Villa'],
+        PT:['Quinta','Casa','Vila','Herdade'],
+        PL:['Dom','Nowy','Stary','Pałac','Fabryka'],
+        SE:['Huset','Nya','Gamla','Villa','Gård'],
+        DK:['Huset','Gård','Gamle','Nye'],
+        BE:['Maison','Huis','De','Nieuwe'],
+        CH:['Haus','Berg','Alpen','Neue'],
+        IE:['The','Old','New','Green','Dublin'],
+        GR:['Kastro','Villa','Nea','Palia'],
+        CZ:['Dům','Nový','Starý','Palác'],
+        NO:['Hus','Gård','Fjord','Nye'],
+        HR:['Kuća','Stara','Nova','Dvor']
+    };
+    const NAME_ROOT = {
+        food:['Cucina','Sapore','Forno','Tavola','Buongusto','Gusto','Mercato','Trattoria','Pane','Cantina'],
+        hospitality:['Resort','Stay','Suites','Lodge','Palazzo','Retreat','Boutique','Reserve','Manor','Terrace'],
+        textiles:['Seta','Tessuto','Filatura','Couture','Maglia','Lino','Trama','Luxe','Atelier','Stile'],
+        healthcare:['Medica','Cura','Salute','Vita','Clinica','Sana','Benessere','Plus','Care','Bio'],
+        production:['Officina','Fabbrica','Casa','Opificio','Bottega','Arte','Tradizione','Mano','Forno','Lavorazione'],
+        wine:['Vigna','Cantina','Tenuta','Terra','Vino','Botte','Uva','Pietra','Collina','Podere'],
+        tech:['Labs','AI','Soft','Data','Cloud','Tech','Code','Stack','Nova','Logic','Quantum','Byte','Neural','Grid'],
+        energy:['Solar','Wind','Power','Green','Eco','Clean','Grid','Storage','Watt','Volt','Flow','Spark'],
+        industry:['Forge','Metall','Precision','Mech','Iron','Steel','Cast','Machina','Works','Form'],
+        retail:['Market','Store','Shop','Concept','House','Gallery','Emporium','Bazaar','Collection','Select'],
+        logistics:['Hub','Flow','Port','Chain','Express','Track','Move','Link','Route','Cargo'],
+        education:['Academy','School','Learn','Scuola','Campus','Institute','Studio','Skills','Lab'],
+        maritime:['Mare','Porto','Pesca','Marina','Fjord','Oceano','Harbour','Sail','Wave','Tide'],
+        pharma:['Pharma','Bio','Medica','Therap','Genetica','Vita','Molecule','Remed','Cure','Lab'],
+        sport:['Padel','Club','Fit','Court','Arena','Pro','Racquet','Athletic','Sport','Active'],
+        realestate:['Residenza','Domus','Living','Homes','Estate','Park','Square','Heights','View','Quarter']
+    };
+    const PROTECTIONS = ['First-lien on assets','Revenue pledge + personal guarantee','Inventory pledge + IP rights','Preferred equity with anti-dilution','Asset-backed (equipment)','Land-backed with priority','Senior secured','Corporate guarantee + pledge','First-lien on property','Bank guarantee 30%'];
+    const DIST = ['Monthly','Quarterly','Semi-annual','Annual'];
+    const STORIES = {
+        food:'Premium {sub} with 4.8★ rating, expanding to a second location with strong unit economics and growing loyalty base.',
+        hospitality:'Boutique {sub} in a protected heritage area with 90%+ occupancy, expanding room inventory and premium services.',
+        textiles:'{sub} supplying luxury fashion houses, investing in sustainable production and export expansion.',
+        healthcare:'{sub} with integrated telemedicine, expanding to new locations with strong patient NPS.',
+        production:'{sub} scaling artisanal production and export volumes with DOP/IGP certifications.',
+        wine:'Certified organic {sub} with premium awards and growing export to Nordics and Asia.',
+        tech:'Vertical {sub} with strong retention, 120%+ net revenue retention and tier-1 customers.',
+        energy:'Operational {sub} with long-term PPA and fixed tariffs, stable cash flows from day one.',
+        industry:'{sub} supplier to automotive and aerospace OEMs, investing in automation capacity.',
+        retail:'{sub} with omnichannel strategy, scaling store network across prime locations.',
+        logistics:'{sub} with tier-1 clients and strong contracted revenue pipeline.',
+        education:'{sub} with waitlist demand, investing in new campus infrastructure.',
+        maritime:'{sub} with sustainable practices and certified supply chain.',
+        pharma:'{sub} with patent portfolio and late-stage clinical validation.',
+        sport:'{sub} with membership growth and premium positioning.',
+        realestate:'{sub} project in prime location with planning permission and anchor tenants.'
+    };
+    // Deterministic PRNG so results are stable across reloads
+    let seed = 2026;
+    const rand = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+    const pick = arr => arr[Math.floor(rand()*arr.length)];
+    const pickInt = (a,b) => Math.floor(rand()*(b-a+1))+a;
+    const slug = (s,n) => s.toLowerCase().replace(/[^a-z0-9]+/g,'').slice(0,10)+n;
+    const tgtPool = ['€400K','€500K','€600K','€750K','€800K','€900K','€1.0M','€1.2M','€1.5M','€1.8M','€2.0M','€2.2M','€2.5M','€2.8M','€3.0M','€3.5M','€4.0M','€5.0M'];
+    const sectors = Object.keys(SECTOR_TEMPLATES);
+    let added = 0;
+    const TARGET_TOTAL = 200;
+    const needed = Math.max(0, TARGET_TOTAL - Object.keys(deals).length);
+    for (let i=0; i<needed; i++){
+        const sector = sectors[i % sectors.length];
+        const tpl = SECTOR_TEMPLATES[sector];
+        const loc = CITIES[(i*7 + sector.length) % CITIES.length];
+        const sub = pick(tpl.sub);
+        const prefix = pick(NAME_PREFIX[loc.co]||['','']);
+        const root = pick(NAME_ROOT[sector]);
+        const name = (prefix + ' ' + root + ' ' + String.fromCharCode(65 + (i % 26))).trim();
+        const id = slug(root+prefix+loc.city, i);
+        if (deals[id]) continue;
+        const grade = pick(tpl.grades);
+        const scoreBg = grade.startsWith('A')||grade.startsWith('S') ? '#30D158' : (grade.startsWith('B')?'#0071E3':'#FF9F0A');
+        const funded = pickInt(15, 85);
+        const investors = pickInt(25, 380);
+        const days = pickInt(5, 55);
+        const target = pick(tgtPool);
+        const irr = pick(tpl.irrs);
+        const instrument = pick(tpl.instruments);
+        const min = pick(['€1,000','€2,000','€2,500','€5,000','€10,000','€25,000']);
+        const dist = pick(DIST);
+        const prot = pick(PROTECTIONS);
+        const duration = pick(['24 months','36 months','48 months','60 months','72 months','84 months']);
+        const img = pick(tpl.imgs);
+        const lat = loc.lat + (rand()-0.5)*0.05;
+        const lng = loc.lng + (rand()-0.5)*0.05;
+        const story = STORIES[sector].replace('{sub}', sub);
+        const rev = (pickInt(8, 80)/10).toFixed(1);
+        const grow = pickInt(8, 45);
+        const ai = {
+            financial: pickInt(78,96),
+            market: pickInt(80,97),
+            management: pickInt(78,95),
+            growth: pickInt(75,97),
+            risk: pickInt(72,93),
+            esg: pickInt(72,96)
+        };
+        deals[id] = {
+            name, sector, subsector: sub, location: loc.city, country: loc.co, lat, lng,
+            img, color: 'linear-gradient(135deg,#1C1C1E 0%,#2C2C2E 50%,#3A3A3C 100%)',
+            score: grade, scoreBg, target, funded, irr, investors, days,
+            instrument, duration, min, dist, protection: prot,
+            story,
+            metrics:[['Revenue','€'+rev+'M','+'+grow+'%'],['Backers',String(investors),'+'+pickInt(5,25)],['Funded',funded+'%','+'+pickInt(3,12)+'%'],['Score',grade,'AI']],
+            highlights:[
+                sub+' in '+loc.city+' — strong local demand',
+                'Experienced founding team with track record',
+                'Revenue growing +'+grow+'% YoY with healthy margins',
+                prot + ' — investor protection'
+            ],
+            aiScores: ai, aiChecks: pickInt(180, 240), aiConfidence: pickInt(85, 97),
+            documents:[
+                {name:'Investment Memorandum',cat:'Legal',pages:pickInt(28,56),date:'Mar 2026'},
+                {name:'Financial Statements FY2025',cat:'Financial',pages:pickInt(20,40),date:'Feb 2026'},
+                {name:'Business Plan 2026-2030',cat:'Business Plan',pages:pickInt(18,44),date:'Mar 2026'},
+                {name:'Market Research Report',cat:'Market Research',pages:pickInt(12,28),date:'Jan 2026'}
+            ]
+        };
+        added++;
+    }
+    window.__syntheticDealsAdded = added;
+    console.log('[Raise] Synthetic deals added:', added, 'Total deals:', Object.keys(deals).length);
+})();
 
 // ==================== MAP-ONLY BUSINESSES ====================
 const mapBusinesses = [
