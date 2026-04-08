@@ -2092,20 +2092,34 @@ function augmentDealsWithInstMetrics() {
 }
 augmentDealsWithInstMetrics();
 
-// ==================== OVERRIDE renderDeals TO INCLUDE INST METRICS ====================
+// ==================== OVERRIDE renderDeals TO INCLUDE INST METRICS + PAGINATION ====================
 const _origRenderDeals = renderDeals;
+window.__dealsPageSize = 24;
+window.__dealsVisible = 24;
+// Reset visible count when filters change
+const _origFilterSector = filterSector;
+filterSector = function(k){ window.__dealsVisible = window.__dealsPageSize; _origFilterSector(k); };
+const _origFilterDeals = filterDeals;
+filterDeals = function(f){ window.__dealsVisible = window.__dealsPageSize; _origFilterDeals(f); };
 renderDeals = function() {
     const grid = document.getElementById('dealsGrid');
     grid.innerHTML = '';
-    let count = 0;
+    // Build the filtered list first
+    const filtered = [];
     Object.entries(deals).forEach(([key, deal]) => {
         const sec = sectors[deal.sector];
         if (activeSector && deal.sector !== activeSector) return;
         if (activeDealFilter !== 'All' && sec?.name !== activeDealFilter) return;
-        count++;
+        filtered.push([key, deal, sec]);
+    });
+    const total = filtered.length;
+    const visible = Math.min(window.__dealsVisible, total);
+    let html = '';
+    for (let i = 0; i < visible; i++) {
+        const [key, deal, sec] = filtered[i];
         const flag = flags[deal.country] || '';
         const im = deal.instMetrics || {};
-        grid.innerHTML += '<div class="deal-card" onclick="navigate(\'deal\',\'' + key + '\')">' +
+        html += '<div class="deal-card" onclick="navigate(\'deal\',\'' + key + '\')">' +
             '<img src="' + deal.img + '" class="deal-image" loading="lazy">' +
             '<div class="deal-content">' +
             '<div class="deal-sector-tag" style="background:' + (sec?.color || '#666') + ';">' + (sec?.icon||'') + ' ' + (sec?.name||'') + '</div>' +
@@ -2120,8 +2134,48 @@ renderDeals = function() {
             '</div>' +
             '<div class="deal-footer"><div class="deal-irr">' + deal.irr + ' IRR</div><div class="deal-days">' + deal.days + ' days left</div></div>' +
             '</div></div>';
-    });
-    document.getElementById('dealsCount').textContent = count + ' deal' + (count !== 1 ? 's' : '') + ' available';
+    }
+    grid.innerHTML = html;
+    document.getElementById('dealsCount').textContent = total + ' deal' + (total !== 1 ? 's' : '') + ' available';
+    // Show-more / show-less control below the grid
+    let ctrl = document.getElementById('dealsShowMoreWrap');
+    if (!ctrl) {
+        ctrl = document.createElement('div');
+        ctrl.id = 'dealsShowMoreWrap';
+        ctrl.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:10px;margin:24px 0 40px;';
+        grid.parentNode.insertBefore(ctrl, grid.nextSibling);
+    }
+    const remaining = total - visible;
+    if (remaining > 0) {
+        const nextBatch = Math.min(window.__dealsPageSize, remaining);
+        ctrl.innerHTML =
+            '<div style="font-size:13px;color:var(--text-sec);">Showing <strong>' + visible + '</strong> of <strong>' + total + '</strong> deals</div>' +
+            '<button id="dealsShowMoreBtn" style="padding:14px 32px;border-radius:980px;border:none;background:var(--blue);color:#fff;font-size:15px;font-weight:600;cursor:pointer;box-shadow:0 6px 20px rgba(0,113,227,0.25);transition:transform 0.15s, box-shadow 0.15s;">Show ' + nextBatch + ' more deals</button>' +
+            (visible > window.__dealsPageSize ? '<button id="dealsShowLessBtn" style="padding:8px 18px;border-radius:980px;border:1.5px solid var(--border);background:transparent;color:var(--text-sec);font-size:13px;font-weight:500;cursor:pointer;">Collapse</button>' : '');
+        document.getElementById('dealsShowMoreBtn').onclick = function(){
+            window.__dealsVisible += window.__dealsPageSize;
+            renderDeals();
+            // Smooth scroll to keep position relative to button
+            requestAnimationFrame(()=>{ const b=document.getElementById('dealsShowMoreBtn'); if(b) b.scrollIntoView({behavior:'smooth', block:'center'}); });
+        };
+        const less = document.getElementById('dealsShowLessBtn');
+        if (less) less.onclick = function(){
+            window.__dealsVisible = window.__dealsPageSize;
+            renderDeals();
+            document.getElementById('dealsGrid').scrollIntoView({behavior:'smooth', block:'start'});
+        };
+    } else if (total > window.__dealsPageSize) {
+        ctrl.innerHTML =
+            '<div style="font-size:13px;color:var(--text-sec);">Showing all <strong>' + total + '</strong> deals</div>' +
+            '<button id="dealsShowLessBtn" style="padding:10px 22px;border-radius:980px;border:1.5px solid var(--border);background:transparent;color:var(--text-sec);font-size:13px;font-weight:500;cursor:pointer;">Collapse</button>';
+        document.getElementById('dealsShowLessBtn').onclick = function(){
+            window.__dealsVisible = window.__dealsPageSize;
+            renderDeals();
+            document.getElementById('dealsGrid').scrollIntoView({behavior:'smooth', block:'start'});
+        };
+    } else {
+        ctrl.innerHTML = '';
+    }
 };
 
 // ==================== OVERRIDE renderDealDetail TO ADD RISK FACTORS + INST METRICS ====================
