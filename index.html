@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Raise — EU SME Investment Platform</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/MarkerCluster.Default.css"/>
@@ -15,7 +16,42 @@
             --blue:#0071E3;--blue-light:#EBF5FF;--green:#30D158;--green-dark:#1BA843;
             --green-light:#E8FBF0;--red:#FF453A;--orange:#FF9F0A;--purple:#AF52DE;
             --radius:16px;--radius-lg:20px;--nav-h:64px;
+            --nav-bg:#FFFFFF;--nav-border:#E8E8ED;
         }
+        html[data-theme="dark"]{
+            --bg:#0B0B0F;--surface:#1C1C22;--surface-2:#2A2A33;--surface-3:#3A3A44;
+            --text-pri:#F5F5F7;--text-sec:#B5B5BA;--text-ter:#8E8E93;--border:#38383F;
+            --blue:#0A84FF;--blue-light:rgba(10,132,255,0.15);--green:#32D74B;--green-dark:#30D158;
+            --green-light:rgba(48,209,88,0.15);
+            --nav-bg:#15151B;--nav-border:#2A2A33;
+        }
+        html[data-theme="dark"] .deal-card,
+        html[data-theme="dark"] .featured-deal,
+        html[data-theme="dark"] .portfolio-container,
+        html[data-theme="dark"] .inst-card,
+        html[data-theme="dark"] .profile-card,
+        html[data-theme="dark"] .secondary-stat,
+        html[data-theme="dark"] .monitor-card,
+        html[data-theme="dark"] .invest-sidebar,
+        html[data-theme="dark"] .modal-box,
+        html[data-theme="dark"] .metric-card,
+        html[data-theme="dark"] .dimension-card,
+        html[data-theme="dark"] .document-row,
+        html[data-theme="dark"] .map-popup,
+        html[data-theme="dark"] .deal-content,
+        html[data-theme="dark"] #view-secondary > div[style*="background:white"]{
+            background:var(--surface)!important;color:var(--text-pri)!important;border-color:var(--border)!important;
+        }
+        html[data-theme="dark"] .deal-card *,
+        html[data-theme="dark"] .featured-deal *,
+        html[data-theme="dark"] .portfolio-container *:not(.portfolio-hero *):not(.funding-fill),
+        html[data-theme="dark"] .inst-card *,
+        html[data-theme="dark"] .profile-card *,
+        html[data-theme="dark"] .metric-card *,
+        html[data-theme="dark"] .dimension-card *{ color:inherit; }
+        html[data-theme="dark"] .top-nav{background:var(--nav-bg)!important;border-color:var(--nav-border)!important;}
+        html[data-theme="dark"] .nav-pill.active{background:var(--surface-2)!important;color:var(--text-pri)!important;}
+        html[data-theme="dark"] body{background:var(--bg);color:var(--text-pri);}
         body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Helvetica Neue',Arial,sans-serif;background:var(--bg);color:var(--text-pri);font-size:16px;line-height:1.5;}
 
         /* TOP NAV */
@@ -46,7 +82,7 @@
         .map-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:0;flex-wrap:wrap;gap:12px;}
         .map-title{font-size:15px;font-weight:600;color:var(--text-sec);}
         .map-wrap{border-radius:var(--radius-lg);overflow:hidden;border:1px solid rgba(0,0,0,0.2);box-shadow:0 8px 40px rgba(0,0,0,0.15);position:relative;background:#0A0F1A;}
-        #europeMap{height:440px;width:100%;background:#0A0F1A;}
+        #europeMap{height:560px;width:100%;background:#0A0F1A;}
         /* Vignette overlay */
         .map-vignette{position:absolute;inset:0;pointer-events:none;z-index:400;background:radial-gradient(ellipse 75% 75% at 50% 50%,transparent 40%,rgba(10,15,26,0.45) 75%,rgba(10,15,26,0.8) 100%);}
         /* Grid texture */
@@ -343,7 +379,117 @@
         .success-text{text-align:center;font-size:18px;font-weight:600;margin-bottom:8px;}
         .success-sub{text-align:center;font-size:14px;color:var(--text-sec);}
 
+        /* ======= INSTITUTIONAL METRICS STRIP ======= */
+        .inst-metrics{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:10px 0 4px;padding:10px;background:var(--surface-2);border-radius:12px;}
+        .inst-m{text-align:center;}
+        .inst-m-label{font-size:9px;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-ter);font-weight:600;}
+        .inst-m-val{font-size:13px;font-weight:700;color:var(--text-pri);margin-top:2px;}
+        .deal-card .inst-metrics{grid-template-columns:repeat(3,1fr);margin:8px 0 0;}
+
+        /* ======= RISK FACTORS PANEL ======= */
+        .risk-factors{margin-top:16px;padding:16px;background:#FFF8E7;border:1px solid #FFE4A0;border-radius:12px;}
+        .risk-factors-title{font-size:13px;font-weight:700;color:#8B6914;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.3px;}
+        .risk-factor{display:flex;gap:10px;padding:8px 0;border-top:1px solid #FFE4A0;font-size:13px;color:var(--text-pri);}
+        .risk-factor:first-of-type{border-top:none;padding-top:4px;}
+        .risk-factor-icon{flex-shrink:0;width:20px;text-align:center;}
+        .risk-factor strong{display:block;margin-bottom:2px;color:#8B6914;}
+        html[data-theme="dark"] .risk-factors{background:#3A2F14;border-color:#5C4A1E;}
+        html[data-theme="dark"] .risk-factors-title,html[data-theme="dark"] .risk-factor strong{color:#FFD166;}
+        html[data-theme="dark"] .risk-factor{color:#D1D1D6;border-color:#5C4A1E;}
+
+        /* ======= TRACK RECORD ======= */
+        .tr-hero{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;padding:20px;background:linear-gradient(135deg,#0A84FF 0%,#0071E3 100%);border-radius:var(--radius);color:white;margin-bottom:24px;}
+        .tr-stat-label{font-size:11px;text-transform:uppercase;letter-spacing:0.5px;opacity:0.8;}
+        .tr-stat-value{font-size:26px;font-weight:800;margin:4px 0 2px;}
+        .tr-stat-sub{font-size:11px;opacity:0.75;}
+        .tr-section{background:white;border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:20px;}
+        html[data-theme="dark"] .tr-section{background:var(--surface)!important;}
+        .tr-table{width:100%;border-collapse:collapse;margin-top:12px;font-size:13px;}
+        .tr-table th{text-align:left;padding:10px 8px;border-bottom:2px solid var(--border);font-size:11px;text-transform:uppercase;color:var(--text-ter);font-weight:700;}
+        .tr-table td{padding:12px 8px;border-bottom:1px solid var(--border);color:var(--text-pri);}
+        .tr-table tr:last-child td{border-bottom:none;}
+        .tr-chart{margin-top:8px;padding:10px;background:var(--surface-2);border-radius:10px;}
+
+        /* ======= FEES ======= */
+        .fees-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px;}
+        .fees-card{background:white;border:1px solid var(--border);border-radius:var(--radius);padding:20px;}
+        html[data-theme="dark"] .fees-card{background:var(--surface)!important;}
+        .fees-card-label{font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-ter);font-weight:700;}
+        .fees-card-value{font-size:42px;font-weight:800;color:var(--blue);margin:8px 0;}
+        .fees-card-sub{font-size:13px;color:var(--text-sec);line-height:1.5;}
+        .fees-section{background:white;border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:20px;}
+        html[data-theme="dark"] .fees-section{background:var(--surface)!important;}
+
+        /* ======= RISK METHODOLOGY ======= */
+        .risk-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px;}
+        .risk-pillar{background:white;border:1px solid var(--border);border-radius:var(--radius);padding:20px;}
+        html[data-theme="dark"] .risk-pillar{background:var(--surface)!important;}
+        .risk-pillar-icon{font-size:30px;margin-bottom:10px;}
+        .risk-pillar-title{font-size:16px;font-weight:700;margin-bottom:8px;color:var(--text-pri);}
+        .risk-pillar-text{font-size:13px;color:var(--text-sec);line-height:1.55;}
+        .rt-grade{display:inline-block;min-width:34px;padding:3px 10px;border-radius:8px;color:white;font-weight:800;text-align:center;font-size:12px;}
+        .reg-badges{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px;}
+        .reg-badge{padding:8px 14px;background:var(--blue-light);color:var(--blue);border-radius:980px;font-size:13px;font-weight:700;}
+        html[data-theme="dark"] .reg-badge{background:rgba(10,132,255,0.15)!important;color:#5AC8FA!important;}
+
+        /* ======= COMPARATORS ======= */
+        .compare-tabs{display:flex;gap:8px;margin-bottom:20px;border-bottom:1px solid var(--border);}
+        .compare-tab{background:none;border:none;padding:12px 20px;font-size:15px;font-weight:600;color:var(--text-sec);cursor:pointer;border-bottom:3px solid transparent;}
+        .compare-tab.active{color:var(--blue);border-color:var(--blue);}
+        .compare-content{display:none;}
+        .compare-content.active{display:block;}
+        .compare-form{background:white;border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:20px;}
+        html[data-theme="dark"] .compare-form{background:var(--surface)!important;}
+        .compare-form-row{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;}
+        .compare-field label{display:block;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-ter);font-weight:700;margin-bottom:6px;}
+        .compare-field input,.compare-field select{width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:10px;font-size:14px;background:white;color:var(--text-pri);font-family:inherit;}
+        html[data-theme="dark"] .compare-field input,html[data-theme="dark"] .compare-field select{background:var(--surface-2)!important;color:var(--text-pri)!important;border-color:var(--border)!important;}
+        .compare-btn{width:100%;padding:10px 18px;background:var(--blue);color:white;border:none;border-radius:10px;font-weight:700;font-size:14px;cursor:pointer;}
+        .compare-btn:hover{background:#005BB5;}
+        .compare-disclaimer{font-size:11px;color:var(--text-ter);margin-top:12px;line-height:1.5;}
+        .compare-results{display:grid;gap:10px;}
+        .offer-row{display:grid;grid-template-columns:100px 1fr auto auto auto auto;gap:16px;align-items:center;padding:16px 20px;background:white;border:1px solid var(--border);border-radius:var(--radius);}
+        html[data-theme="dark"] .offer-row{background:var(--surface)!important;}
+        .offer-row.top{border-color:var(--green);box-shadow:0 0 0 2px rgba(48,209,88,0.12);}
+        .offer-logo{height:36px;display:flex;align-items:center;justify-content:center;background:var(--surface-2);border-radius:10px;font-weight:800;color:var(--text-pri);padding:0 10px;}
+        .offer-main{font-weight:700;color:var(--text-pri);}
+        .offer-sub{font-size:12px;color:var(--text-sec);margin-top:2px;}
+        .offer-metric{text-align:center;}
+        .offer-metric-label{font-size:10px;text-transform:uppercase;color:var(--text-ter);font-weight:700;}
+        .offer-metric-val{font-size:18px;font-weight:800;color:var(--text-pri);}
+        .offer-metric-val.good{color:var(--green-dark);}
+        .offer-cta{padding:10px 18px;border-radius:10px;background:var(--blue);color:white;border:none;font-weight:700;cursor:pointer;}
+        .offer-cta.top{background:var(--green);}
+        .offer-badge-top{position:absolute;top:-10px;left:16px;padding:3px 10px;border-radius:10px;background:var(--green);color:white;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;}
+        .compare-value-prop{margin-top:28px;background:linear-gradient(135deg,#30D158 0%,#1BA843 100%);color:white;border-radius:var(--radius);padding:24px;}
+        .compare-vp-title{font-size:20px;font-weight:800;margin-bottom:16px;}
+        .compare-vp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;}
+        .compare-vp strong{display:block;font-size:15px;margin-bottom:4px;}
+        .compare-vp div{font-size:13px;opacity:0.92;line-height:1.5;}
+
+        /* ======= MANAGED PORTFOLIOS TEASERS ======= */
+        .sleeves{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:24px 0;}
+        .sleeve{background:white;border:1px solid var(--border);border-radius:var(--radius);padding:18px;cursor:pointer;transition:all 0.2s;}
+        .sleeve:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,0.08);}
+        html[data-theme="dark"] .sleeve{background:var(--surface)!important;}
+        .sleeve-label{font-size:11px;text-transform:uppercase;letter-spacing:0.5px;color:var(--blue);font-weight:800;}
+        .sleeve-name{font-size:18px;font-weight:800;margin:6px 0;color:var(--text-pri);}
+        .sleeve-desc{font-size:13px;color:var(--text-sec);line-height:1.5;}
+        .sleeve-stats{display:flex;gap:14px;margin-top:14px;padding-top:14px;border-top:1px solid var(--border);}
+        .sleeve-stats > div{flex:1;}
+        .sleeve-stat-val{font-size:16px;font-weight:800;color:var(--text-pri);}
+        .sleeve-stat-lab{font-size:10px;text-transform:uppercase;color:var(--text-ter);font-weight:700;}
+
+        /* ======= FAIR VALUE COLUMN + CSV BTN ======= */
+        .fv-good{color:var(--green-dark);font-weight:700;}
+        .fv-bad{color:var(--red);font-weight:700;}
+        .fv-neutral{color:var(--text-sec);font-weight:700;}
+        .csv-btn{padding:8px 14px;border:1px solid var(--border);background:var(--surface);border-radius:10px;font-weight:600;font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;color:var(--text-pri);}
+        .csv-btn:hover{background:var(--surface-2);}
+
         @media(max-width:768px){
+            .tr-hero,.fees-grid,.risk-grid,.inst-metrics,.compare-form-row,.compare-vp-grid,.sleeves{grid-template-columns:1fr 1fr!important;}
+            .offer-row{grid-template-columns:1fr 1fr!important;}
             .top-nav{padding:0 16px;}
             
             .nav-pill{padding:6px 12px;font-size:12px;}
@@ -370,12 +516,17 @@
             <button class="nav-pill active" onclick="navigate('explore')">Explore</button>
             <button class="nav-pill" onclick="navigate('portfolio')">Portfolio</button>
             <button class="nav-pill" onclick="navigate('secondary')">Market</button>
+            <button class="nav-pill" onclick="navigate('compare')">Compare</button>
+            <button class="nav-pill" onclick="navigate('track')">Track Record</button>
+            <button class="nav-pill" onclick="navigate('fees')">Fees</button>
+            <button class="nav-pill" onclick="navigate('risk')">Risk</button>
             <button class="nav-pill" onclick="navigate('institutional')">Institutional</button>
         </div>
     </div>
     <div class="nav-right">
         <button class="icon-btn" title="Search">🔍</button>
         <button class="icon-btn" title="Notifications" style="position:relative;">🔔<span style="position:absolute;top:4px;right:4px;width:8px;height:8px;background:var(--red);border-radius:50%;border:2px solid white;"></span></button>
+        <button class="icon-btn" id="themeToggle" title="Toggle dark mode" onclick="toggleTheme()" aria-label="Toggle dark mode">🌙</button>
         <div class="nav-avatar" onclick="navigate('profile')">AV</div>
     </div>
 </nav>
@@ -421,12 +572,6 @@
                         <span class="map-stat"><strong>10</strong> Sectors</span>
                     </div>
                 </div>
-            </div>
-
-            <!-- EXPLORE HEADER -->
-            <div class="explore-header">
-                <div class="explore-title">Explore Investment Opportunities</div>
-                <div class="explore-subtitle">AI-vetted SME deals across Europe — from restaurants to renewable energy</div>
             </div>
 
             <!-- FEATURED DEAL -->
@@ -597,6 +742,214 @@
             </div>
         </div>
 
+        <!-- ========== TRACK RECORD ========== -->
+        <div class="screen-view" id="view-track">
+            <div style="margin-bottom:24px;">
+                <div style="font-size:28px;font-weight:700;margin-bottom:4px;">Platform Track Record</div>
+                <div style="font-size:15px;color:var(--text-sec);">Audited performance across all vintages since inception. <span style="color:var(--green-dark);">Net of fees.</span></div>
+            </div>
+            <div class="tr-hero">
+                <div class="tr-stat"><div class="tr-stat-label">Net IRR (since inception)</div><div class="tr-stat-value" style="color:var(--green-dark);">16.8%</div><div class="tr-stat-sub">Gross 19.4% · Target 14-18%</div></div>
+                <div class="tr-stat"><div class="tr-stat-label">MOIC (Net)</div><div class="tr-stat-value">1.52x</div><div class="tr-stat-sub">Gross 1.71x</div></div>
+                <div class="tr-stat"><div class="tr-stat-label">TVPI</div><div class="tr-stat-value">1.52x</div><div class="tr-stat-sub">DPI 0.61x · RVPI 0.91x</div></div>
+                <div class="tr-stat"><div class="tr-stat-label">Loss Ratio</div><div class="tr-stat-value">2.1%</div><div class="tr-stat-sub">of committed capital</div></div>
+                <div class="tr-stat"><div class="tr-stat-label">Default Rate</div><div class="tr-stat-value">1.4%</div><div class="tr-stat-sub">12-month trailing</div></div>
+                <div class="tr-stat"><div class="tr-stat-label">Recovery Rate</div><div class="tr-stat-value">68%</div><div class="tr-stat-sub">on defaulted principal</div></div>
+            </div>
+            <div class="tr-section">
+                <div class="section-title">Performance by Vintage</div>
+                <table class="tr-table">
+                    <thead><tr><th>Vintage</th><th>Deals</th><th>Committed</th><th>Called</th><th>Distributed</th><th>NAV</th><th>Net IRR</th><th>Net MOIC</th><th>DPI</th><th>TVPI</th></tr></thead>
+                    <tbody>
+                        <tr><td><strong>2022</strong></td><td>11</td><td>€8.4M</td><td>€8.4M</td><td>€6.2M</td><td>€5.1M</td><td style="color:var(--green-dark);font-weight:700;">18.2%</td><td>1.68x</td><td>0.74x</td><td>1.35x</td></tr>
+                        <tr><td><strong>2023</strong></td><td>17</td><td>€14.1M</td><td>€14.1M</td><td>€7.8M</td><td>€11.6M</td><td style="color:var(--green-dark);font-weight:700;">17.1%</td><td>1.58x</td><td>0.55x</td><td>1.38x</td></tr>
+                        <tr><td><strong>2024</strong></td><td>22</td><td>€19.3M</td><td>€18.9M</td><td>€4.1M</td><td>€19.7M</td><td style="color:var(--green-dark);font-weight:700;">16.4%</td><td>1.47x</td><td>0.22x</td><td>1.26x</td></tr>
+                        <tr><td><strong>2025</strong></td><td>31</td><td>€27.6M</td><td>€21.2M</td><td>€1.6M</td><td>€22.8M</td><td style="color:var(--green-dark);font-weight:700;">15.8%</td><td>1.29x</td><td>0.08x</td><td>1.15x</td></tr>
+                        <tr><td><strong>2026 YTD</strong></td><td>12</td><td>€11.2M</td><td>€5.8M</td><td>€0.1M</td><td>€5.9M</td><td style="color:var(--text-ter);font-weight:700;">n/m</td><td>1.02x</td><td>0.02x</td><td>1.02x</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="tr-section">
+                <div class="section-title">Performance by Sector</div>
+                <table class="tr-table">
+                    <thead><tr><th>Sector</th><th>Deals</th><th>Avg Net IRR</th><th>MOIC</th><th>Loss Ratio</th><th>Default Rate</th></tr></thead>
+                    <tbody>
+                        <tr><td>🍽️ Food & Dining</td><td>18</td><td style="color:var(--green-dark);">15.2%</td><td>1.42x</td><td>2.8%</td><td>1.9%</td></tr>
+                        <tr><td>🏨 Hospitality</td><td>14</td><td style="color:var(--green-dark);">19.4%</td><td>1.66x</td><td>1.2%</td><td>0.7%</td></tr>
+                        <tr><td>🏥 Healthcare</td><td>11</td><td style="color:var(--green-dark);">17.8%</td><td>1.54x</td><td>0.8%</td><td>0.4%</td></tr>
+                        <tr><td>🍷 Wine & Agriculture</td><td>9</td><td style="color:var(--green-dark);">14.6%</td><td>1.48x</td><td>1.5%</td><td>1.1%</td></tr>
+                        <tr><td>👔 Textiles & Fashion</td><td>8</td><td style="color:var(--green-dark);">13.9%</td><td>1.38x</td><td>3.4%</td><td>2.2%</td></tr>
+                        <tr><td>💻 Technology</td><td>13</td><td style="color:var(--green-dark);">22.1%</td><td>1.81x</td><td>2.9%</td><td>1.8%</td></tr>
+                        <tr><td>⚡ Energy</td><td>7</td><td style="color:var(--green-dark);">14.2%</td><td>1.44x</td><td>0.3%</td><td>0.0%</td></tr>
+                        <tr><td>🚚 Logistics</td><td>5</td><td style="color:var(--green-dark);">15.9%</td><td>1.45x</td><td>1.1%</td><td>0.8%</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="tr-section">
+                <div class="section-title">Cumulative Net Returns vs Benchmark</div>
+                <div class="tr-chart">
+                    <svg viewBox="0 0 600 200" style="width:100%;height:220px;">
+                        <defs>
+                            <linearGradient id="trg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#30D158" stop-opacity="0.35"/><stop offset="100%" stop-color="#30D158" stop-opacity="0"/></linearGradient>
+                        </defs>
+                        <polygon points="30,170 90,155 150,138 210,118 270,98 330,82 390,64 450,48 510,34 570,22 570,190 30,190" fill="url(#trg)"/>
+                        <polyline points="30,170 90,155 150,138 210,118 270,98 330,82 390,64 450,48 510,34 570,22" fill="none" stroke="#30D158" stroke-width="2.5"/>
+                        <polyline points="30,175 90,168 150,162 210,155 270,148 330,141 390,133 450,126 510,118 570,111" fill="none" stroke="#8E8E93" stroke-width="1.8" stroke-dasharray="4 4"/>
+                        <text x="30" y="196" font-size="10" fill="#A1A1A6">Q1-22</text>
+                        <text x="300" y="196" font-size="10" fill="#A1A1A6">Q4-24</text>
+                        <text x="540" y="196" font-size="10" fill="#A1A1A6">Q1-26</text>
+                        <text x="520" y="18" font-size="11" fill="#30D158" font-weight="700">Raise Net</text>
+                        <text x="500" y="108" font-size="11" fill="#8E8E93">MSCI Europe SME</text>
+                    </svg>
+                </div>
+            </div>
+            <div style="padding:14px 20px;font-size:12px;color:var(--text-ter);border-top:1px solid var(--border);">Past performance is not indicative of future results. Figures are unaudited for 2026 YTD. Net IRR is calculated after all fees, carry and expenses. Benchmark: MSCI Europe Small Cap Total Return.</div>
+        </div>
+
+        <!-- ========== FEES ========== -->
+        <div class="screen-view" id="view-fees">
+            <div style="margin-bottom:24px;">
+                <div style="font-size:28px;font-weight:700;margin-bottom:4px;">Fees & Economics</div>
+                <div style="font-size:15px;color:var(--text-sec);">Transparent, flat, and aligned with your outcomes — no hidden load, no carry on losses.</div>
+            </div>
+            <div class="fees-grid">
+                <div class="fees-card">
+                    <div class="fees-card-label">Platform Fee</div>
+                    <div class="fees-card-value">2.0<span style="font-size:24px;">%</span></div>
+                    <div class="fees-card-sub">Charged once, upfront, on your investment amount. Covers sourcing, due diligence and monitoring.</div>
+                </div>
+                <div class="fees-card">
+                    <div class="fees-card-label">Management Fee</div>
+                    <div class="fees-card-value">0.8<span style="font-size:24px;">%/yr</span></div>
+                    <div class="fees-card-sub">Annual fee on NAV. Covers custody, compliance, reporting and secondary market operations.</div>
+                </div>
+                <div class="fees-card">
+                    <div class="fees-card-label">Performance Fee</div>
+                    <div class="fees-card-value">10<span style="font-size:24px;">%</span></div>
+                    <div class="fees-card-sub">Charged only above an 8% hurdle, with a full catch-up. No carry on losses. Never on principal.</div>
+                </div>
+                <div class="fees-card">
+                    <div class="fees-card-label">Secondary Trade</div>
+                    <div class="fees-card-value">1.0<span style="font-size:24px;">%</span></div>
+                    <div class="fees-card-sub">Flat transaction fee on secondary market trades, split between buyer and seller.</div>
+                </div>
+            </div>
+            <div class="fees-section">
+                <div class="section-title">Worked Example — €10,000 Investment @ 18% Gross IRR over 4 years</div>
+                <table class="tr-table">
+                    <thead><tr><th>Line Item</th><th>Amount</th><th>Note</th></tr></thead>
+                    <tbody>
+                        <tr><td>Gross exit value (1.94x MOIC)</td><td>€19,390</td><td>18% IRR × 4 yrs</td></tr>
+                        <tr><td>− Platform fee (2% of €10K)</td><td style="color:var(--red);">−€200</td><td>Upfront</td></tr>
+                        <tr><td>− Management fee (0.8%/yr avg NAV)</td><td style="color:var(--red);">−€470</td><td>Cumulative</td></tr>
+                        <tr><td>− Performance fee (10% above 8% hurdle)</td><td style="color:var(--red);">−€560</td><td>With catch-up</td></tr>
+                        <tr style="background:var(--green-light);font-weight:700;"><td>Net to investor</td><td style="color:var(--green-dark);">€18,160</td><td style="color:var(--green-dark);">Net IRR 16.1%</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="fees-section">
+                <div class="section-title">What you will NEVER be charged</div>
+                <ul class="highlights-list">
+                    <li>No subscription or membership fees</li>
+                    <li>No redemption or exit fees on primary holdings</li>
+                    <li>No inactivity fees</li>
+                    <li>No FX markup (we pass interbank rates)</li>
+                    <li>No carry on losing deals — hurdle is high-water-marked per vintage</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ========== RISK METHODOLOGY ========== -->
+        <div class="screen-view" id="view-risk">
+            <div style="margin-bottom:24px;">
+                <div style="font-size:28px;font-weight:700;margin-bottom:4px;">Risk Methodology</div>
+                <div style="font-size:15px;color:var(--text-sec);">How we score, stress-test and monitor every deal — before, during and after funding.</div>
+            </div>
+            <div class="risk-grid">
+                <div class="risk-pillar"><div class="risk-pillar-icon">🔎</div><div class="risk-pillar-title">1. Sourcing & Screening</div><div class="risk-pillar-text">Fewer than 4% of deals reach diligence. We rule out early-stage, pre-revenue, and companies with under 18 months of audited accounts.</div></div>
+                <div class="risk-pillar"><div class="risk-pillar-icon">🧮</div><div class="risk-pillar-title">2. AI Scoring Engine</div><div class="risk-pillar-text">226+ automated checks across six dimensions: financial health, market position, management, growth, risk and ESG. Every score is explainable.</div></div>
+                <div class="risk-pillar"><div class="risk-pillar-icon">📑</div><div class="risk-pillar-title">3. Human Diligence</div><div class="risk-pillar-text">Senior analysts perform on-site visits, management interviews, and build a bottom-up financial model. Independent legal and tax review.</div></div>
+                <div class="risk-pillar"><div class="risk-pillar-icon">💣</div><div class="risk-pillar-title">4. Stress Testing</div><div class="risk-pillar-text">Every deal is shocked under three scenarios: base, downside (−25% revenue), severe (−40% + rate shock). Only deals surviving downside are listed.</div></div>
+                <div class="risk-pillar"><div class="risk-pillar-icon">🛡️</div><div class="risk-pillar-title">5. Protections</div><div class="risk-pillar-text">First-lien collateral, personal guarantees, revenue pledges, cash sweeps, covenants. Every deal discloses its specific protection package.</div></div>
+                <div class="risk-pillar"><div class="risk-pillar-icon">📡</div><div class="risk-pillar-title">6. Live Monitoring</div><div class="risk-pillar-text">Monthly data feeds from POS, bank and ERP. Covenants tracked daily. Alerts escalated to a workout team at the first breach.</div></div>
+            </div>
+            <div class="fees-section">
+                <div class="section-title">Risk Rating Scale</div>
+                <table class="tr-table">
+                    <thead><tr><th>Grade</th><th>Meaning</th><th>Expected Default</th><th>Typical IRR Range</th></tr></thead>
+                    <tbody>
+                        <tr><td><span class="rt-grade" style="background:#30D158;">A+</span></td><td>Exceptional — cashflow-positive, collateralised, seasoned mgmt</td><td>&lt; 0.5%</td><td>12-18%</td></tr>
+                        <tr><td><span class="rt-grade" style="background:#0071E3;">A</span></td><td>Strong — established operations, clear growth path</td><td>0.5-1.5%</td><td>15-22%</td></tr>
+                        <tr><td><span class="rt-grade" style="background:#5856D6;">B+</span></td><td>Solid — proven unit economics, some execution risk</td><td>1.5-3%</td><td>18-25%</td></tr>
+                        <tr><td><span class="rt-grade" style="background:#FF9F0A;">B</span></td><td>Opportunistic — higher upside, active monitoring required</td><td>3-6%</td><td>22-32%</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="fees-section">
+                <div class="section-title">Regulatory Framework</div>
+                <div class="reg-badges">
+                    <div class="reg-badge">🇪🇺 ECSPR Licensed</div>
+                    <div class="reg-badge">MiFID II</div>
+                    <div class="reg-badge">AIFMD</div>
+                    <div class="reg-badge">ELTIF 2.0</div>
+                    <div class="reg-badge">GDPR</div>
+                    <div class="reg-badge">SFDR Article 8</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========== COMPARATORS ========== -->
+        <div class="screen-view" id="view-compare">
+            <div style="margin-bottom:16px;">
+                <div style="font-size:28px;font-weight:700;margin-bottom:4px;">SME 360° — Compare & Save</div>
+                <div style="font-size:15px;color:var(--text-sec);">One platform for funding, credit and insurance. <span style="padding:2px 8px;border-radius:10px;background:var(--blue-light);color:var(--blue);font-size:12px;font-weight:700;margin-left:6px;">PREVIEW</span></div>
+            </div>
+            <div class="compare-tabs">
+                <button class="compare-tab active" onclick="switchCompare(this,'credit')">💶 Credit & Mortgages</button>
+                <button class="compare-tab" onclick="switchCompare(this,'insurance')">🛡️ Business Insurance</button>
+            </div>
+
+            <!-- CREDIT COMPARATOR -->
+            <div class="compare-content active" id="compare-credit">
+                <div class="compare-form">
+                    <div class="compare-form-row">
+                        <div class="compare-field"><label>Loan Type</label><select id="crType"><option>Business loan</option><option>Working capital</option><option>Mortgage (commercial property)</option><option>Equipment leasing</option><option>Invoice financing</option></select></div>
+                        <div class="compare-field"><label>Amount (€)</label><input type="number" id="crAmount" value="150000"></div>
+                        <div class="compare-field"><label>Duration (months)</label><input type="number" id="crMonths" value="60"></div>
+                        <div class="compare-field"><label>Country</label><select id="crCountry"><option>Italy</option><option>Germany</option><option>France</option><option>Spain</option><option>Netherlands</option></select></div>
+                        <div class="compare-field"><label>&nbsp;</label><button class="compare-btn" onclick="runCreditCompare()">Compare live offers</button></div>
+                    </div>
+                    <div class="compare-disclaimer">Indicative rates sourced from 24 European lenders. Final offer subject to credit assessment. Raise is a comparator and does not issue loans directly.</div>
+                </div>
+                <div class="compare-results" id="creditResults"></div>
+            </div>
+
+            <!-- INSURANCE COMPARATOR -->
+            <div class="compare-content" id="compare-insurance">
+                <div class="compare-form">
+                    <div class="compare-form-row">
+                        <div class="compare-field"><label>Cover Type</label><select id="insType"><option>Business Liability (RC)</option><option>Property & Contents</option><option>Cyber Insurance</option><option>Directors & Officers</option><option>Professional Indemnity</option><option>Key-person Life</option></select></div>
+                        <div class="compare-field"><label>Annual Revenue (€)</label><input type="number" id="insRevenue" value="1200000"></div>
+                        <div class="compare-field"><label>Employees</label><input type="number" id="insEmployees" value="12"></div>
+                        <div class="compare-field"><label>Sector</label><select id="insSector"><option>Food & Dining</option><option>Hospitality</option><option>Healthcare</option><option>Technology</option><option>Retail</option><option>Industry</option></select></div>
+                        <div class="compare-field"><label>&nbsp;</label><button class="compare-btn" onclick="runInsuranceCompare()">Compare live quotes</button></div>
+                    </div>
+                    <div class="compare-disclaimer">Indicative quotes from 18 European insurers. Final premium subject to underwriting. Raise is an IDD-registered broker (demo).</div>
+                </div>
+                <div class="compare-results" id="insuranceResults"></div>
+            </div>
+
+            <div class="compare-value-prop">
+                <div class="compare-vp-title">Why SME 360°?</div>
+                <div class="compare-vp-grid">
+                    <div class="compare-vp"><strong>One login</strong><div>Funding, credit & insurance in one dashboard — no more 6 tabs open.</div></div>
+                    <div class="compare-vp"><strong>Pre-filled data</strong><div>We re-use the KYC, financials and documents from your Raise profile.</div></div>
+                    <div class="compare-vp"><strong>Transparent spread</strong><div>We get paid by the provider you pick — same price for you, disclosed upfront.</div></div>
+                    <div class="compare-vp"><strong>Advice, not ads</strong><div>Results are ranked by APR / premium, never by commission.</div></div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </div>
 
@@ -670,7 +1023,13 @@ const sectors = {
     industry: { name: 'Industry', icon: '⚙️', color: '#6E6E73', subs: ['Steel','Machinery','Automotive','Chemical','Construction','Logistics'] },
     tech: { name: 'Technology', icon: '💻', color: '#0071E3', subs: ['Software/SaaS','Fintech','Biotech','CleanTech','AI/ML','IoT'] },
     energy: { name: 'Energy', icon: '⚡', color: '#FFD60A', subs: ['Solar','Wind','Green Infrastructure','Biomass','EV Charging'] },
-    retail: { name: 'Retail & Services', icon: '🛍️', color: '#FF453A', subs: ['Retail Chains','E-commerce','Professional Services','Education','Coworking'] }
+    retail: { name: 'Retail & Services', icon: '🛍️', color: '#FF453A', subs: ['Retail Chains','E-commerce','Professional Services','Education','Coworking'] },
+    logistics: { name: 'Logistics & Mobility', icon: '🚚', color: '#5856D6', subs: ['Last-mile','Warehousing','Cold Chain','EV Fleets','Micromobility'] },
+    education: { name: 'Education & Training', icon: '🎓', color: '#BF5AF2', subs: ['Private Schools','EdTech','Vocational','Language Schools','Tutoring'] },
+    maritime: { name: 'Maritime & Fisheries', icon: '⚓', color: '#32ADE6', subs: ['Aquaculture','Sustainable Fishing','Marine Services','Boatyards','Ports'] },
+    pharma: { name: 'Pharma & Biotech', icon: '💊', color: '#FF2D55', subs: ['Generics','Medical Devices','Drug Discovery','Diagnostics','Veterinary'] },
+    sport: { name: 'Sport & Leisure', icon: '⚽', color: '#FF9500', subs: ['Gyms','Padel Clubs','Ski Resorts','Sport Retail','Events'] },
+    realestate: { name: 'Real Estate', icon: '🏛️', color: '#A2845E', subs: ['Residential Dev','Student Housing','Senior Living','Co-living','Logistics RE'] }
 };
 
 // ==================== FLAGS ====================
@@ -870,6 +1229,223 @@ const deals = {
         highlights:['20-year German feed-in tariff guarantee','48MW capacity — 12 offshore turbines','Asset-backed green bond structure','35,000 tons CO2 offset annually'],
         aiScores:{financial:88,market:82,management:84,growth:76,risk:92,esg:96}, aiChecks:222, aiConfidence:94,
         documents:[{name:'Green Bond Prospectus',cat:'Legal',pages:52,date:'Mar 2026'},{name:'Engineering Assessment',cat:'Due Diligence',pages:44,date:'Feb 2026'},{name:'Environmental Impact Study',cat:'ESG',pages:38,date:'Jan 2026'},{name:'Feed-in Tariff Documentation',cat:'Government',pages:16,date:'Mar 2026'}]
+    },
+    // === EXPANSION PACK ===
+    logistica: { name:'Milano Last-Mile', sector:'logistics', subsector:'Last-mile', location:'Milan', country:'IT', lat:45.48, lng:9.20,
+        img:'https://images.unsplash.com/photo-1553413077-190dd305871c?w=800&q=80',
+        color:'linear-gradient(135deg,#5856D6 0%,#3634A3 100%)',
+        score:'A', scoreBg:'#0071E3', target:'€1.4M', funded:38, irr:'17-21%',
+        investors:112, days:22, instrument:'Senior Debt', duration:'48 months',
+        min:'€3,000', dist:'Monthly', protection:'Asset-backed (EV fleet) + revenue pledge',
+        story:'Electric last-mile delivery fleet covering 4 cities in Lombardy. Exclusive contract with two national retailers. 42 EV vans in operation, scaling to 80.',
+        metrics:[['Revenue','€3.6M','+41%'],['Vehicles','42','+25'],['Drops/day','2.8K','+38%'],['EV %','100%','✓']],
+        highlights:['Exclusive 5-year contract with 2 national retailers','100% electric fleet — CO2-free','42 operating vans, scaling to 80','Asset-backed structure with EV collateral'],
+        aiScores:{financial:86,market:90,management:84,growth:92,risk:82,esg:95}, aiChecks:219, aiConfidence:91,
+        documents:[{name:'Investment Memorandum',cat:'Legal',pages:40,date:'Mar 2026'},{name:'Fleet Valuation',cat:'Due Diligence',pages:22,date:'Feb 2026'},{name:'Retailer Contracts',cat:'Commercial',pages:18,date:'Mar 2026'}]
+    },
+    scuola: { name:'Academia Europa', sector:'education', subsector:'Private Schools', location:'Valencia', country:'ES', lat:39.47, lng:-0.38,
+        img:'https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=800&q=80',
+        color:'linear-gradient(135deg,#BF5AF2 0%,#8A2BE2 100%)',
+        score:'A', scoreBg:'#0071E3', target:'€2.2M', funded:52, irr:'15-19%',
+        investors:140, days:34, instrument:'Equity', duration:'72 months',
+        min:'€5,000', dist:'Annual', protection:'Tuition receivables pledge',
+        story:'Trilingual international K-12 school in Valencia. 620 students, 98% enrollment retention, opening a second campus in 2027.',
+        metrics:[['Students','620','+18%'],['Revenue','€7.1M','+22%'],['Retention','98%','+1%'],['Teachers','58','+8']],
+        highlights:['98% student retention rate','620 students, 2-year waiting list','Second campus secured for 2027','Certified by Cambridge International'],
+        aiScores:{financial:89,market:88,management:91,growth:87,risk:88,esg:90}, aiChecks:224, aiConfidence:93,
+        documents:[{name:'Investment Memorandum',cat:'Legal',pages:44,date:'Mar 2026'},{name:'Enrollment Forecast',cat:'Business Plan',pages:26,date:'Feb 2026'}]
+    },
+    acquacoltura: { name:'Atlantic Aquafarms', sector:'maritime', subsector:'Aquaculture', location:'Galicia', country:'ES', lat:42.85, lng:-8.55,
+        img:'https://images.unsplash.com/photo-1544551763-46a013bb70d5?w=800&q=80',
+        color:'linear-gradient(135deg,#32ADE6 0%,#007AFF 100%)',
+        score:'A', scoreBg:'#0071E3', target:'€1.8M', funded:41, irr:'16-20%',
+        investors:87, days:31, instrument:'Senior Debt', duration:'60 months',
+        min:'€5,000', dist:'Quarterly', protection:'First-lien on farms + inventory',
+        story:'Sustainable mussel and oyster farms on the Galician coast. ASC-certified, exporting to 14 European countries.',
+        metrics:[['Production','1.2K t','+26%'],['Revenue','€4.8M','+31%'],['Export %','72%','+9%'],['ASC cert','✓','✓']],
+        highlights:['ASC sustainability certification','Exports to 14 EU countries','1,200 tons annual production','Protected Atlantic bay concession until 2042'],
+        aiScores:{financial:84,market:86,management:87,growth:83,risk:81,esg:96}, aiChecks:216, aiConfidence:90,
+        documents:[{name:'Investment Memorandum',cat:'Legal',pages:38,date:'Mar 2026'}]
+    },
+    pharma: { name:'LisboaDx Diagnostics', sector:'pharma', subsector:'Diagnostics', location:'Lisbon', country:'PT', lat:38.72, lng:-9.14,
+        img:'https://images.unsplash.com/photo-1530026405186-ed1f139313f8?w=800&q=80',
+        color:'linear-gradient(135deg,#FF2D55 0%,#CC0033 100%)',
+        score:'A+', scoreBg:'#30D158', target:'€3.1M', funded:61, irr:'22-28%',
+        investors:168, days:19, instrument:'Convertible Note', duration:'60 months',
+        min:'€10,000', dist:'At exit', protection:'IP collateral + cash sweep',
+        story:'Portable molecular diagnostic devices for clinics. CE-marked, deployed in 220 clinics across Iberia, expanding to France.',
+        metrics:[['Devices','220','+85%'],['Revenue','€5.2M','+58%'],['Gross Mgn','64%','+6%'],['Patents','11','+3']],
+        highlights:['CE-marked in 14 EU countries','11 patents granted','220 clinics deployed','Gross margin 64%'],
+        aiScores:{financial:90,market:92,management:89,growth:95,risk:85,esg:88}, aiChecks:231, aiConfidence:94,
+        documents:[{name:'Investment Memorandum',cat:'Legal',pages:52,date:'Mar 2026'},{name:'IP Portfolio Review',cat:'Due Diligence',pages:28,date:'Feb 2026'}]
+    },
+    padel: { name:'PadelPro Clubs', sector:'sport', subsector:'Padel Clubs', location:'Madrid', country:'ES', lat:40.42, lng:-3.70,
+        img:'https://images.unsplash.com/photo-1554068865-24cecd4e34b8?w=800&q=80',
+        color:'linear-gradient(135deg,#FF9500 0%,#C76500 100%)',
+        score:'A', scoreBg:'#0071E3', target:'€1.6M', funded:67, irr:'19-24%',
+        investors:198, days:11, instrument:'Equity + Revenue Share', duration:'48 months',
+        min:'€2,500', dist:'Monthly', protection:'Revenue pledge',
+        story:'Chain of 7 premium padel clubs in Spain with 94% court occupancy. Opening 4 more in 2026.',
+        metrics:[['Clubs','7→11','+4'],['Occupancy','94%','+5%'],['Members','5.4K','+31%'],['Revenue','€6.1M','+38%']],
+        highlights:['94% court occupancy','5,400 paying members','4 new clubs under construction','EBITDA margin 28%'],
+        aiScores:{financial:87,market:94,management:85,growth:90,risk:80,esg:78}, aiChecks:220, aiConfidence:92,
+        documents:[{name:'Investment Memorandum',cat:'Legal',pages:34,date:'Mar 2026'}]
+    },
+    seniorliving: { name:'Wien SeniorLiving', sector:'realestate', subsector:'Senior Living', location:'Vienna', country:'AT', lat:48.21, lng:16.37,
+        img:'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&q=80',
+        color:'linear-gradient(135deg,#A2845E 0%,#6B5337 100%)',
+        score:'A+', scoreBg:'#30D158', target:'€4.5M', funded:28, irr:'14-17%',
+        investors:74, days:48, instrument:'Senior Secured Debt', duration:'84 months',
+        min:'€10,000', dist:'Quarterly', protection:'First-lien on property',
+        story:'Premium senior living residence in Vienna. 124 units, average 18-month waitlist, state subsidy on 40% of beds.',
+        metrics:[['Units','124','+0']  ,['Occupancy','99%','steady'],['Waitlist','18 mo','+3 mo'],['Revenue','€9.2M','+7%']],
+        highlights:['99% occupancy since opening','18-month average waitlist','State subsidy on 40% of beds','First-lien property collateral'],
+        aiScores:{financial:91,market:93,management:90,growth:82,risk:94,esg:92}, aiChecks:228, aiConfidence:95,
+        documents:[{name:'Investment Memorandum',cat:'Legal',pages:46,date:'Mar 2026'},{name:'Property Appraisal',cat:'Due Diligence',pages:62,date:'Feb 2026'}]
+    },
+    coldchain: { name:'NordCold Logistics', sector:'logistics', subsector:'Cold Chain', location:'Rotterdam', country:'NL', lat:51.92, lng:4.48,
+        img:'https://images.unsplash.com/photo-1566232392379-afd9298e6a46?w=800&q=80',
+        color:'linear-gradient(135deg,#5856D6 0%,#3634A3 100%)',
+        score:'A', scoreBg:'#0071E3', target:'€2.8M', funded:44, irr:'15-19%',
+        investors:103, days:26, instrument:'Senior Debt', duration:'72 months',
+        min:'€5,000', dist:'Quarterly', protection:'Asset-backed + inventory lien',
+        story:'Cold-chain warehousing and distribution network serving Benelux pharma and food exporters. 3 cross-docks, expanding to 5.',
+        metrics:[['Warehouses','3→5','+2'],['m² frigo','18K','+40%'],['Revenue','€7.8M','+24%'],['Uptime','99.8%','✓']],
+        highlights:['Serves top-3 Dutch pharma exporters','99.8% refrigeration uptime','18,000 m² cold storage capacity','ISO 22000 + GDP certified'],
+        aiScores:{financial:88,market:86,management:87,growth:88,risk:85,esg:84}, aiChecks:222, aiConfidence:92,
+        documents:[{name:'Investment Memorandum',cat:'Legal',pages:42,date:'Mar 2026'}]
+    },
+    helsinkibio: { name:'Helsinki BioGenerics', sector:'pharma', subsector:'Generics', location:'Helsinki', country:'FI', lat:60.17, lng:24.94,
+        img:'https://images.unsplash.com/photo-1587854692152-cbe660dbde88?w=800&q=80',
+        color:'linear-gradient(135deg,#FF2D55 0%,#CC0033 100%)',
+        score:'A', scoreBg:'#0071E3', target:'€3.6M', funded:33, irr:'18-23%',
+        investors:91, days:37, instrument:'Equity', duration:'72 months',
+        min:'€10,000', dist:'Annual', protection:'IP + revenue covenant',
+        story:'Nordic generic drug manufacturer specializing in biosimilars. 14 approved products, 6 in pipeline, supplying 9 EU health systems.',
+        metrics:[['Products','14','+3'],['Revenue','€12.4M','+19%'],['Gross Mgn','58%','+4%'],['EU systems','9','+2']],
+        highlights:['14 EMA-approved biosimilars','Supplies 9 national health systems','Pipeline of 6 additional products','GMP + ISO 13485 certified'],
+        aiScores:{financial:89,market:88,management:90,growth:86,risk:84,esg:87}, aiChecks:225, aiConfidence:93,
+        documents:[{name:'Investment Memorandum',cat:'Legal',pages:50,date:'Mar 2026'}]
+    },
+    solardach: { name:'SolarDach Bavaria', sector:'energy', subsector:'Solar', location:'Munich', country:'DE', lat:48.14, lng:11.58,
+        img:'https://images.unsplash.com/photo-1509391366360-2e959784a276?w=800&q=80',
+        color:'linear-gradient(135deg,#FFD60A 0%,#CCA800 100%)',
+        score:'A+', scoreBg:'#30D158', target:'€2.2M', funded:71, irr:'13-16%',
+        investors:219, days:8, instrument:'Green Bond', duration:'120 months',
+        min:'€1,000', dist:'Semi-annual', protection:'Feed-in tariff + asset lien',
+        story:'Rooftop solar portfolio across 240 Bavarian SME premises. Guaranteed by EEG 2023 feed-in tariffs for 20 years.',
+        metrics:[['Installations','240','+58'],['Capacity','18.4 MW','+22%'],['Revenue','€3.1M','+15%'],['CO2 avoid','7.2Kt','/yr']],
+        highlights:['20-year feed-in tariff guarantee','240 installations, 18.4 MW','Diversified across 240 SME rooftops','AA-rated counterparty risk'],
+        aiScores:{financial:92,market:89,management:86,growth:80,risk:95,esg:97}, aiChecks:229, aiConfidence:96,
+        documents:[{name:'Green Bond Prospectus',cat:'Legal',pages:48,date:'Mar 2026'}]
+    },
+    lyonpizza: { name:'Lyon Pizza Collective', sector:'food', subsector:'Pizzerie', location:'Lyon', country:'FR', lat:45.76, lng:4.83,
+        img:'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800&q=80',
+        color:'linear-gradient(135deg,#C41E3A 0%,#8B0000 100%)',
+        score:'B+', scoreBg:'#5856D6', target:'€600K', funded:58, irr:'19-24%',
+        investors:172, days:17, instrument:'Revenue Sharing', duration:'36 months',
+        min:'€1,000', dist:'Monthly', protection:'Revenue pledge + PG',
+        story:'Network of 5 artisanal pizzerie across Lyon. Neapolitan-certified, 280 covers per restaurant, opening 2 more.',
+        metrics:[['Restaurants','5→7','+2'],['Revenue','€4.2M','+26%'],['Avg Ticket','€22','+8%'],['Food Cost','28%','−2%']],
+        highlights:['Vera Pizza Napoletana certified','5 locations, 2 more in buildout','280 covers per restaurant avg','Food cost 28% — best in class'],
+        aiScores:{financial:82,market:85,management:84,growth:88,risk:78,esg:75}, aiChecks:214, aiConfidence:89,
+        documents:[{name:'Investment Memorandum',cat:'Legal',pages:32,date:'Mar 2026'}]
+    },
+    pragueit: { name:'Prague IT Outsourcing', sector:'tech', subsector:'Software/SaaS', location:'Prague', country:'CZ', lat:50.08, lng:14.44,
+        img:'https://images.unsplash.com/photo-1551434678-e076c223a692?w=800&q=80',
+        color:'linear-gradient(135deg,#0071E3 0%,#003F80 100%)',
+        score:'A', scoreBg:'#0071E3', target:'€1.9M', funded:49, irr:'20-26%',
+        investors:121, days:24, instrument:'Equity', duration:'60 months',
+        min:'€5,000', dist:'Annual', protection:'Receivables pledge',
+        story:'Nearshore software development shop with 140 engineers. Long-term contracts with 8 German Fortune-500 clients.',
+        metrics:[['Engineers','140','+35'],['Revenue','€14.2M','+34%'],['Gross Mgn','42%','+5%'],['Clients','8','+2']],
+        highlights:['8 Fortune-500 clients','140 engineers, <4% attrition','34% revenue growth','ISO 27001 certified'],
+        aiScores:{financial:88,market:91,management:89,growth:93,risk:82,esg:80}, aiChecks:223, aiConfidence:93,
+        documents:[{name:'Investment Memorandum',cat:'Legal',pages:38,date:'Mar 2026'}]
+    },
+    athensferry: { name:'Aegean Blue Ferries', sector:'maritime', subsector:'Marine Services', location:'Piraeus', country:'GR', lat:37.94, lng:23.65,
+        img:'https://images.unsplash.com/photo-1502933691298-84fc14542831?w=800&q=80',
+        color:'linear-gradient(135deg,#32ADE6 0%,#007AFF 100%)',
+        score:'B+', scoreBg:'#5856D6', target:'€2.4M', funded:36, irr:'17-22%',
+        investors:95, days:29, instrument:'Asset-backed Note', duration:'84 months',
+        min:'€5,000', dist:'Quarterly', protection:'First-lien on vessels',
+        story:'Fleet of 4 catamarans connecting Athens to 6 Cyclades islands. 340K passengers/yr, route rights until 2035.',
+        metrics:[['Vessels','4','+1'],['Passengers','340K','+14%'],['Revenue','€6.8M','+17%'],['Routes','6','+1']],
+        highlights:['Route rights until 2035','340,000 passengers/year','4 modern catamarans','First-lien vessel collateral'],
+        aiScores:{financial:83,market:87,management:84,growth:85,risk:79,esg:82}, aiChecks:217, aiConfidence:90,
+        documents:[{name:'Investment Memorandum',cat:'Legal',pages:42,date:'Mar 2026'}]
+    },
+    copenkids: { name:'Copenhagen Kids Nurseries', sector:'education', subsector:'Private Schools', location:'Copenhagen', country:'DK', lat:55.68, lng:12.57,
+        img:'https://images.unsplash.com/photo-1587653263995-422546a7a569?w=800&q=80',
+        color:'linear-gradient(135deg,#BF5AF2 0%,#8A2BE2 100%)',
+        score:'A', scoreBg:'#0071E3', target:'€1.3M', funded:62, irr:'13-16%',
+        investors:136, days:20, instrument:'Senior Debt', duration:'60 months',
+        min:'€2,500', dist:'Quarterly', protection:'Municipal subsidy receivables',
+        story:'Chain of 9 premium nurseries in Copenhagen. State-subsidized, 100% occupancy, expanding to 13.',
+        metrics:[['Nurseries','9→13','+4'],['Occupancy','100%','✓'],['Revenue','€5.6M','+19%'],['Waitlist','420','+95']],
+        highlights:['100% occupancy across all 9 sites','420-child waitlist','Municipal subsidies guarantee 65% revenue','4 new sites in planning'],
+        aiScores:{financial:90,market:91,management:88,growth:85,risk:91,esg:93}, aiChecks:227, aiConfidence:94,
+        documents:[{name:'Investment Memorandum',cat:'Legal',pages:40,date:'Mar 2026'}]
+    },
+    krakowgym: { name:'Kraków FitFactory', sector:'sport', subsector:'Gyms', location:'Kraków', country:'PL', lat:50.06, lng:19.94,
+        img:'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&q=80',
+        color:'linear-gradient(135deg,#FF9500 0%,#C76500 100%)',
+        score:'B+', scoreBg:'#5856D6', target:'€700K', funded:55, irr:'20-25%',
+        investors:148, days:15, instrument:'Equity + Revenue Share', duration:'48 months',
+        min:'€1,000', dist:'Monthly', protection:'Revenue pledge',
+        story:'Chain of 6 24/7 gyms in Kraków and Warsaw. 12,400 members, opening 3 more locations.',
+        metrics:[['Gyms','6→9','+3'],['Members','12.4K','+29%'],['Churn','4.2%','−1%'],['Revenue','€3.4M','+32%']],
+        highlights:['12,400 active members','Churn rate only 4.2%','3 locations in buildout','Membership LTV €940'],
+        aiScores:{financial:84,market:87,management:82,growth:89,risk:78,esg:76}, aiChecks:216, aiConfidence:89,
+        documents:[{name:'Investment Memorandum',cat:'Legal',pages:30,date:'Mar 2026'}]
+    },
+    dublinstudent: { name:'Dublin Student Living', sector:'realestate', subsector:'Student Housing', location:'Dublin', country:'IE', lat:53.35, lng:-6.26,
+        img:'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=800&q=80',
+        color:'linear-gradient(135deg,#A2845E 0%,#6B5337 100%)',
+        score:'A+', scoreBg:'#30D158', target:'€5.2M', funded:22, irr:'13-16%',
+        investors:68, days:52, instrument:'Senior Secured Debt', duration:'120 months',
+        min:'€10,000', dist:'Quarterly', protection:'First-lien on property',
+        story:'Purpose-built student accommodation near Trinity College Dublin. 186 beds, partnership with 3 universities, 12-month waitlist.',
+        metrics:[['Beds','186','+0'],['Occupancy','100%','steady'],['Waitlist','12 mo','+2 mo'],['Revenue','€2.9M','+8%']],
+        highlights:['100% occupancy since year 1','Partnership with 3 universities','12-month waitlist','First-lien property collateral'],
+        aiScores:{financial:92,market:94,management:89,growth:81,risk:95,esg:88}, aiChecks:230, aiConfidence:96,
+        documents:[{name:'Investment Memorandum',cat:'Legal',pages:44,date:'Mar 2026'}]
+    },
+    zurichbio: { name:'Zürich DeepLearn Bio', sector:'tech', subsector:'Biotech', location:'Zürich', country:'CH', lat:47.37, lng:8.54,
+        img:'https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?w=800&q=80',
+        color:'linear-gradient(135deg,#0071E3 0%,#003F80 100%)',
+        score:'B+', scoreBg:'#5856D6', target:'€3.8M', funded:26, irr:'24-32%',
+        investors:61, days:42, instrument:'Convertible Note', duration:'60 months',
+        min:'€25,000', dist:'At exit', protection:'IP + liquidation preference',
+        story:'AI-driven drug discovery platform. 3 compounds in preclinical trials, partnerships with 2 pharma majors.',
+        metrics:[['Compounds','3','+2'],['Revenue','€1.8M','+72%'],['Partners','2','+1'],['Patents','8','+3']],
+        highlights:['AI platform with 3 compounds in trials','Partnerships with Roche and Novartis (LOI)','8 patents filed','Founded by ETH Zürich researchers'],
+        aiScores:{financial:78,market:90,management:92,growth:96,risk:72,esg:85}, aiChecks:215, aiConfidence:88,
+        documents:[{name:'Investment Memorandum',cat:'Legal',pages:48,date:'Mar 2026'}]
+    },
+    barcelonagelato: { name:'Barcelona Gelato Co', sector:'food', subsector:'Gelaterie', location:'Barcelona', country:'ES', lat:41.39, lng:2.17,
+        img:'https://images.unsplash.com/photo-1501443762994-82bd5dace89a?w=800&q=80',
+        color:'linear-gradient(135deg,#FF6B35 0%,#C4491A 100%)',
+        score:'B+', scoreBg:'#5856D6', target:'€450K', funded:78, irr:'17-21%',
+        investors:186, days:9, instrument:'Revenue Sharing', duration:'36 months',
+        min:'€500', dist:'Monthly', protection:'Revenue pledge',
+        story:'Artisanal gelato chain with 8 stores along the Barcelona coast. Organic ingredients, Italian master gelatiere.',
+        metrics:[['Stores','8','+2'],['Revenue','€2.1M','+28%'],['Avg Ticket','€6.80','+12%'],['Seasonality','Hi','Summer']],
+        highlights:['8 prime-location stores','Organic Italian ingredients','28% YoY revenue growth','Expanding to 10 stores in 2027'],
+        aiScores:{financial:81,market:88,management:83,growth:86,risk:76,esg:84}, aiChecks:212, aiConfidence:88,
+        documents:[{name:'Investment Memorandum',cat:'Legal',pages:28,date:'Mar 2026'}]
+    },
+    stockholmev: { name:'Stockholm EV Charging', sector:'energy', subsector:'EV Charging', location:'Stockholm', country:'SE', lat:59.33, lng:18.07,
+        img:'https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=800&q=80',
+        color:'linear-gradient(135deg,#FFD60A 0%,#CCA800 100%)',
+        score:'A', scoreBg:'#0071E3', target:'€2.6M', funded:40, irr:'15-19%',
+        investors:114, days:23, instrument:'Senior Debt + Equity', duration:'84 months',
+        min:'€5,000', dist:'Quarterly', protection:'Asset-backed (chargers)',
+        story:'Network of 340 fast-charging stations across Stockholm and Gothenburg. Partnership with two major supermarket chains.',
+        metrics:[['Stations','340','+120'],['Sessions/day','4.8K','+52%'],['Revenue','€5.4M','+48%'],['Util','32%','+7%']],
+        highlights:['340 fast chargers, 22 cities','Supermarket chain partnerships','48% revenue growth','Utilization 32%, industry-leading'],
+        aiScores:{financial:85,market:92,management:86,growth:94,risk:83,esg:96}, aiChecks:224, aiConfidence:92,
+        documents:[{name:'Investment Memorandum',cat:'Legal',pages:40,date:'Mar 2026'}]
     }
 };
 
@@ -1153,7 +1729,7 @@ function switchTab(btn, contentId) {
 // ==================== NAVIGATION ====================
 function navigate(view, dealKey) {
     document.querySelectorAll('.nav-pill').forEach(p => p.classList.remove('active'));
-    const viewMap = {explore:'Explore',portfolio:'Portfolio',secondary:'Market',institutional:'Institutional'};
+    const viewMap = {explore:'Explore',portfolio:'Portfolio',secondary:'Market',institutional:'Institutional',track:'Track Record',fees:'Fees',risk:'Risk',compare:'Compare'};
     document.querySelectorAll('.nav-pill').forEach(p => { if (p.textContent === viewMap[view]) p.classList.add('active'); });
     if (view === 'deal') document.querySelectorAll('.nav-pill').forEach(p => { if (p.textContent === 'Explore') p.classList.add('active'); });
 
@@ -1288,12 +1864,328 @@ function rotateDiscovery() {
 }
 setInterval(rotateDiscovery, 4000);
 
+// ==================== INSTITUTIONAL METRICS AUGMENTATION ====================
+// Attach net/gross IRR, MOIC, DPI, TVPI, loss ratio, default rate to every deal deterministically
+function augmentDealsWithInstMetrics() {
+    Object.keys(deals).forEach(key => {
+        const d = deals[key];
+        // Parse target IRR range like "18-22%" → midpoint
+        const irrRange = (d.irr || '15-18%').replace('%','').split('-').map(x => parseFloat(x));
+        const midIrr = (irrRange[0] + (irrRange[1]||irrRange[0])) / 2;
+        const grossIrr = midIrr;
+        const netIrr = Math.max(midIrr - 2.4, 6);
+        // Seed variations by name length for determinism
+        const h = (d.name || key).split('').reduce((a,c)=>a+c.charCodeAt(0),0);
+        const moic = Math.round((1.25 + (netIrr-10)*0.05 + (h%7)*0.02) * 100) / 100;
+        const dpi = Math.round((0.05 + (h%9)*0.06) * 100) / 100;
+        const rvpi = Math.round((moic - dpi) * 100) / 100;
+        const tvpi = Math.round((dpi + rvpi) * 100) / 100;
+        const loss = Math.round(((h%5)*0.4 + 0.3) * 10) / 10;
+        const def = Math.round(((h%4)*0.3 + 0.2) * 10) / 10;
+        d.instMetrics = {
+            irrNet: netIrr.toFixed(1) + '%',
+            irrGross: grossIrr.toFixed(1) + '%',
+            moic: moic.toFixed(2) + 'x',
+            dpi: dpi.toFixed(2) + 'x',
+            tvpi: tvpi.toFixed(2) + 'x',
+            loss: loss.toFixed(1) + '%',
+            default: def.toFixed(1) + '%'
+        };
+        // Risk factors — sector-based + a few deterministic extras
+        const sectorRisks = {
+            food:[['Thin margins','Food & hospitality businesses typically run 6-12% EBITDA margins — execution risk is high.'],['Seasonality','Revenue can vary ±20% between summer and winter months.']],
+            hospitality:[['Tourism cycles','Demand sensitive to macro and geopolitical shocks affecting travel.'],['Labour costs','Tight EU hospitality labour market, wage inflation pressure on margins.']],
+            healthcare:[['Regulatory','Changes in reimbursement tariffs or licensing can materially affect revenue.'],['Staffing','Specialist shortage in several EU markets increases operating costs.']],
+            wine:[['Weather risk','Yield and quality depend on growing conditions; climate change amplifies volatility.'],['Inventory cycle','Cash locked in ageing stock 3-5 years before revenue.']],
+            production:[['Commodity prices','Input costs (grain, energy) can swing margins significantly.'],['Export exposure','FX and tariff changes can hit international revenue.']],
+            textiles:[['Fashion cycles','Fast-moving trends create obsolete-inventory risk.'],['Asian competition','Low-cost imports pressure pricing power.']],
+            industry:[['Energy prices','Heavy industry P&L highly exposed to electricity and gas costs.'],['Cyclical demand','Capex-driven demand contracts sharply in downturns.']],
+            tech:[['Client concentration','Revenue can be concentrated in few large accounts.'],['Talent retention','Engineer attrition directly impacts delivery capacity.']],
+            energy:[['Subsidy risk','Changes in feed-in tariffs or green incentives affect economics.'],['Grid connection','Delays in grid connection can postpone revenue.']],
+            retail:[['Footfall','Physical store traffic trends downward across EU urban centers.'],['Online competition','Pure-play e-commerce players pressure margins.']],
+            logistics:[['Fuel & energy','Diesel and electricity price swings hit unit economics.'],['Driver availability','EU-wide driver shortage inflates labour cost.']],
+            education:[['Demographics','Declining birth rates affect long-term enrolment pools.'],['Regulatory','Public tuition policy changes can disrupt private providers.']],
+            maritime:[['Weather & seasonality','Operations exposed to adverse weather and tourism seasonality.'],['Fuel costs','Marine fuel prices are volatile and material to margins.']],
+            pharma:[['Regulatory approval','Product pipeline success contingent on EMA approvals.'],['IP challenges','Competitor litigation can delay or prevent launches.']],
+            sport:[['Lifestyle trends','Shifts in consumer leisure spending affect membership growth.'],['Churn','Member churn is typically 25-40%/year in fitness.']],
+            realestate:[['Interest rates','Refinancing and cap-rate risk in a rising rate environment.'],['Planning risk','Construction or zoning delays can postpone cashflows.']]
+        };
+        const base = sectorRisks[d.sector] || [['Execution risk','Business plans are ambitious and contingent on management execution.']];
+        d.riskFactors = [
+            ...base,
+            ['Illiquidity','Primary positions cannot be redeemed on demand — secondary market access not guaranteed.'],
+            ['Capital loss','You can lose up to 100% of the amount invested.']
+        ];
+    });
+}
+augmentDealsWithInstMetrics();
+
+// ==================== OVERRIDE renderDeals TO INCLUDE INST METRICS ====================
+const _origRenderDeals = renderDeals;
+renderDeals = function() {
+    const grid = document.getElementById('dealsGrid');
+    grid.innerHTML = '';
+    let count = 0;
+    Object.entries(deals).forEach(([key, deal]) => {
+        const sec = sectors[deal.sector];
+        if (activeSector && deal.sector !== activeSector) return;
+        if (activeDealFilter !== 'All' && sec?.name !== activeDealFilter) return;
+        count++;
+        const flag = flags[deal.country] || '';
+        const im = deal.instMetrics || {};
+        grid.innerHTML += '<div class="deal-card" onclick="navigate(\'deal\',\'' + key + '\')">' +
+            '<img src="' + deal.img + '" class="deal-image" loading="lazy">' +
+            '<div class="deal-content">' +
+            '<div class="deal-sector-tag" style="background:' + (sec?.color || '#666') + ';">' + (sec?.icon||'') + ' ' + (sec?.name||'') + '</div>' +
+            '<div class="deal-header"><div class="deal-name">' + deal.name + '</div><div class="deal-score" style="background:' + deal.scoreBg + ';">' + deal.score + '</div></div>' +
+            '<div class="deal-meta"><span class="country-flag">' + flag + '</span>' + deal.location + ' · ' + (countryNames[deal.country]||deal.country) + '</div>' +
+            '<div class="deal-funding"><div class="funding-bar"><div class="funding-fill" style="width:' + deal.funded + '%;"></div></div>' +
+            '<div class="funding-text"><span>' + deal.funded + '% funded</span><span>' + deal.target + '</span></div></div>' +
+            '<div class="inst-metrics">' +
+                '<div class="inst-m"><div class="inst-m-label">Net IRR</div><div class="inst-m-val">' + (im.irrNet||'') + '</div></div>' +
+                '<div class="inst-m"><div class="inst-m-label">MOIC</div><div class="inst-m-val">' + (im.moic||'') + '</div></div>' +
+                '<div class="inst-m"><div class="inst-m-label">TVPI</div><div class="inst-m-val">' + (im.tvpi||'') + '</div></div>' +
+            '</div>' +
+            '<div class="deal-footer"><div class="deal-irr">' + deal.irr + ' IRR</div><div class="deal-days">' + deal.days + ' days left</div></div>' +
+            '</div></div>';
+    });
+    document.getElementById('dealsCount').textContent = count + ' deal' + (count !== 1 ? 's' : '') + ' available';
+};
+
+// ==================== OVERRIDE renderDealDetail TO ADD RISK FACTORS + INST METRICS ====================
+const _origRenderDealDetail = renderDealDetail;
+renderDealDetail = function(dealKey) {
+    _origRenderDealDetail(dealKey);
+    const d = deals[dealKey]; if (!d) return;
+    const im = d.instMetrics || {};
+    // Inject institutional metrics strip after the stats row
+    const statsRow = document.querySelector('#view-deal .deal-stats-row');
+    if (statsRow) {
+        const strip = document.createElement('div');
+        strip.className = 'inst-metrics';
+        strip.style.gridTemplateColumns = 'repeat(7,1fr)';
+        strip.innerHTML =
+            '<div class="inst-m"><div class="inst-m-label">Net IRR</div><div class="inst-m-val" style="color:var(--green-dark);">' + (im.irrNet||'') + '</div></div>' +
+            '<div class="inst-m"><div class="inst-m-label">Gross IRR</div><div class="inst-m-val">' + (im.irrGross||'') + '</div></div>' +
+            '<div class="inst-m"><div class="inst-m-label">MOIC</div><div class="inst-m-val">' + (im.moic||'') + '</div></div>' +
+            '<div class="inst-m"><div class="inst-m-label">DPI</div><div class="inst-m-val">' + (im.dpi||'') + '</div></div>' +
+            '<div class="inst-m"><div class="inst-m-label">TVPI</div><div class="inst-m-val">' + (im.tvpi||'') + '</div></div>' +
+            '<div class="inst-m"><div class="inst-m-label">Loss Ratio</div><div class="inst-m-val">' + (im.loss||'') + '</div></div>' +
+            '<div class="inst-m"><div class="inst-m-label">Default Rate</div><div class="inst-m-val">' + (im.default||'') + '</div></div>';
+        statsRow.insertAdjacentElement('afterend', strip);
+    }
+    // Inject risk factors into overview tab
+    const overview = document.querySelector('#view-deal .tab-content.active .deal-overview') || document.querySelector('#view-deal .deal-overview');
+    if (overview && d.riskFactors) {
+        const panel = document.createElement('div');
+        panel.className = 'risk-factors';
+        panel.innerHTML = '<div class="risk-factors-title">⚠️ Risk Factors</div>' +
+            d.riskFactors.map(rf => '<div class="risk-factor"><div class="risk-factor-icon">•</div><div><strong>' + rf[0] + '</strong>' + rf[1] + '</div></div>').join('');
+        overview.appendChild(panel);
+    }
+};
+
+// ==================== MANAGED PORTFOLIOS / SECTOR SLEEVES TEASER ====================
+function renderSleeves() {
+    const container = document.getElementById('view-explore');
+    if (!container || document.getElementById('sleevesBlock')) return;
+    const block = document.createElement('div');
+    block.id = 'sleevesBlock';
+    block.innerHTML =
+        '<div class="explore-header" style="margin-top:8px;"><div class="explore-title" style="font-size:22px;">Managed Portfolios & Sector Sleeves</div>' +
+        '<div class="explore-subtitle">Diversified, one-click exposure curated by our analysts.</div></div>' +
+        '<div class="sleeves">' +
+        '<div class="sleeve" onclick="navigate(\'track\')"><div class="sleeve-label">MANAGED · CONSERVATIVE</div><div class="sleeve-name">Raise Income Core</div><div class="sleeve-desc">Senior-secured debt across 20-25 deals. Quarterly distributions, target net IRR 12-14%.</div><div class="sleeve-stats"><div><div class="sleeve-stat-val">12.8%</div><div class="sleeve-stat-lab">Target Net IRR</div></div><div><div class="sleeve-stat-val">€5K</div><div class="sleeve-stat-lab">Min</div></div><div><div class="sleeve-stat-val">48m</div><div class="sleeve-stat-lab">Duration</div></div></div></div>' +
+        '<div class="sleeve" onclick="navigate(\'track\')"><div class="sleeve-label">MANAGED · BALANCED</div><div class="sleeve-name">Raise Growth Balanced</div><div class="sleeve-desc">Mixed equity and debt across 30 deals in 8 sectors. Target net IRR 15-18%, semi-liquid.</div><div class="sleeve-stats"><div><div class="sleeve-stat-val">16.4%</div><div class="sleeve-stat-lab">Target Net IRR</div></div><div><div class="sleeve-stat-val">€10K</div><div class="sleeve-stat-lab">Min</div></div><div><div class="sleeve-stat-val">60m</div><div class="sleeve-stat-lab">Duration</div></div></div></div>' +
+        '<div class="sleeve" onclick="navigate(\'track\')"><div class="sleeve-label">SLEEVE · GREEN</div><div class="sleeve-name">Green Impact Sleeve</div><div class="sleeve-desc">SFDR Article 8 — solar, EV, cold-chain, biomass. Verified CO2 offset per €1,000 invested.</div><div class="sleeve-stats"><div><div class="sleeve-stat-val">14.1%</div><div class="sleeve-stat-lab">Target Net IRR</div></div><div><div class="sleeve-stat-val">€2.5K</div><div class="sleeve-stat-lab">Min</div></div><div><div class="sleeve-stat-val">72m</div><div class="sleeve-stat-lab">Duration</div></div></div></div>' +
+        '<div class="sleeve" onclick="navigate(\'track\')"><div class="sleeve-label">SLEEVE · ITALY</div><div class="sleeve-name">Made-in-Italy Sleeve</div><div class="sleeve-desc">Food, wine, fashion and hospitality — the best of Italian SME champions.</div><div class="sleeve-stats"><div><div class="sleeve-stat-val">17.3%</div><div class="sleeve-stat-lab">Target Net IRR</div></div><div><div class="sleeve-stat-val">€5K</div><div class="sleeve-stat-lab">Min</div></div><div><div class="sleeve-stat-val">48m</div><div class="sleeve-stat-lab">Duration</div></div></div></div>' +
+        '<div class="sleeve" onclick="navigate(\'track\')"><div class="sleeve-label">SLEEVE · TECH</div><div class="sleeve-name">EU Tech & Biotech</div><div class="sleeve-desc">Software, biotech, and AI companies across 5 EU hubs. Higher risk / higher return.</div><div class="sleeve-stats"><div><div class="sleeve-stat-val">21.7%</div><div class="sleeve-stat-lab">Target Net IRR</div></div><div><div class="sleeve-stat-val">€10K</div><div class="sleeve-stat-lab">Min</div></div><div><div class="sleeve-stat-val">60m</div><div class="sleeve-stat-lab">Duration</div></div></div></div>' +
+        '<div class="sleeve" onclick="navigate(\'track\')"><div class="sleeve-label">SLEEVE · REAL ESTATE</div><div class="sleeve-name">EU Alt-Residential</div><div class="sleeve-desc">Student housing, senior living and co-living across 6 EU cities. First-lien secured.</div><div class="sleeve-stats"><div><div class="sleeve-stat-val">13.6%</div><div class="sleeve-stat-lab">Target Net IRR</div></div><div><div class="sleeve-stat-val">€10K</div><div class="sleeve-stat-lab">Min</div></div><div><div class="sleeve-stat-val">84m</div><div class="sleeve-stat-lab">Duration</div></div></div></div>' +
+        '</div>';
+    // Insert before the featured deal
+    const featured = container.querySelector('.featured-deal');
+    if (featured) container.insertBefore(block, featured);
+    else container.appendChild(block);
+}
+
+// ==================== SECONDARY MARKET FAIR VALUE COLUMN ====================
+function upgradeSecondaryMarket() {
+    const table = document.querySelector('#view-secondary table.listings-table');
+    if (!table) return;
+    // Replace header
+    const theadTr = table.querySelector('thead tr');
+    if (theadTr) theadTr.innerHTML = '<th>Asset</th><th>Seller</th><th>Original</th><th>Asking</th><th>Fair Value</th><th>vs FV</th><th>Premium</th><th>Days</th><th></th>';
+    // Seed fair values to each row
+    const fvData = [
+        {orig:50000, ask:51600, fv:52200},
+        {orig:30000, ask:30900, fv:30400},
+        {orig:20000, ask:19400, fv:20600},
+        {orig:75000, ask:78750, fv:77100},
+        {orig:25000, ask:26500, fv:25900}
+    ];
+    table.querySelectorAll('tbody tr').forEach((tr, i) => {
+        if (i >= fvData.length) return;
+        const d = fvData[i];
+        const delta = ((d.ask - d.fv) / d.fv) * 100;
+        const cls = delta < -0.5 ? 'fv-good' : (delta > 0.5 ? 'fv-bad' : 'fv-neutral');
+        const sign = delta >= 0 ? '+' : '';
+        // Insert Fair Value and vs FV before Premium (index 4)
+        const cells = Array.from(tr.children);
+        const premiumCell = cells[4];
+        const fvCell = document.createElement('td');
+        fvCell.innerHTML = '€' + d.fv.toLocaleString();
+        const dvCell = document.createElement('td');
+        dvCell.innerHTML = '<span class="' + cls + '">' + sign + delta.toFixed(1) + '%</span>';
+        tr.insertBefore(fvCell, premiumCell);
+        tr.insertBefore(dvCell, premiumCell);
+    });
+}
+
+// ==================== CSV EXPORT ON PORTFOLIO ====================
+function exportPortfolioCSV() {
+    const rows = [['Company','Amount','Current Value','Net Return','Status']];
+    document.querySelectorAll('#portfolioTable tr').forEach(tr => {
+        const tds = tr.querySelectorAll('td');
+        if (tds.length < 5) return;
+        rows.push([
+            tds[0].innerText.replace(/\s+/g,' ').trim(),
+            tds[1].innerText.trim(),
+            tds[2].innerText.trim(),
+            tds[3].innerText.trim(),
+            tds[4].innerText.trim()
+        ]);
+    });
+    const csv = rows.map(r => r.map(f => '"' + (f||'').replace(/"/g,'""') + '"').join(',')).join('\n');
+    const blob = new Blob([csv], {type:'text/csv'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'raise-portfolio.csv';
+    document.body.appendChild(a); a.click();
+    setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 100);
+}
+function injectCsvButton() {
+    const section = document.querySelector('#view-portfolio .section-title');
+    if (!section || document.getElementById('csvExportBtn')) return;
+    const btn = document.createElement('button');
+    btn.id = 'csvExportBtn';
+    btn.className = 'csv-btn';
+    btn.innerHTML = '⬇ Export CSV';
+    btn.onclick = exportPortfolioCSV;
+    btn.style.marginLeft = '12px';
+    btn.style.verticalAlign = 'middle';
+    section.appendChild(btn);
+}
+
+// ==================== COMPARATORS ====================
+function switchCompare(btn, key) {
+    document.querySelectorAll('.compare-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.compare-content').forEach(c => c.classList.remove('active'));
+    document.getElementById('compare-' + key).classList.add('active');
+}
+
+const creditProviders = [
+    {bank:'Intesa Sanpaolo', logo:'ISP', baseRate:4.9, fees:0.8, speed:'14 days', rating:'A+'},
+    {bank:'UniCredit', logo:'UC', baseRate:5.2, fees:0.6, speed:'10 days', rating:'A+'},
+    {bank:'BNP Paribas', logo:'BNP', baseRate:4.7, fees:1.0, speed:'18 days', rating:'A+'},
+    {bank:'Deutsche Bank', logo:'DB', baseRate:5.1, fees:0.5, speed:'21 days', rating:'A+'},
+    {bank:'Santander', logo:'SAN', baseRate:5.4, fees:0.7, speed:'9 days', rating:'A'},
+    {bank:'ING Business', logo:'ING', baseRate:4.8, fees:0.9, speed:'12 days', rating:'A+'},
+    {bank:'KBC', logo:'KBC', baseRate:5.0, fees:0.8, speed:'14 days', rating:'A'},
+    {bank:'Banca Sella', logo:'SEL', baseRate:5.6, fees:0.4, speed:'7 days', rating:'A-'},
+    {bank:'Revolut Business', logo:'REV', baseRate:6.2, fees:0.0, speed:'48 hours', rating:'A-'},
+    {bank:'Qonto Finance', logo:'QNT', baseRate:5.9, fees:0.3, speed:'3 days', rating:'A-'},
+];
+
+function runCreditCompare() {
+    const amount = parseFloat(document.getElementById('crAmount').value) || 150000;
+    const months = parseFloat(document.getElementById('crMonths').value) || 60;
+    const type = document.getElementById('crType').value;
+    // Sort by effective rate
+    const ranked = creditProviders.map(p => {
+        const apr = p.baseRate + p.fees * (12/months);
+        const monthly = (amount * (apr/100/12)) / (1 - Math.pow(1 + apr/100/12, -months));
+        const total = monthly * months;
+        return {...p, apr, monthly, total};
+    }).sort((a,b) => a.apr - b.apr);
+    const container = document.getElementById('creditResults');
+    container.innerHTML = '<div style="margin:16px 0 10px;font-size:13px;color:var(--text-sec);">Showing <strong>' + ranked.length + '</strong> live offers for ' + type + ' · €' + amount.toLocaleString() + ' over ' + months + ' months</div>' +
+        ranked.map((p,i) =>
+            '<div class="offer-row' + (i===0?' top':'') + '" style="position:relative;">' +
+            (i===0 ? '<div class="offer-badge-top">Best rate</div>' : '') +
+            '<div class="offer-logo">' + p.logo + '</div>' +
+            '<div><div class="offer-main">' + p.bank + '</div><div class="offer-sub">Credit rating ' + p.rating + ' · Decision in ' + p.speed + '</div></div>' +
+            '<div class="offer-metric"><div class="offer-metric-label">APR</div><div class="offer-metric-val' + (i===0?' good':'') + '">' + p.apr.toFixed(2) + '%</div></div>' +
+            '<div class="offer-metric"><div class="offer-metric-label">Monthly</div><div class="offer-metric-val">€' + Math.round(p.monthly).toLocaleString() + '</div></div>' +
+            '<div class="offer-metric"><div class="offer-metric-label">Total cost</div><div class="offer-metric-val">€' + Math.round(p.total).toLocaleString() + '</div></div>' +
+            '<button class="offer-cta' + (i===0?' top':'') + '">Apply →</button>' +
+            '</div>'
+        ).join('');
+}
+
+const insuranceProviders = [
+    {ins:'Generali', logo:'GEN', base:1.0, rating:'AA'},
+    {ins:'Allianz', logo:'ALZ', base:1.05, rating:'AA'},
+    {ins:'AXA', logo:'AXA', base:0.98, rating:'AA-'},
+    {ins:'Zurich', logo:'ZUR', base:1.02, rating:'AA-'},
+    {ins:'Unipol', logo:'UNI', base:0.96, rating:'A'},
+    {ins:'Helvetia', logo:'HLV', base:1.08, rating:'A+'},
+    {ins:'Reale Mutua', logo:'RMA', base:0.94, rating:'A'},
+    {ins:'Groupama', logo:'GRP', base:1.01, rating:'A+'},
+];
+
+function runInsuranceCompare() {
+    const type = document.getElementById('insType').value;
+    const revenue = parseFloat(document.getElementById('insRevenue').value) || 1200000;
+    const employees = parseFloat(document.getElementById('insEmployees').value) || 12;
+    const sector = document.getElementById('insSector').value;
+    // Estimate base premium
+    const sectorMult = {'Food & Dining':1.15,'Hospitality':1.12,'Healthcare':1.35,'Technology':0.85,'Retail':1.05,'Industry':1.25}[sector]||1;
+    const typeMult = {'Business Liability (RC)':0.8,'Property & Contents':1.1,'Cyber Insurance':0.6,'Directors & Officers':1.3,'Professional Indemnity':1.0,'Key-person Life':0.9}[type]||1;
+    const basePremium = (revenue * 0.0042 + employees * 140) * sectorMult * typeMult;
+    const ranked = insuranceProviders.map(p => {
+        const premium = basePremium * p.base;
+        const excess = Math.round(premium * 0.1 / 100) * 100;
+        return {...p, premium, excess};
+    }).sort((a,b) => a.premium - b.premium);
+    const container = document.getElementById('insuranceResults');
+    container.innerHTML = '<div style="margin:16px 0 10px;font-size:13px;color:var(--text-sec);">Showing <strong>' + ranked.length + '</strong> live quotes for ' + type + ' · ' + sector + ' · ' + employees + ' employees</div>' +
+        ranked.map((p,i) =>
+            '<div class="offer-row' + (i===0?' top':'') + '" style="position:relative;">' +
+            (i===0 ? '<div class="offer-badge-top">Lowest premium</div>' : '') +
+            '<div class="offer-logo">' + p.logo + '</div>' +
+            '<div><div class="offer-main">' + p.ins + '</div><div class="offer-sub">S&P ' + p.rating + ' · 24h claims response</div></div>' +
+            '<div class="offer-metric"><div class="offer-metric-label">Annual Premium</div><div class="offer-metric-val' + (i===0?' good':'') + '">€' + Math.round(p.premium).toLocaleString() + '</div></div>' +
+            '<div class="offer-metric"><div class="offer-metric-label">Excess</div><div class="offer-metric-val">€' + p.excess.toLocaleString() + '</div></div>' +
+            '<div class="offer-metric"><div class="offer-metric-label">Cover</div><div class="offer-metric-val">€5M</div></div>' +
+            '<button class="offer-cta' + (i===0?' top':'') + '">Get quote →</button>' +
+            '</div>'
+        ).join('');
+}
+
+// ==================== DARK MODE TOGGLE ====================
+function applyTheme(mode) {
+    if (mode === 'dark') document.documentElement.setAttribute('data-theme','dark');
+    else document.documentElement.removeAttribute('data-theme');
+    const btn = document.getElementById('themeToggle');
+    if (btn) btn.textContent = mode === 'dark' ? '☀️' : '🌙';
+}
+function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+    applyTheme(current === 'dark' ? 'light' : 'dark');
+}
+(function initTheme(){ applyTheme('light'); try { localStorage.removeItem('raise-theme'); } catch(e){} })();
+
 // ==================== INIT ====================
 renderSectorChips();
 renderDealFilterPills();
 renderDeals();
 renderPortfolio();
-initMap();
+upgradeSecondaryMarket();
+injectCsvButton();
+runCreditCompare();
+runInsuranceCompare();
+try { initMap(); } catch(e) { console.warn('Map init skipped:', e); }
 </script>
 </body>
 </html>
