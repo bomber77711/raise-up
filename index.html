@@ -630,7 +630,7 @@
     </div>
     <div class="nav-right">
         <button class="icon-btn" title="Search" aria-label="Search" onclick="openSearchModal()"><i class="fa-solid fa-magnifying-glass"></i></button>
-        <button class="icon-btn" title="Notifications" aria-label="Notifications" style="position:relative;"><i class="fa-regular fa-bell"></i><span style="position:absolute;top:4px;right:4px;width:8px;height:8px;background:var(--red);border-radius:50%;border:2px solid white;"></span></button>
+        <button class="icon-btn" title="Notifications" aria-label="Notifications" style="position:relative;" onclick="openNotifications()"><i class="fa-regular fa-bell"></i><span id="notifDot" style="position:absolute;top:4px;right:4px;width:8px;height:8px;background:var(--red);border-radius:50%;border:2px solid white;"></span></button>
         <button class="icon-btn" id="themeToggle" title="Toggle dark mode" onclick="toggleTheme()" aria-label="Toggle dark mode"><i class="fa-regular fa-moon"></i></button>
         <button class="icon-btn nav-burger" title="Menu" aria-label="Menu" onclick="toggleMobileMenu()"><i class="fa-solid fa-bars"></i></button>
         <div class="nav-avatar" onclick="navigate('profile')">
@@ -690,7 +690,7 @@
                     <!-- Stats bar -->
                     <div class="map-stats">
                         <span class="map-stat"><strong id="mapDeals">200</strong> Active Deals</span>
-                        <span class="map-stat"><strong>€312M</strong> Total Volume</span>
+                        <span class="map-stat"><strong>€80.6M</strong> Total Volume</span>
                         <span class="map-stat"><strong>18,400+</strong> Investors</span>
                         <span class="map-stat"><strong>16</strong> Sectors</span>
                     </div>
@@ -993,14 +993,14 @@
                 <table class="tr-table">
                     <thead><tr><th>Sector</th><th>Deals</th><th>Avg Net IRR</th><th>MOIC</th><th>Loss Ratio</th><th>Default Rate</th></tr></thead>
                     <tbody>
-                        <tr><td><i class="fa-solid fa-utensils" style="color:#FF6B35;width:20px;"></i> Food & Dining</td><td>18</td><td style="color:var(--green-dark);">15.2%</td><td>1.42x</td><td>2.8%</td><td>1.9%</td></tr>
-                        <tr><td><i class="fa-solid fa-hotel" style="color:#DAA520;width:20px;"></i> Hospitality</td><td>14</td><td style="color:var(--green-dark);">19.4%</td><td>1.66x</td><td>1.2%</td><td>0.7%</td></tr>
-                        <tr><td><i class="fa-solid fa-house-medical" style="color:#30D158;width:20px;"></i> Healthcare</td><td>11</td><td style="color:var(--green-dark);">17.8%</td><td>1.54x</td><td>0.8%</td><td>0.4%</td></tr>
-                        <tr><td><i class="fa-solid fa-wine-glass" style="color:#722F37;width:20px;"></i> Wine & Agriculture</td><td>9</td><td style="color:var(--green-dark);">14.6%</td><td>1.48x</td><td>1.5%</td><td>1.1%</td></tr>
+                        <tr><td><i class="fa-solid fa-utensils" style="color:#FF6B35;width:20px;"></i> Food & Dining</td><td>20</td><td style="color:var(--green-dark);">15.2%</td><td>1.42x</td><td>2.8%</td><td>1.9%</td></tr>
+                        <tr><td><i class="fa-solid fa-hotel" style="color:#DAA520;width:20px;"></i> Hospitality</td><td>15</td><td style="color:var(--green-dark);">19.4%</td><td>1.66x</td><td>1.2%</td><td>0.7%</td></tr>
+                        <tr><td><i class="fa-solid fa-house-medical" style="color:#30D158;width:20px;"></i> Healthcare</td><td>12</td><td style="color:var(--green-dark);">17.8%</td><td>1.54x</td><td>0.8%</td><td>0.4%</td></tr>
+                        <tr><td><i class="fa-solid fa-wine-glass" style="color:#722F37;width:20px;"></i> Wine & Agriculture</td><td>10</td><td style="color:var(--green-dark);">14.6%</td><td>1.48x</td><td>1.5%</td><td>1.1%</td></tr>
                         <tr><td><i class="fa-solid fa-shirt" style="color:#AF52DE;width:20px;"></i> Textiles & Fashion</td><td>8</td><td style="color:var(--green-dark);">13.9%</td><td>1.38x</td><td>3.4%</td><td>2.2%</td></tr>
-                        <tr><td><i class="fa-solid fa-laptop-code" style="color:#0071E3;width:20px;"></i> Technology</td><td>13</td><td style="color:var(--green-dark);">22.1%</td><td>1.81x</td><td>2.9%</td><td>1.8%</td></tr>
+                        <tr><td><i class="fa-solid fa-laptop-code" style="color:#0071E3;width:20px;"></i> Technology</td><td>14</td><td style="color:var(--green-dark);">22.1%</td><td>1.81x</td><td>2.9%</td><td>1.8%</td></tr>
                         <tr><td><i class="fa-solid fa-bolt" style="color:#FFB000;width:20px;"></i> Energy</td><td>7</td><td style="color:var(--green-dark);">14.2%</td><td>1.44x</td><td>0.3%</td><td>0.0%</td></tr>
-                        <tr><td><i class="fa-solid fa-truck-fast" style="color:#5856D6;width:20px;"></i> Logistics</td><td>5</td><td style="color:var(--green-dark);">15.9%</td><td>1.45x</td><td>1.1%</td><td>0.8%</td></tr>
+                        <tr><td><i class="fa-solid fa-truck-fast" style="color:#5856D6;width:20px;"></i> Logistics</td><td>7</td><td style="color:var(--green-dark);">15.9%</td><td>1.45x</td><td>1.1%</td><td>0.8%</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -2503,9 +2503,9 @@ renderDeals = function() {
             '<div class="deal-funding"><div class="funding-bar"><div class="funding-fill" style="width:' + deal.funded + '%;"></div></div>' +
             '<div class="funding-text"><span>' + deal.funded + '% funded</span><span>' + deal.target + '</span></div></div>' +
             '<div class="inst-metrics">' +
-                '<div class="inst-m"><div class="inst-m-label">Net IRR</div><div class="inst-m-val">' + (im.irrNet||'') + '</div></div>' +
-                '<div class="inst-m"><div class="inst-m-label">MOIC</div><div class="inst-m-val">' + (im.moic||'') + '</div></div>' +
-                '<div class="inst-m"><div class="inst-m-label">TVPI</div><div class="inst-m-val">' + (im.tvpi||'') + '</div></div>' +
+                '<div class="inst-m"><div class="inst-m-label">Instrument</div><div class="inst-m-val" style="font-size:12px;">' + ((deal.instrument||'').split(' ')[0]) + '</div></div>' +
+                '<div class="inst-m"><div class="inst-m-label">Term</div><div class="inst-m-val" style="font-size:12px;">' + ((deal.duration||'').replace(' months','m')) + '</div></div>' +
+                '<div class="inst-m"><div class="inst-m-label">Min</div><div class="inst-m-val" style="font-size:12px;">' + (deal.min||'') + '</div></div>' +
             '</div>' +
             '<div class="deal-footer"><div class="deal-irr">' + deal.irr + ' IRR</div><div class="deal-days">' + deal.days + ' days left</div></div>' +
             '</div></div>';
@@ -2796,6 +2796,438 @@ injectCsvButton();
 runCreditCompare();
 runInsuranceCompare();
 try { initMap(); } catch(e) { console.warn('Map init skipped:', e); }
+</script>
+
+<!-- ==================== V2 ENHANCEMENTS ==================== -->
+<script>
+(function(){
+  // ---------- styles ----------
+  var css = ''
+  + '.iv-amount-wrap{position:relative;margin:6px 0 14px;}'
+  + '.iv-amount-input{width:100%;box-sizing:border-box;font-size:34px;font-weight:800;text-align:center;border:2px solid var(--border);border-radius:16px;padding:18px 18px 18px 40px;letter-spacing:-0.5px;color:var(--text-pri);background:var(--surface);outline:none;transition:border-color .15s;}'
+  + '.iv-amount-input:focus{border-color:var(--blue);}'
+  + '.iv-cur{position:absolute;left:18px;top:50%;transform:translateY(-50%);font-size:26px;font-weight:700;color:var(--text-ter);pointer-events:none;}'
+  + '.iv-presets{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px;}'
+  + '.iv-preset{flex:1;min-width:70px;padding:10px 6px;border-radius:12px;border:1.5px solid var(--border);background:var(--surface);font-size:13px;font-weight:600;color:var(--text-pri);cursor:pointer;transition:all .15s;}'
+  + '.iv-preset:hover{border-color:var(--blue);color:var(--blue);}'
+  + '.iv-preset.active{background:var(--blue);border-color:var(--blue);color:#fff;}'
+  + '.iv-warn{font-size:12.5px;color:var(--orange);min-height:16px;margin:2px 2px 8px;}'
+  + '.iv-payoff{background:linear-gradient(135deg,rgba(0,113,227,0.06),rgba(48,209,88,0.06));border:1px solid var(--border);border-radius:16px;padding:16px;margin-top:4px;}'
+  + '.iv-payoff-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}'
+  + '.iv-pay-cell{background:var(--surface);border-radius:12px;padding:10px 12px;}'
+  + '.iv-pay-cell .lab{font-size:11px;color:var(--text-ter);text-transform:uppercase;letter-spacing:.4px;}'
+  + '.iv-pay-cell .val{font-size:19px;font-weight:800;margin-top:2px;color:var(--text-pri);}'
+  + '.iv-pay-cell .val.green{color:var(--green-dark);}'
+  + '.iv-chart-cap{font-size:11px;color:var(--text-ter);margin:4px 2px 2px;display:flex;justify-content:space-between;}'
+  + '.iv-scn{display:flex;gap:8px;margin-top:10px;}'
+  + '.iv-scn div{flex:1;background:var(--surface);border-radius:10px;padding:8px 10px;font-size:12px;}'
+  + '.iv-scn .s-lab{color:var(--text-ter);font-size:10.5px;text-transform:uppercase;letter-spacing:.3px;}'
+  + '.iv-scn .s-val{font-weight:700;font-size:15px;margin-top:1px;}'
+  + '.iv-review-row{display:flex;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--border);font-size:14px;color:var(--text-sec);}'
+  + '.iv-review-row strong{color:var(--text-pri);}'
+  + '.iv-review-total{border-bottom:none;font-size:16px;padding-top:14px;}'
+  + '.iv-pay-method{display:flex;gap:10px;margin:14px 0 4px;}'
+  + '.iv-pm{flex:1;border:1.5px solid var(--border);border-radius:12px;padding:12px;cursor:pointer;transition:all .15s;}'
+  + '.iv-pm.sel{border-color:var(--blue);background:rgba(0,113,227,0.05);}'
+  + '.iv-pm .pm-t{font-weight:700;font-size:14px;color:var(--text-pri);}'
+  + '.iv-pm .pm-s{font-size:11.5px;color:var(--text-ter);margin-top:2px;}'
+  + '.iv-escrow{display:flex;gap:10px;align-items:flex-start;background:var(--green-light);border-radius:12px;padding:12px;margin:14px 0;font-size:12.5px;color:var(--green-dark);}'
+  + '.iv-ack{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--text-sec);margin-top:6px;cursor:pointer;}'
+  + '.iv-ack input{margin-top:2px;width:18px;height:18px;flex:0 0 auto;}'
+  + '.iv-receipt{text-align:center;}'
+  + '.iv-r-check{width:64px;height:64px;border-radius:50%;background:var(--green-light);color:var(--green-dark);display:flex;align-items:center;justify-content:center;font-size:30px;margin:6px auto 12px;}'
+  + '.iv-r-box{text-align:left;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin:12px 0;}'
+  + '.iv-r-box .r-row{display:flex;justify-content:space-between;padding:6px 0;font-size:13px;color:var(--text-sec);}'
+  + '.iv-r-box .r-row strong{color:var(--text-pri);}'
+  + '.iv-timeline{text-align:left;margin:14px 0;}'
+  + '.iv-tl-item{display:flex;gap:12px;align-items:flex-start;padding:8px 0;}'
+  + '.iv-tl-dot{width:22px;height:22px;border-radius:50%;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:11px;background:var(--surface-2);color:var(--text-ter);border:1.5px solid var(--border);}'
+  + '.iv-tl-dot.done{background:var(--green-dark);color:#fff;border-color:var(--green-dark);}'
+  + '.iv-tl-item .tl-t{font-size:13px;font-weight:600;color:var(--text-pri);}'
+  + '.iv-tl-item .tl-s{font-size:11.5px;color:var(--text-ter);}'
+  + '.ru-toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(20px);background:#1d1d1f;color:#fff;padding:13px 20px;border-radius:12px;font-size:13.5px;font-weight:500;z-index:6000;opacity:0;transition:all .25s;box-shadow:0 8px 30px rgba(0,0,0,0.25);max-width:90vw;}'
+  + '.ru-toast.show{opacity:1;transform:translateX(-50%) translateY(0);}'
+  + '.ru-modal{position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:5500;display:none;align-items:center;justify-content:center;padding:20px;}'
+  + '.ru-modal.active{display:flex;}'
+  + '.ru-modal-box{background:var(--surface);border-radius:18px;max-width:460px;width:100%;max-height:85vh;overflow:auto;box-shadow:0 24px 70px rgba(0,0,0,0.3);}'
+  + '.ru-modal-head{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid var(--border);}'
+  + '.ru-modal-head .t{font-size:17px;font-weight:700;color:var(--text-pri);}'
+  + '.ru-modal-head button{background:none;border:none;font-size:18px;color:var(--text-ter);cursor:pointer;}'
+  + '.ru-modal-body{padding:18px 20px;}'
+  + '.ru-notif{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);}'
+  + '.ru-notif:last-child{border-bottom:none;}'
+  + '.ru-notif-ic{width:34px;height:34px;border-radius:10px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;background:var(--surface-2);color:var(--blue);}'
+  + '.ru-notif .n-t{font-size:13.5px;font-weight:600;color:var(--text-pri);}'
+  + '.ru-notif .n-s{font-size:12px;color:var(--text-ter);margin-top:1px;}'
+  + '.up-section{margin-top:24px;}'
+  + '.up-bar{display:flex;height:30px;border-radius:8px;overflow:hidden;margin:10px 0;}'
+  + '.up-leg{display:flex;flex-wrap:wrap;gap:12px;}'
+  + '.up-leg div{display:flex;align-items:center;gap:6px;font-size:12.5px;color:var(--text-sec);}'
+  + '.up-dot{width:11px;height:11px;border-radius:3px;display:inline-block;}'
+  + '.fin-table{width:100%;border-collapse:collapse;margin-top:8px;font-size:13px;}'
+  + '.fin-table th,.fin-table td{padding:9px 10px;text-align:right;border-bottom:1px solid var(--border);}'
+  + '.fin-table th:first-child,.fin-table td:first-child{text-align:left;}'
+  + '.fin-table thead th{color:var(--text-ter);font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:.3px;}'
+  + '.lb-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border);border-radius:14px;}'
+  + '.lb-table{width:100%;border-collapse:collapse;font-size:13px;min-width:760px;}'
+  + '.lb-table th,.lb-table td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;}'
+  + '.lb-table thead th{color:var(--text-ter);font-weight:600;font-size:11.5px;text-transform:uppercase;letter-spacing:.3px;background:var(--surface-2);position:sticky;top:0;}'
+  + '.lb-table tbody tr:hover{background:var(--surface-2);}'
+  + '.lb-badge{font-size:11px;font-weight:600;padding:3px 9px;border-radius:980px;}';
+  var st = document.createElement('style'); st.textContent = css; document.head.appendChild(st);
+
+  // ---------- helpers ----------
+  function parseMoney(s){ if(s==null) return 0; if(typeof s==='number') return s; var m=(''+s).replace(/[€,\s]/g,''); var mult=1; if(/m$/i.test(m)){mult=1e6;m=m.replace(/m$/i,'');} else if(/k$/i.test(m)){mult=1e3;m=m.replace(/k$/i,'');} var n=parseFloat(m); return isNaN(n)?0:n*mult; }
+  function fmtM(n){ n=Math.round(n); var a=Math.abs(n); if(a>=1e6) return '€'+(n/1e6).toFixed(2).replace(/\.?0+$/,'')+'M'; if(a>=1e3) return '€'+(n/1e3).toFixed(0)+'K'; return '€'+n.toLocaleString(); }
+  function fmtE(n){ return '€'+Math.round(n).toLocaleString(); }
+  function hashStr(s){ return (''+s).split('').reduce(function(a,c){return a+c.charCodeAt(0);},0); }
+  function midIrr(d){ var r=(d.irr||'12-15%').replace(/%/g,'').split('-').map(parseFloat); return (r[0]+(r[1]||r[0]))/2; }
+  function dealYears(d){ var m=parseInt(((d.duration||'48 months').match(/\d+/)||[48])[0],10); return Math.max(1, m/12); }
+  var curKey=null;
+  function D(){ return (deals||{})[curKey] || {}; }
+
+  // ---------- toast ----------
+  var toastEl=null, toastT=null;
+  window.demoToast = function(msg){
+    if(!toastEl){ toastEl=document.createElement('div'); toastEl.className='ru-toast'; document.body.appendChild(toastEl); }
+    toastEl.textContent=msg; toastEl.classList.add('show');
+    clearTimeout(toastT); toastT=setTimeout(function(){ toastEl.classList.remove('show'); }, 2600);
+  };
+
+  // ---------- generic modal ----------
+  var gModal=null;
+  function showModal(title, bodyHtml){
+    if(!gModal){
+      gModal=document.createElement('div'); gModal.className='ru-modal';
+      gModal.innerHTML='<div class="ru-modal-box"><div class="ru-modal-head"><div class="t"></div><button aria-label="Close"><i class="fa-solid fa-xmark"></i></button></div><div class="ru-modal-body"></div></div>';
+      document.body.appendChild(gModal);
+      gModal.addEventListener('click', function(e){ if(e.target===gModal) gModal.classList.remove('active'); });
+      gModal.querySelector('.ru-modal-head button').addEventListener('click', function(){ gModal.classList.remove('active'); });
+    }
+    gModal.querySelector('.ru-modal-head .t').textContent=title;
+    gModal.querySelector('.ru-modal-body').innerHTML=bodyHtml;
+    gModal.classList.add('active');
+  }
+
+  // ---------- notifications ----------
+  window.openNotifications = function(){
+    var dot=document.getElementById('notifDot'); if(dot) dot.style.display='none';
+    var items=[
+      ['fa-solid fa-circle-check','Investment confirmed','Your €10,000 commitment to Borgo Luxury Hotels is held in escrow.','2h ago'],
+      ['fa-solid fa-file-invoice','New deal live','BerlinTech Hub is now open for investment — target IRR 22–28%.','5h ago'],
+      ['fa-solid fa-coins','Distribution received','Quarterly distribution of €420 credited to your wallet.','1d ago'],
+      ['fa-solid fa-triangle-exclamation','Round closing soon','Osteria del Sole closes in 3 days — 88% funded.','2d ago']
+    ];
+    var body=items.map(function(n){
+      return '<div class="ru-notif"><div class="ru-notif-ic"><i class="'+n[0]+'"></i></div><div><div class="n-t">'+n[1]+'</div><div class="n-s">'+n[2]+'</div><div class="n-s" style="margin-top:3px;opacity:.7;">'+n[3]+'</div></div></div>';
+    }).join('');
+    showModal('Notifications', body);
+  };
+
+  // ---------- delegated clicks: View buttons + social login + forgot ----------
+  document.addEventListener('click', function(e){
+    var t=e.target;
+    var v=t.closest && t.closest('.btn-view'); if(v){ e.preventDefault(); openDemoView(v); return; }
+    var s=t.closest && t.closest('.login-social-btn'); if(s){ e.preventDefault(); demoToast('Social sign-in is illustrative in this demo — use email login.'); return; }
+    if(t.matches && t.matches('[data-forgot]')){ e.preventDefault(); demoToast('Password reset is illustrative in this demo.'); }
+  });
+  function openDemoView(btn){
+    var row=btn.closest('tr');
+    var firstCell = row ? (row.querySelector('strong') ? row.querySelector('strong').textContent : (row.querySelector('.document-name')? row.querySelector('.document-name').textContent : 'Document')) : 'Document';
+    var isDoc = !!btn.closest('.document-row');
+    if(isDoc){
+      showModal(firstCell, '<div style="border:1px dashed var(--border);border-radius:12px;padding:30px;text-align:center;color:var(--text-ter);">'
+        +'<div style="font-size:40px;color:var(--blue);margin-bottom:10px;"><i class="fa-regular fa-file-pdf"></i></div>'
+        +'<div style="font-weight:700;color:var(--text-pri);font-size:15px;">'+firstCell+'</div>'
+        +'<div style="font-size:12.5px;margin-top:6px;">Secure document preview</div>'
+        +'<div style="margin-top:16px;display:inline-block;background:var(--surface-2);padding:6px 14px;border-radius:980px;font-size:11px;letter-spacing:1px;">DEMO — WATERMARKED</div>'
+        +'</div><div style="font-size:12px;color:var(--text-ter);margin-top:14px;">In the live platform, qualified investors access the full data room after identity verification.</div>');
+    } else {
+      showModal('Secondary listing — '+firstCell, '<div style="font-size:13.5px;color:var(--text-sec);line-height:1.6;">'
+        +'This position is listed on the RaiseUp <strong>bulletin board</strong>. Under ECSPR, RaiseUp facilitates expressions of interest between investors — it is not a guaranteed exchange.</div>'
+        +'<div class="iv-r-box"><div class="r-row"><span>Asset</span><strong>'+firstCell+'</strong></div>'
+        +'<div class="r-row"><span>Status</span><strong>Open to expressions of interest</strong></div>'
+        +'<div class="r-row"><span>Settlement</span><strong>T+2 after match</strong></div></div>'
+        +'<button class="btn-primary" style="width:100%;border:none;cursor:pointer;" onclick="demoToast(\'Expression of interest registered (demo).\')">Register interest</button>');
+    }
+  }
+
+  // ============================================================
+  //  INVEST FLOW (3 steps: Amount -> Review -> Receipt)
+  // ============================================================
+  var step=1, amount=0, curMin=1000, curMax=100000, curTarget=0, payMethod='bank', lastReceipt=null;
+
+  function computePayoff(amt){
+    var d=D(); var ann=midIrr(d)/100; var yrs=dealYears(d);
+    var mult=Math.pow(1+ann, yrs);
+    var total=amt*mult; var profit=total-amt;
+    var stake = curTarget>0 ? (amt/curTarget*100) : 0;
+    var downMult=Math.pow(1+Math.max(ann*0.35,-0.03), yrs);
+    return { ann:ann, yrs:yrs, mult:mult, total:total, profit:profit, stake:stake, down:amt*downMult };
+  }
+  function sparkline(amt){
+    var p=computePayoff(amt); var yrs=Math.max(2,Math.round(p.yrs)); var W=300,H=64,pad=6;
+    var vals=[]; for(var t=0;t<=yrs;t++){ vals.push(amt*Math.pow(1+p.ann,t)); }
+    var max=vals[vals.length-1], min=vals[0];
+    var pts=vals.map(function(v,i){ var x=pad+(W-2*pad)*(i/yrs); var y=H-pad-(H-2*pad)*((v-min)/(max-min||1)); return x.toFixed(0)+','+y.toFixed(0); });
+    var area='M'+pts.join(' L ')+' L '+(W-pad)+','+(H-pad)+' L '+pad+','+(H-pad)+' Z';
+    return '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:64px;display:block;"><defs><linearGradient id="ivg" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#30D158" stop-opacity="0.35"/><stop offset="100%" stop-color="#30D158" stop-opacity="0"/></linearGradient></defs>'
+      +'<path d="'+area+'" fill="url(#ivg)"/>'
+      +'<polyline points="'+pts.join(' ')+'" fill="none" stroke="#30D158" stroke-width="2.5"/>'
+      +'<circle cx="'+pts[pts.length-1].split(',')[0]+'" cy="'+pts[pts.length-1].split(',')[1]+'" r="3.5" fill="#30D158"/></svg>';
+  }
+  function renderPayoff(){
+    var box=document.getElementById('ivPayoff'); if(!box) return;
+    if(!(amount>=curMin && amount<=curMax)){ box.innerHTML='<div style="text-align:center;color:var(--text-ter);font-size:13px;padding:18px;">Enter an amount to see your projected return</div>'; return; }
+    var p=computePayoff(amount); var d=D();
+    box.innerHTML=''
+      +'<div class="iv-payoff-grid">'
+      +'<div class="iv-pay-cell"><div class="lab">Your stake</div><div class="val">'+p.stake.toFixed(p.stake<1?2:1)+'%</div></div>'
+      +'<div class="iv-pay-cell"><div class="lab">Net multiple</div><div class="val">'+p.mult.toFixed(2)+'x</div></div>'
+      +'<div class="iv-pay-cell"><div class="lab">Projected value</div><div class="val green">'+fmtE(p.total)+'</div></div>'
+      +'<div class="iv-pay-cell"><div class="lab">Projected profit</div><div class="val green">+'+fmtE(p.profit)+'</div></div>'
+      +'</div>'
+      +'<div class="iv-chart-cap"><span>Projected value (base case)</span><span>'+Math.round(p.yrs)+'-yr horizon</span></div>'
+      +sparkline(amount)
+      +'<div class="iv-scn">'
+      +'<div><div class="s-lab">Base case</div><div class="s-val" style="color:var(--green-dark);">'+fmtE(p.total)+'</div></div>'
+      +'<div><div class="s-lab">Downside (stress)</div><div class="s-val" style="color:var(--orange);">'+fmtE(p.down)+'</div></div>'
+      +'<div><div class="s-lab">Distribution</div><div class="s-val" style="font-size:13px;">'+(d.dist||'Quarterly')+'</div></div>'
+      +'</div>'
+      +'<div style="font-size:10.5px;color:var(--text-ter);margin-top:8px;line-height:1.4;">Illustrative projection based on the deal’s target IRR. Not a guarantee — capital is at risk.</div>';
+  }
+  window.onAmtInput=function(v){
+    var n=parseInt((''+v).replace(/[^0-9]/g,''),10); amount=isNaN(n)?0:n;
+    var w=document.getElementById('ivWarn');
+    if(w){ if(amount && amount<curMin) w.textContent='Minimum for this deal is '+fmtE(curMin); else if(amount>curMax) w.textContent='Maximum available is '+fmtE(curMax); else w.textContent=''; }
+    document.querySelectorAll('.iv-preset').forEach(function(b){ b.classList.toggle('active', parseInt(b.dataset.v,10)===amount); });
+    renderPayoff();
+  };
+  window.ivSetAmount=function(n){ amount=n; var inp=document.getElementById('ivAmt'); if(inp) inp.value=n.toLocaleString(); window.onAmtInput(n); };
+  window.ivSelectPay=function(el,m){ payMethod=m; document.querySelectorAll('.iv-pm').forEach(function(p){p.classList.remove('sel');}); el.classList.add('sel'); };
+  window.ivAck=function(cb){ var b=document.getElementById('nextBtn'); if(b) b.disabled=!cb.checked; };
+
+  function presetVals(){
+    var a=[curMin, curMin*2, curMin*5].filter(function(x){return x<=curMax;});
+    if(a.indexOf(curMin)<0) a.unshift(curMin);
+    return a;
+  }
+  function stepperHtml(){
+    var labels=['Amount','Review','Done'];
+    return labels.map(function(s,i){
+      var cls=i<step-1?'completed':i===step-1?'active':'';
+      return '<div class="step-item '+cls+'"><div class="step-circle">'+(i<step-1?'<i class="fa-solid fa-check"></i>':(i+1))+'</div><div class="step-label">'+s+'</div></div>';
+    }).join('<div style="width:6px;height:1px;background:var(--border);"></div>');
+  }
+  function bodyStep1(){
+    var d=D(); var presets=presetVals();
+    return '<div style="font-size:14px;color:var(--text-sec);margin-bottom:4px;">How much would you like to invest in <strong style="color:var(--text-pri);">'+(d.name||'this deal')+'</strong>?</div>'
+      +'<div class="iv-amount-wrap"><span class="iv-cur">€</span><input id="ivAmt" class="iv-amount-input" type="text" inputmode="numeric" value="'+amount.toLocaleString()+'" oninput="onAmtInput(this.value)"></div>'
+      +'<div class="iv-presets">'
+      + presets.map(function(v){ return '<button class="iv-preset" data-v="'+v+'" onclick="ivSetAmount('+v+')">'+fmtM(v)+'</button>'; }).join('')
+      + '<button class="iv-preset" data-v="'+curMax+'" onclick="ivSetAmount('+curMax+')">Max</button>'
+      +'</div>'
+      +'<div class="iv-warn" id="ivWarn"></div>'
+      +'<div class="iv-payoff" id="ivPayoff"></div>';
+  }
+  function bodyStep2(){
+    var d=D(); var fee=Math.round(amount*0.02);
+    return '<div style="font-size:14px;color:var(--text-sec);margin-bottom:8px;">Review &amp; confirm your investment</div>'
+      +'<div class="iv-review-row"><span>Company</span><strong>'+(d.name||'')+'</strong></div>'
+      +'<div class="iv-review-row"><span>Investment amount</span><strong>'+fmtE(amount)+'</strong></div>'
+      +'<div class="iv-review-row"><span>Platform fee (2%)</span><strong>'+fmtE(fee)+'</strong></div>'
+      +'<div class="iv-review-row iv-review-total"><span>Total due</span><strong>'+fmtE(amount+fee)+'</strong></div>'
+      +'<div class="iv-pay-method">'
+      +'<div class="iv-pm sel" onclick="ivSelectPay(this,\'bank\')"><div class="pm-t"><i class="fa-solid fa-building-columns"></i> Bank transfer</div><div class="pm-s">SEPA to segregated client account</div></div>'
+      +'<div class="iv-pm" onclick="ivSelectPay(this,\'card\')"><div class="pm-t"><i class="fa-regular fa-credit-card"></i> Card</div><div class="pm-s">For amounts under €5,000</div></div>'
+      +'</div>'
+      +'<div class="iv-escrow"><i class="fa-solid fa-shield-halved" style="margin-top:1px;"></i><div>Your funds are held in a <strong>segregated escrow account</strong> and are only released to the company once the round reaches its target. If it doesn’t close, you are refunded in full.</div></div>'
+      +'<label class="iv-ack"><input type="checkbox" id="riskAck" onchange="ivAck(this)"><span>I understand this is an investment in a private company. It carries risk, including the loss of all capital invested.</span></label>';
+  }
+  function bodyStep3(){
+    var r=lastReceipt||{}; var d=D();
+    return '<div class="iv-receipt">'
+      +'<div class="iv-r-check"><i class="fa-solid fa-check"></i></div>'
+      +'<div style="font-size:19px;font-weight:800;color:var(--text-pri);">Order placed</div>'
+      +'<div style="font-size:13px;color:var(--text-sec);margin-top:4px;">Your commitment is reserved and held in escrow.</div>'
+      +'<div class="iv-r-box">'
+      +'<div class="r-row"><span>Order number</span><strong>'+r.order+'</strong></div>'
+      +'<div class="r-row"><span>Company</span><strong>'+(d.name||'')+'</strong></div>'
+      +'<div class="r-row"><span>Amount</span><strong>'+fmtE(r.amount||0)+'</strong></div>'
+      +'<div class="r-row"><span>Status</span><strong style="color:var(--green-dark);">Held in escrow</strong></div>'
+      +'</div>'
+      +'<div class="iv-timeline">'
+      +'<div class="iv-tl-item"><div class="iv-tl-dot done"><i class="fa-solid fa-check"></i></div><div><div class="tl-t">Order placed &amp; funds in escrow</div><div class="tl-s">Today</div></div></div>'
+      +'<div class="iv-tl-item"><div class="iv-tl-dot">2</div><div><div class="tl-t">Round closes</div><div class="tl-s">When target is reached ('+(d.days||'—')+' days left)</div></div></div>'
+      +'<div class="iv-tl-item"><div class="iv-tl-dot">3</div><div><div class="tl-t">Contracts signed &amp; funds released</div><div class="tl-s">Within 5 business days of closing</div></div></div>'
+      +'<div class="iv-tl-item"><div class="iv-tl-dot">4</div><div><div class="tl-t">First investor report</div><div class="tl-s">Quarterly thereafter</div></div></div>'
+      +'</div>'
+      +'<button class="btn-secondary" style="width:100%;cursor:pointer;" onclick="downloadReceipt()"><i class="fa-solid fa-download"></i> Download receipt</button>'
+      +'</div>';
+  }
+  function renderStep(){
+    var body=document.getElementById('iv-body'); if(!body) return;
+    document.getElementById('stepper').innerHTML=stepperHtml();
+    if(step===1){ body.innerHTML=bodyStep1(); renderPayoff(); }
+    else if(step===2){ body.innerHTML=bodyStep2(); }
+    else { body.innerHTML=bodyStep3(); }
+    var prev=document.getElementById('prevBtn'), next=document.getElementById('nextBtn');
+    prev.style.visibility = step>1 && step<3 ? 'visible':'hidden';
+    if(step===3){ next.textContent='Done'; next.disabled=false; prev.style.display='none'; }
+    else { next.textContent = step===2?'Confirm investment':'Continue'; prev.style.display=''; next.disabled = step===2; }
+  }
+  function finalize(){
+    lastReceipt={ order:'RU-'+new Date().getFullYear()+'-'+Math.floor(100000+Math.random()*900000), amount:amount, deal:(D().name||'') };
+  }
+  window.downloadReceipt=function(){
+    var r=lastReceipt||{}; var d=D(); var fee=Math.round((r.amount||0)*0.02);
+    var html='<!doctype html><html><head><meta charset="utf-8"><title>Receipt '+r.order+'</title>'
+      +'<style>body{font-family:Arial,Helvetica,sans-serif;color:#1d1d1f;max-width:600px;margin:40px auto;padding:0 24px;}h1{color:#0071E3;font-size:22px;}table{width:100%;border-collapse:collapse;margin:18px 0;}td{padding:10px 0;border-bottom:1px solid #eee;}td:last-child{text-align:right;font-weight:bold;}.muted{color:#888;font-size:12px;}.badge{display:inline-block;background:#E8FBF0;color:#1a7a43;padding:4px 12px;border-radius:20px;font-size:12px;}</style></head><body>'
+      +'<h1>RaiseUp — Investment Receipt</h1><div class="muted">Order '+r.order+' · '+new Date().toLocaleDateString()+'</div>'
+      +'<table><tr><td>Company</td><td>'+(d.name||'')+'</td></tr>'
+      +'<tr><td>Investment amount</td><td>'+fmtE(r.amount||0)+'</td></tr>'
+      +'<tr><td>Platform fee (2%)</td><td>'+fmtE(fee)+'</td></tr>'
+      +'<tr><td>Total</td><td>'+fmtE((r.amount||0)+fee)+'</td></tr>'
+      +'<tr><td>Status</td><td><span class="badge">Held in escrow</span></td></tr></table>'
+      +'<p class="muted">Funds are held in a segregated escrow account and released to the company only once the round reaches its target. This is an illustrative demo document.</p>'
+      +'</body></html>';
+    var blob=new Blob([html],{type:'text/html'}); var url=URL.createObjectURL(blob);
+    var a=document.createElement('a'); a.href=url; a.download='raiseup-receipt-'+r.order+'.html';
+    document.body.appendChild(a); a.click(); setTimeout(function(){ document.body.removeChild(a); URL.revokeObjectURL(url); },100);
+    demoToast('Receipt downloaded');
+  };
+
+  window.openInvestModal=function(key){
+    curKey=key; var d=D();
+    curMin=parseMoney(d.min)||1000; curTarget=parseMoney(d.target)||0;
+    var remaining = curTarget>0 ? Math.round(curTarget*(1-(d.funded||0)/100)) : 100000;
+    curMax = Math.max(curMin, remaining||100000);
+    amount=curMin; step=1; payMethod='bank';
+    var boxOuter=document.getElementById('investModal').querySelector('.modal-box');
+    boxOuter.innerHTML=''
+      +'<button class="modal-close" onclick="closeInvestModal()"><i class="fa-solid fa-xmark"></i></button>'
+      +'<div class="modal-title">Invest</div>'
+      +'<div class="stepper" id="stepper"></div>'
+      +'<div id="iv-body"></div>'
+      +'<div class="modal-actions"><button class="btn-secondary" id="prevBtn" onclick="prevStep()">Back</button><button class="btn-primary" id="nextBtn" onclick="nextStep()">Continue</button></div>';
+    document.getElementById('investModal').classList.add('active');
+    renderStep();
+  };
+  window.closeInvestModal=function(){ document.getElementById('investModal').classList.remove('active'); };
+  window.nextStep=function(){
+    if(step===1){ if(!(amount>=curMin && amount<=curMax)){ demoToast('Enter an amount between '+fmtE(curMin)+' and '+fmtE(curMax)+'.'); return; } step=2; renderStep(); }
+    else if(step===2){ if(!document.getElementById('riskAck').checked) return; finalize(); step=3; renderStep(); }
+    else { closeInvestModal(); }
+  };
+  window.prevStep=function(){ if(step>1 && step<3){ step--; renderStep(); } };
+
+  // ============================================================
+  //  DEAL DETAIL: deal-level metrics + use of proceeds + financials
+  // ============================================================
+  function uopFor(d){
+    var i=(d.instrument||'').toLowerCase();
+    if(/debt|bond|senior|loan/.test(i)) return [['Refinancing & growth capex',45,'#0071E3'],['Working capital',28,'#30D158'],['Equipment',17,'#FF9F0A'],['Fees & reserve',10,'#AF52DE']];
+    if(/equity|safe|convert/.test(i))  return [['Product & R&D',35,'#0071E3'],['Sales & marketing',30,'#30D158'],['Team & hiring',25,'#FF9F0A'],['Working capital',10,'#AF52DE']];
+    return [['Expansion / new sites',40,'#0071E3'],['Equipment & fit-out',28,'#30D158'],['Working capital',20,'#FF9F0A'],['Marketing',12,'#AF52DE']];
+  }
+  function ebitdaMargin(sector){
+    var m={hospitality:0.30,realestate:0.45,energy:0.40,tech:0.25,pharma:0.28,healthcare:0.22,wine:0.24,production:0.18,industry:0.16,food:0.13,textiles:0.14,retail:0.12,logistics:0.15,education:0.20,maritime:0.20,sport:0.22};
+    return m[sector]||0.18;
+  }
+  function dealMetricsHtml(d){
+    var h=hashStr(d.name||'x');
+    var secured=/lien|propert|deed|collateral|asset|mortgage|bond|secured|senior/i.test((d.protection||'')+(d.instrument||''));
+    var cov = secured ? ('LTV '+(52+h%18)+'%') : ('DSCR '+(1.3+(h%6)*0.1).toFixed(1)+'x');
+    var items=[
+      ['Instrument', d.instrument||'—'],
+      ['Seniority / collateral', d.protection||'—'],
+      ['Target IRR (gross)', d.irr||'—'],
+      ['Distribution', d.dist||'—'],
+      ['Maturity', d.duration||'—'],
+      ['Coverage', cov]
+    ];
+    return items.map(function(m){ return '<div class="inst-m"><div class="inst-m-label">'+m[0]+'</div><div class="inst-m-val" style="font-size:14px;">'+m[1]+'</div></div>'; }).join('');
+  }
+  function financialsHtml(d){
+    var revMetric=(d.metrics||[]).find(function(m){return /revenue|sales|fatturato/i.test(m[0]);});
+    var baseRev=revMetric?parseMoney(revMetric[1]):0; if(!baseRev) baseRev=parseMoney(d.target)*0.7||1200000;
+    var h=hashStr(d.name||'x'); var g=0.15+(h%12)*0.012; var mar=ebitdaMargin(d.sector);
+    var t=parseMoney(d.target)||baseRev;
+    var rows=[]; var rev=baseRev;
+    for(var y=1;y<=3;y++){ rev=baseRev*Math.pow(1+g,y); var eb=rev*mar; var ni=eb*0.55; var nd=t*(0.6-0.15*(y-1));
+      rows.push([ 'Y'+y, fmtM(rev), fmtM(eb), fmtM(ni), fmtM(Math.max(nd,0)) ]); }
+    var pnl='<table class="fin-table"><thead><tr><th>Year</th><th>Revenue</th><th>EBITDA</th><th>Net income</th><th>Net debt</th></tr></thead><tbody>'
+      + rows.map(function(r){ return '<tr><td><strong>'+r[0]+'</strong></td><td>'+r[1]+'</td><td>'+r[2]+'</td><td>'+r[3]+'</td><td>'+r[4]+'</td></tr>'; }).join('')
+      + '</tbody></table><div style="font-size:10.5px;color:var(--text-ter);margin-top:6px;">Base-case projection. EBITDA margin assumed ~'+(mar*100).toFixed(0)+'% (sector benchmark).</div>';
+    var mid=midIrr(d), yrs=dealYears(d);
+    var scn=[
+      ['Base case', mid, '#1a7a43'],
+      ['Revenue −25%', Math.max(mid*0.45,2), '#FF9F0A'],
+      ['Severe downside', -(8+h%7), '#FF453A']
+    ];
+    var sens='<table class="fin-table" style="margin-top:18px;"><thead><tr><th>Scenario</th><th>Proj. net IRR</th><th>Proj. multiple</th></tr></thead><tbody>'
+      + scn.map(function(s){ var mult=Math.max(0.35,Math.pow(1+s[1]/100,yrs)); return '<tr><td><strong>'+s[0]+'</strong></td><td style="color:'+s[2]+';font-weight:700;">'+(s[1]>0?s[1].toFixed(1)+'%':'capital loss')+'</td><td>'+mult.toFixed(2)+'x</td></tr>'; }).join('')
+      + '</tbody></table><div style="font-size:10.5px;color:var(--text-ter);margin-top:6px;">Illustrative sensitivity of investor IRR to downside scenarios over a '+Math.round(yrs)+'-year hold.</div>';
+    return '<div class="financial-section"><div class="section-title">Projected P&amp;L (base case)</div>'+pnl+'</div>'
+      + '<div class="financial-section"><div class="section-title">IRR sensitivity</div>'+sens+'</div>';
+  }
+  function uopHtml(d){
+    var u=uopFor(d);
+    var bar=u.map(function(s){ return '<div style="width:'+s[1]+'%;background:'+s[2]+';"></div>'; }).join('');
+    var leg=u.map(function(s){ return '<div><span class="up-dot" style="background:'+s[2]+';"></span>'+s[0]+' · '+s[1]+'%</div>'; }).join('');
+    return '<div class="overview-section up-section"><div class="section-title">Use of proceeds</div><div class="up-bar">'+bar+'</div><div class="up-leg">'+leg+'</div></div>';
+  }
+  var _rddPrev = renderDealDetail;
+  renderDealDetail = function(key){
+    _rddPrev(key);
+    var d=(deals||{})[key]; if(!d) return;
+    curKey=key;
+    // 1) swap fund metrics strip -> deal metrics
+    var statsRow=document.querySelector('#dealDetailContent .deal-stats-row');
+    if(statsRow){ var strip=statsRow.nextElementSibling;
+      if(strip && strip.classList && strip.classList.contains('inst-metrics')){ strip.style.gridTemplateColumns='repeat(6,1fr)'; strip.innerHTML=dealMetricsHtml(d); }
+    }
+    // 2) use of proceeds in overview
+    var ov=document.getElementById('ov-'+key);
+    if(ov){ var oc=ov.querySelector('.deal-overview'); if(oc && !oc.querySelector('.up-section')) oc.insertAdjacentHTML('beforeend', uopHtml(d)); }
+    // 3) financials tab: real tables
+    var fi=document.getElementById('fi-'+key);
+    if(fi){ var fc=fi.querySelector('.financials-container'); if(fc && !fc.querySelector('.fin-table')) fc.insertAdjacentHTML('beforeend', financialsHtml(d)); }
+  };
+
+  // ============================================================
+  //  LOAN BOOK on Track Record page + CSV
+  // ============================================================
+  function statusFor(d){ var f=d.funded||0; if(f>=100) return ['Funded','#0071E3']; if((d.days||0)<=10) return ['Closing','#FF9F0A']; return ['Raising','#30D158']; }
+  window.exportLoanBookCSV=function(){
+    var rows=[['Deal','Sector','Country','Instrument','Target','Funded %','Target IRR','Min','Status']];
+    Object.keys(deals||{}).forEach(function(k){ var d=deals[k]; var s=(sectors[d.sector]||{}).name||d.sector;
+      rows.push([d.name, s, (countryNames&&countryNames[d.country])||d.country, d.instrument, d.target, (d.funded||0)+'%', d.irr, d.min, statusFor(d)[0]]); });
+    var csv=rows.map(function(r){ return r.map(function(f){ return '"'+(''+(f==null?'':f)).replace(/"/g,'""')+'"'; }).join(','); }).join('\n');
+    var blob=new Blob([csv],{type:'text/csv'}); var url=URL.createObjectURL(blob);
+    var a=document.createElement('a'); a.href=url; a.download='raiseup-loanbook.csv'; document.body.appendChild(a); a.click();
+    setTimeout(function(){ document.body.removeChild(a); URL.revokeObjectURL(url); },100); demoToast('Loan book exported ('+(Object.keys(deals||{}).length)+' deals)');
+  };
+  function renderLoanBook(){
+    var track=document.getElementById('view-track'); if(!track || document.getElementById('loanBookSection')) return;
+    var entries=Object.entries(deals||{});
+    var rowsHtml=entries.slice(0,40).map(function(e){ var d=e[1]; var s=(sectors[d.sector]||{}); var stt=statusFor(d);
+      return '<tr><td><strong>'+d.name+'</strong></td><td>'+(s.name||d.sector)+'</td><td>'+((countryNames&&countryNames[d.country])||d.country)+'</td><td>'+d.instrument+'</td><td>'+d.target+'</td><td>'+(d.funded||0)+'%</td><td style="color:var(--green-dark);font-weight:600;">'+d.irr+'</td><td><span class="lb-badge" style="background:'+stt[1]+'22;color:'+stt[1]+';">'+stt[0]+'</span></td></tr>';
+    }).join('');
+    var sec=document.createElement('div'); sec.className='tr-section'; sec.id='loanBookSection';
+    sec.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">'
+      +'<div class="section-title" style="margin:0;">Platform Loan Book</div>'
+      +'<button class="csv-btn" onclick="exportLoanBookCSV()"><i class="fa-solid fa-download"></i> Download CSV ('+entries.length+' deals)</button></div>'
+      +'<div style="font-size:13px;color:var(--text-sec);margin:4px 0 14px;">Full register of every deal on the platform. Showing the first 40 — download the CSV for all '+entries.length+'.</div>'
+      +'<div class="lb-wrap"><table class="lb-table"><thead><tr><th>Deal</th><th>Sector</th><th>Country</th><th>Instrument</th><th>Target</th><th>Funded</th><th>Target IRR</th><th>Status</th></tr></thead><tbody>'+rowsHtml+'</tbody></table></div>';
+    track.appendChild(sec);
+  }
+  renderLoanBook();
+
+  // forgot-password: tag the span so delegation can catch it
+  document.querySelectorAll('#view-login span').forEach(function(s){ if(/forgot password/i.test(s.textContent)) s.setAttribute('data-forgot','1'); });
+
+})();
 </script>
 </body>
 </html>
