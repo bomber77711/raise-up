@@ -3229,5 +3229,738 @@ try { initMap(); } catch(e) { console.warn('Map init skipped:', e); }
 
 })();
 </script>
+<!-- ============================================================
+     RAISEUP v2 — INTELLIGENCE LAYER
+     Appended module. Does not modify original code above.
+     ============================================================ -->
+<style id="ru-v2-css">
+/* ---------- shared ---------- */
+.ru-fadeup{animation:ruFadeUp .45s cubic-bezier(.2,.7,.3,1) both;}
+@keyframes ruFadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+.deal-card{transition:transform .25s cubic-bezier(.2,.7,.3,1),box-shadow .25s;}
+.deal-card:hover{transform:translateY(-5px);box-shadow:0 16px 40px rgba(0,0,0,0.12);}
+.ru-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);}
+.ru-sec-title{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-ter);margin:34px 0 14px;display:flex;align-items:center;gap:8px;}
+.ru-sec-title i{color:var(--blue);}
+/* ---------- trust strip ---------- */
+.ru-strip{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:28px;}
+.ru-strip>div{background:var(--surface);padding:20px 16px;text-align:center;}
+.ru-strip-num{font-size:26px;font-weight:800;letter-spacing:-0.5px;color:var(--text-pri);}
+.ru-strip-num span{color:var(--blue);}
+.ru-strip-lbl{font-size:12px;color:var(--text-sec);margin-top:3px;font-weight:500;}
+/* ---------- copilot ---------- */
+.ru-copilot{position:relative;border-radius:24px;padding:40px 38px 34px;margin-bottom:24px;overflow:hidden;background:linear-gradient(135deg,#0A1628 0%,#12325B 55%,#0A1F3C 100%);color:#fff;}
+.ru-copilot::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 80% 10%,rgba(10,132,255,.25),transparent 60%),radial-gradient(ellipse 40% 60% at 10% 90%,rgba(48,209,88,.12),transparent 60%);pointer-events:none;}
+.ru-cop-eyebrow{font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#6FB4FF;margin-bottom:14px;display:flex;align-items:center;gap:8px;}
+.ru-cop-title{font-size:31px;font-weight:800;letter-spacing:-1px;line-height:1.12;max-width:640px;margin-bottom:10px;}
+.ru-cop-sub{font-size:16px;color:rgba(255,255,255,.72);margin-bottom:26px;max-width:560px;}
+.ru-cop-bar{position:relative;z-index:1;display:flex;gap:10px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(12px);border-radius:16px;padding:8px 8px 8px 18px;align-items:center;max-width:760px;box-shadow:0 12px 40px rgba(0,0,0,.35);}
+.ru-cop-bar i{color:#6FB4FF;font-size:16px;}
+.ru-cop-bar input{flex:1;background:none;border:none;outline:none;color:#fff;font-size:16px;padding:10px 4px;font-family:inherit;}
+.ru-cop-bar input::placeholder{color:rgba(255,255,255,.45);}
+.ru-cop-btn{background:var(--blue);color:#fff;border:none;border-radius:12px;padding:12px 26px;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;font-family:inherit;}
+.ru-cop-btn:hover{background:#2E8FFF;transform:scale(1.03);}
+.ru-chips{position:relative;z-index:1;display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;}
+.ru-chip{font-size:13px;padding:7px 14px;border-radius:980px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.85);cursor:pointer;transition:all .2s;}
+.ru-chip:hover{background:rgba(255,255,255,.18);}
+/* ---------- copilot results ---------- */
+.ru-report{margin-top:26px;position:relative;z-index:1;}
+.ru-rep-head{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:6px;}
+.ru-rep-title{font-size:20px;font-weight:700;}
+.ru-rep-filters{font-size:13px;color:rgba(255,255,255,.6);}
+.ru-rep-filters b{color:#6FB4FF;font-weight:600;}
+.ru-best{display:grid;grid-template-columns:220px 1fr 170px;gap:22px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:18px;margin-top:14px;cursor:pointer;transition:all .25s;align-items:center;}
+.ru-best:hover{background:rgba(255,255,255,.1);transform:translateY(-2px);}
+.ru-best-img{width:220px;height:150px;border-radius:12px;object-fit:cover;background:#1c2c44;}
+.ru-best-tag{font-size:11px;font-weight:800;letter-spacing:.1em;color:#FFD60A;text-transform:uppercase;margin-bottom:6px;}
+.ru-best-name{font-size:22px;font-weight:800;margin-bottom:4px;}
+.ru-best-meta{font-size:13px;color:rgba(255,255,255,.65);margin-bottom:10px;}
+.ru-best-why{display:grid;grid-template-columns:1fr 1fr;gap:4px 18px;font-size:13px;color:rgba(255,255,255,.85);}
+.ru-best-why div i{color:#32D74B;margin-right:6px;font-size:11px;}
+.ru-best-right{text-align:center;border-left:1px solid rgba(255,255,255,.12);padding-left:18px;}
+.ru-best-return{font-size:13px;color:rgba(255,255,255,.6);margin-top:10px;}
+.ru-best-return b{display:block;font-size:19px;color:#32D74B;}
+.ru-match-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:12px;margin-top:14px;}
+.ru-match{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:12px;cursor:pointer;transition:all .2s;display:flex;gap:10px;align-items:center;}
+.ru-match:hover{background:rgba(255,255,255,.12);}
+.ru-match img{width:46px;height:46px;border-radius:10px;object-fit:cover;}
+.ru-match-name{font-size:13.5px;font-weight:700;line-height:1.25;}
+.ru-match-sub{font-size:11.5px;color:rgba(255,255,255,.55);}
+.ru-match-score{margin-left:auto;font-size:15px;font-weight:800;color:#6FB4FF;}
+/* score ring */
+.ru-ring{position:relative;width:92px;height:92px;margin:0 auto;}
+.ru-ring svg{transform:rotate(-90deg);}
+.ru-ring-val{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:26px;font-weight:800;}
+.ru-ring-val small{font-size:9px;font-weight:700;letter-spacing:.08em;color:rgba(255,255,255,.5);}
+/* ---------- rails ---------- */
+.ru-rail{display:flex;gap:14px;overflow-x:auto;padding:4px 2px 14px;scrollbar-width:thin;}
+.ru-rail::-webkit-scrollbar{height:6px;}
+.ru-rail::-webkit-scrollbar-thumb{background:var(--surface-3);border-radius:3px;}
+.ru-rail::-webkit-scrollbar-track{background:transparent;}
+.ru-mini{min-width:210px;max-width:210px;cursor:pointer;overflow:hidden;transition:transform .22s,box-shadow .22s;}
+.ru-mini:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(0,0,0,.12);}
+.ru-cover{height:96px;background:var(--surface-3);overflow:hidden;}
+.ru-cover img{width:100%;height:96px;object-fit:cover;display:block;}
+.ru-mini .flag-img{width:16px;height:11px;border-radius:2px;vertical-align:-1px;display:inline-block;}
+.ru-rail-tabs{display:flex;gap:6px;flex-wrap:wrap;}
+.ru-rail-tab{font-size:12px;font-weight:600;letter-spacing:0;text-transform:none;padding:6px 13px;border-radius:980px;border:1px solid var(--border);background:var(--surface);color:var(--text-sec);cursor:pointer;font-family:inherit;transition:all .18s;}
+.ru-rail-tab:hover{color:var(--text-pri);}
+.ru-rail-tab.active{background:var(--text-pri);color:var(--bg);border-color:var(--text-pri);}
+.ru-mini-body{padding:10px 12px 12px;}
+.ru-mini-name{font-size:13.5px;font-weight:700;line-height:1.3;margin-bottom:2px;}
+.ru-mini-sub{font-size:11.5px;color:var(--text-sec);margin-bottom:8px;}
+.ru-mini-foot{display:flex;justify-content:space-between;align-items:center;font-size:12px;}
+.ru-mini-irr{font-weight:700;color:var(--green-dark);}
+.ru-mini-score{font-weight:800;color:var(--blue);}
+/* ---------- score chips on cards ---------- */
+.ru-score-chip{display:inline-flex;align-items:center;gap:5px;font-size:12.5px;font-weight:800;color:var(--blue);background:var(--blue-light);border-radius:8px;padding:3px 8px;}
+.ru-delta{font-size:10.5px;font-weight:800;}
+.ru-delta.up{color:var(--green-dark);}
+.ru-delta.down{color:var(--red);}
+.ru-social{display:flex;gap:12px;font-size:11.5px;color:var(--text-ter);margin-top:10px;align-items:center;}
+.ru-social i{font-size:10px;}
+.ru-social .hot{color:var(--orange);font-weight:600;}
+/* ---------- why panel (score breakdown) ---------- */
+.ru-why{background:var(--surface-2);border:1px solid var(--border);border-radius:14px;padding:18px 20px;margin-bottom:20px;}
+.ru-why-top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.ru-why-num{font-size:40px;font-weight:800;letter-spacing:-1px;color:var(--blue);}
+.ru-why-delta{font-size:13px;font-weight:700;padding:4px 10px;border-radius:980px;}
+.ru-why-delta.up{background:var(--green-light);color:var(--green-dark);}
+.ru-why-delta.down{background:rgba(255,69,58,.12);color:var(--red);}
+.ru-why-reasons{margin-top:10px;display:flex;flex-direction:column;gap:5px;font-size:13.5px;color:var(--text-sec);}
+.ru-why-reasons i{width:16px;color:var(--green-dark);font-size:11px;}
+.ru-subrow{display:grid;grid-template-columns:130px 1fr 40px;gap:12px;align-items:center;margin-top:8px;font-size:13px;}
+.ru-subbar{height:7px;border-radius:4px;background:var(--surface-3);overflow:hidden;}
+.ru-subbar>div{height:100%;border-radius:4px;background:linear-gradient(90deg,var(--blue),#5AC8FA);transition:width 1s cubic-bezier(.2,.7,.3,1);}
+/* ---------- memo ---------- */
+.ru-memo{display:flex;flex-direction:column;gap:16px;}
+.ru-memo-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;}
+.ru-memo-badge{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--purple);background:rgba(175,82,222,.1);padding:5px 12px;border-radius:980px;}
+.ru-memo-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;}
+.ru-memo-dim{background:var(--surface-2);border-radius:12px;padding:12px;text-align:center;}
+.ru-memo-dim b{font-size:22px;font-weight:800;color:var(--text-pri);display:block;}
+.ru-memo-dim span{font-size:11px;color:var(--text-sec);}
+.ru-memo-sec{background:var(--surface-2);border-radius:14px;padding:16px 18px;}
+.ru-memo-sec h4{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-ter);margin-bottom:10px;}
+.ru-memo-sec p{font-size:14px;line-height:1.65;color:var(--text-sec);}
+.ru-memo-cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.ru-li{display:flex;gap:9px;font-size:13.5px;color:var(--text-sec);margin-bottom:7px;line-height:1.45;}
+.ru-li i{margin-top:3px;font-size:11px;}
+.ru-li.pos i{color:var(--green-dark);}
+.ru-li.neg i{color:var(--orange);}
+.ru-simple-toggle{font-size:12.5px;font-weight:600;color:var(--blue);cursor:pointer;user-select:none;}
+.ru-peers{width:100%;border-collapse:collapse;font-size:13px;}
+.ru-peers th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--text-ter);padding:6px 8px;border-bottom:1px solid var(--border);}
+.ru-peers td{padding:8px;border-bottom:1px solid var(--border);}
+/* ---------- trust center ---------- */
+.ru-trust-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;}
+.ru-trust-item{display:flex;gap:10px;align-items:center;background:var(--surface-2);border-radius:12px;padding:12px 14px;font-size:13.5px;font-weight:500;}
+.ru-trust-item i{font-size:16px;}
+.ru-trust-item.ok i{color:var(--green-dark);}
+.ru-trust-item.pending i{color:var(--orange);}
+.ru-trust-item small{display:block;font-size:11px;color:var(--text-ter);font-weight:400;}
+.ru-trust-score{display:flex;align-items:center;gap:16px;background:var(--green-light);border-radius:14px;padding:16px 20px;margin-bottom:16px;}
+.ru-trust-score b{font-size:30px;font-weight:800;color:var(--green-dark);}
+.ru-trust-score span{font-size:13.5px;color:var(--text-sec);line-height:1.45;}
+/* ---------- gauges ---------- */
+.ru-gauges{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;}
+.ru-gauge{background:var(--surface-2);border-radius:14px;padding:16px 12px 12px;text-align:center;}
+.ru-gauge-lbl{font-size:12px;font-weight:600;color:var(--text-sec);margin-top:2px;}
+.ru-gauge-val{font-size:17px;font-weight:800;margin-top:-32px;position:relative;}
+.ru-gauge-note{font-size:10.5px;color:var(--text-ter);margin-top:14px;}
+/* ---------- what-if ---------- */
+.ru-wi{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
+.ru-wi-controls label{display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin:16px 0 6px;color:var(--text-sec);}
+.ru-wi-controls label b{color:var(--blue);}
+.ru-wi input[type=range]{width:100%;accent-color:var(--blue);}
+.ru-wi-out{background:var(--surface-2);border-radius:14px;padding:18px;}
+.ru-wi-row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);font-size:13.5px;}
+.ru-wi-row:last-child{border:none;}
+.ru-wi-row b{font-size:14.5px;}
+/* ---------- timeline ---------- */
+.ru-tl{position:relative;margin:6px 0 0 8px;padding-left:22px;border-left:2px solid var(--border);}
+.ru-tl-item{position:relative;padding-bottom:18px;}
+.ru-tl-item::before{content:'';position:absolute;left:-29px;top:3px;width:12px;height:12px;border-radius:50%;background:var(--surface);border:3px solid var(--blue);}
+.ru-tl-item.now::before{background:var(--blue);box-shadow:0 0 0 5px var(--blue-light);}
+.ru-tl-year{font-size:11.5px;font-weight:800;letter-spacing:.06em;color:var(--blue);}
+.ru-tl-txt{font-size:13.5px;color:var(--text-sec);margin-top:1px;}
+.ru-tl-txt b{color:var(--text-pri);}
+/* ---------- charts ---------- */
+.ru-chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.ru-chart{background:var(--surface-2);border-radius:14px;padding:14px 16px;}
+.ru-chart h5{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-ter);margin-bottom:8px;}
+.ru-legend{display:flex;gap:14px;font-size:11px;color:var(--text-sec);margin-top:6px;}
+.ru-legend i{font-size:9px;margin-right:4px;}
+/* ---------- info tooltip ---------- */
+.ru-info{display:inline-flex;width:15px;height:15px;border-radius:50%;background:var(--surface-3);color:var(--text-sec);font-size:9.5px;align-items:center;justify-content:center;cursor:pointer;margin-left:5px;vertical-align:1px;font-style:normal;font-weight:700;transition:all .15s;}
+.ru-info:hover{background:var(--blue);color:#fff;}
+#ruPop{position:fixed;z-index:5000;max-width:300px;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px 16px;box-shadow:0 16px 50px rgba(0,0,0,.18);font-size:13px;line-height:1.55;color:var(--text-sec);display:none;}
+#ruPop b{color:var(--text-pri);display:block;margin-bottom:4px;font-size:13.5px;}
+#ruPop .ru-pop-ai{font-size:11px;color:var(--purple);font-weight:700;margin-bottom:6px;display:flex;gap:5px;align-items:center;}
+/* ---------- portfolio ---------- */
+.ru-pi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:18px;}
+.ru-pi-card{background:var(--surface-2);border-radius:14px;padding:16px;}
+.ru-pi-card h5{font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-ter);margin-bottom:8px;}
+.ru-pi-big{font-size:28px;font-weight:800;letter-spacing:-.5px;}
+.ru-exp-row{display:grid;grid-template-columns:110px 1fr 38px;gap:10px;align-items:center;font-size:12.5px;margin-top:7px;color:var(--text-sec);}
+.ru-exp-bar{height:7px;border-radius:4px;background:var(--surface-3);overflow:hidden;}
+.ru-exp-bar>div{height:100%;border-radius:4px;}
+.ru-sugg{display:flex;gap:10px;background:var(--blue-light);border-radius:12px;padding:12px 14px;font-size:13px;color:var(--text-sec);margin-top:8px;line-height:1.5;}
+.ru-sugg i{color:var(--blue);margin-top:2px;}
+.ru-sim{display:grid;grid-template-columns:340px 1fr;gap:24px;}
+.ru-sim-out-big{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
+.ru-sim-case{border-radius:12px;padding:12px;text-align:center;background:var(--surface-2);}
+.ru-sim-case b{display:block;font-size:20px;font-weight:800;}
+.ru-sim-case span{font-size:11px;color:var(--text-sec);}
+.ru-sim-case.best b{color:var(--green-dark);}
+.ru-sim-case.worst b{color:var(--red);}
+/* ---------- v3 declutter ---------- */
+#europeMap{height:clamp(340px, calc(100vh - 355px), 660px);}
+.map-section{margin-bottom:30px;}
+.ru-copilot{padding:20px 26px 18px;margin-bottom:26px;border-radius:20px;}
+.ru-cop-title{font-size:19px;margin-bottom:12px;max-width:none;}
+.ru-cop-bar{padding:5px 5px 5px 16px;border-radius:14px;}
+.ru-cop-bar input{padding:8px 4px;font-size:15px;}
+.ru-cop-btn{padding:10px 22px;font-size:14px;}
+.ru-chips{margin-top:11px;}
+.ru-chip{font-size:12px;padding:5px 12px;}
+.ru-hero-stats{position:relative;z-index:1;display:flex;gap:8px 22px;flex-wrap:wrap;font-size:12px;color:rgba(255,255,255,.55);margin-top:16px;font-weight:500;}
+.ru-hero-stats b{color:rgba(255,255,255,.85);font-weight:700;}
+.ru-sort{display:flex;align-items:center;gap:2px;background:var(--surface-2);border-radius:980px;padding:3px;flex-wrap:nowrap;overflow-x:auto;max-width:100%;}
+.ru-sort-lbl{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-ter);padding:0 10px;}
+.ru-sort-btn{font-size:12.5px;font-weight:600;padding:6px 13px;border-radius:980px;border:none;background:none;color:var(--text-sec);cursor:pointer;font-family:inherit;white-space:nowrap;transition:all .18s;}
+.ru-sort-btn:hover{color:var(--text-pri);}
+.ru-sort-btn.active{background:var(--surface);color:var(--text-pri);box-shadow:0 1px 4px rgba(0,0,0,.08);}
+.ru-more{display:flex;justify-content:center;margin:26px 0 8px;}
+.ru-more-btn{font-size:14px;font-weight:600;padding:12px 30px;border-radius:980px;border:1px solid var(--border);background:var(--surface);color:var(--text-pri);cursor:pointer;font-family:inherit;transition:all .2s;}
+.ru-more-btn:hover{border-color:var(--blue);color:var(--blue);transform:translateY(-1px);}
+.filter-row{flex-wrap:wrap;gap:10px;}
+/* nav badge */
+.ru-v2-pill{font-size:10px;font-weight:800;letter-spacing:.08em;background:linear-gradient(135deg,var(--blue),var(--purple));color:#fff;border-radius:980px;padding:3px 9px;margin-left:8px;text-transform:uppercase;}
+@media(max-width:900px){
+  .ru-strip{grid-template-columns:repeat(2,1fr);}
+  .ru-copilot{padding:34px 22px;}
+  .ru-cop-title{font-size:27px;}
+  .ru-best{grid-template-columns:1fr;}
+  .ru-best-img{width:100%;}
+  .ru-best-right{border-left:none;padding-left:0;border-top:1px solid rgba(255,255,255,.12);padding-top:14px;}
+  .ru-wi,.ru-chart-grid,.ru-memo-cols,.ru-sim{grid-template-columns:1fr;}
+}
+</style>
+<script id="ru-v2-js">
+(function(){
+'use strict';
+/* ================= CORE ================= */
+const RU = window.RU = {};
+function rh(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)>>>0;}return h;}
+function money(t){const m=String(t).replace(/[€,\s]/g,'').match(/([\d.]+)([MK]?)/i);if(!m)return 0;let v=parseFloat(m[1]);if(/m/i.test(m[2]))v*=1e6;if(/k/i.test(m[2]))v*=1e3;return v;}
+function fmtM(v){return v>=1e6? '€'+(v/1e6).toFixed(v>=1e7?0:1)+'M' : '€'+Math.round(v/1e3)+'K';}
+function irrMid(d){const m=String(d.irr).match(/(\d+)\s*-\s*(\d+)/);return m?(+m[1]+ +m[2])/2:15;}
+function esc(s){return String(s).replace(/</g,'&lt;');}
+const W={financial:.20,growth:.18,management:.15,market:.15,risk:.14,esg:.08};
+const SECTOR_RISK={food:44,hospitality:48,healthcare:30,wine:40,production:42,textiles:46,industry:38,tech:56,energy:32,retail:50,logistics:41,education:34,maritime:47,pharma:52,sport:49,realestate:36};
+const GEO_RISK={IT:34,DE:22,NL:20,FR:28,AT:22,FI:24,ES:32,PT:30,PL:38,SE:21,DK:19,BE:24,CH:15,IE:23,GR:42,CZ:33,NO:18,HR:40};
+const POS_REASONS=['Revenue forecast revised upward','Debt ratio improved','New key contract signed','Customer concentration decreased','Export market entered','Founder increased ownership','EBITDA margin expanded','Audit completed with no findings'];
+const NEG_REASONS=['Working capital pressure increased','Key customer renewal pending','Input costs rose in the quarter','Hiring plan behind schedule'];
+/* score for every deal */
+RU.S={};
+Object.entries(deals).forEach(([k,d])=>{
+  const a=d.aiScores||{financial:80,market:80,management:80,growth:80,risk:80,esg:80};
+  const valuation=70+rh(k+'v')%25;
+  let overall=valuation*.10; Object.keys(W).forEach(kk=>overall+=a[kk]*W[kk]);
+  overall=Math.round(overall);
+  const delta=(rh(k+'d')%9)-3;
+  const pool=delta>=0?POS_REASONS:NEG_REASONS;
+  const r1=pool[rh(k+'r1')%pool.length];let r2=pool[rh(k+'r2')%pool.length];if(r2===r1)r2=pool[(rh(k+'r2')+1)%pool.length];
+  RU.S[k]={overall,valuation,delta,reasons:[r1,r2],
+    viewers:60+rh(k+'vw')%420, invested:3+rh(k+'iw')%24,
+    subs:{'Financial Health':a.financial,'Growth':a.growth,'Management':a.management,'Market':a.market,'Risk Profile':a.risk,'ESG':a.esg,'Valuation':valuation}};
+});
+RU.riskLabel=s=>s>=88?'Low':s>=82?'Medium-Low':s>=74?'Medium':'Medium-High';
+RU.top=(metric,n)=>Object.entries(deals).map(([k,d])=>({k,d,v:metric(k,d)})).sort((a,b)=>b.v-a.v).slice(0,n);
+/* ---- svg helpers ---- */
+function ring(v,size,color){const r=(size-10)/2,c=2*Math.PI*r;
+  return '<div class="ru-ring" style="width:'+size+'px;height:'+size+'px;"><svg width="'+size+'" height="'+size+'">'+
+  '<circle cx="'+size/2+'" cy="'+size/2+'" r="'+r+'" fill="none" stroke="rgba(128,128,140,.22)" stroke-width="7"/>'+
+  '<circle cx="'+size/2+'" cy="'+size/2+'" r="'+r+'" fill="none" stroke="'+color+'" stroke-width="7" stroke-linecap="round" stroke-dasharray="'+(c*v/100)+' '+c+'"/>'+
+  '</svg><div class="ru-ring-val">'+v+'<small>RAISEUP SCORE</small></div></div>';}
+function gauge(pct,label,display,note){
+  const col=pct<35?'#30D158':pct<65?'#FF9F0A':'#FF453A';
+  const r=44,c=Math.PI*r,off=c*(1-pct/100);
+  return '<div class="ru-gauge"><svg width="120" height="70" viewBox="0 0 120 70">'+
+  '<path d="M 12 64 A 48 48 0 0 1 108 64" fill="none" stroke="var(--surface-3)" stroke-width="10" stroke-linecap="round"/>'+
+  '<path d="M 12 64 A 48 48 0 0 1 108 64" fill="none" stroke="'+col+'" stroke-width="10" stroke-linecap="round" stroke-dasharray="'+(Math.PI*48)+'" stroke-dashoffset="'+(Math.PI*48*(1-pct/100))+'"/>'+
+  '</svg><div class="ru-gauge-val" style="color:'+col+';">'+display+'</div><div class="ru-gauge-lbl">'+label+'</div><div class="ru-gauge-note">'+note+'</div></div>';}
+function lineChart(series,labels,colors,h){
+  h=h||150;const w=420,pad=26;const all=series.flat();const mx=Math.max(...all)*1.08,mn=Math.min(...all,0);
+  const X=i=>pad+i*(w-pad-8)/(labels.length-1);const Y=v=>h-18-(v-mn)/(mx-mn)*(h-34);
+  let s='<svg viewBox="0 0 '+w+' '+h+'" style="width:100%;">';
+  for(let g=0;g<4;g++){const y=14+g*(h-32)/3;s+='<line x1="'+pad+'" y1="'+y+'" x2="'+(w-8)+'" y2="'+y+'" stroke="var(--border)" stroke-width="1"/>';}
+  series.forEach((sr,si)=>{const pts=sr.map((v,i)=>X(i)+','+Y(v)).join(' ');
+    s+='<polyline points="'+pts+'" fill="none" stroke="'+colors[si]+'" stroke-width="2.5" stroke-linejoin="round"/>';
+    sr.forEach((v,i)=>{s+='<circle cx="'+X(i)+'" cy="'+Y(v)+'" r="3" fill="'+colors[si]+'"/>';});});
+  labels.forEach((l,i)=>{s+='<text x="'+X(i)+'" y="'+(h-4)+'" font-size="9" fill="var(--text-ter)" text-anchor="middle">'+l+'</text>';});
+  return s+'</svg>';}
+function barChart(pairs,labels,colors,h){
+  h=h||150;const w=420;const mx=Math.max(...pairs.flat())*1.15;const n=labels.length;const bw=(w-40)/n;
+  let s='<svg viewBox="0 0 '+w+' '+h+'" style="width:100%;">';
+  pairs.forEach((p,gi)=>{}); // pairs = [seriesA[], seriesB[]]
+  const ns=pairs.length;
+  for(let i=0;i<n;i++){
+    for(let si=0;si<ns;si++){
+      const v=pairs[si][i];const bh=v/mx*(h-36);const x=30+i*bw+si*(bw*0.36)+bw*0.12;
+      s+='<rect x="'+x+'" y="'+(h-20-bh)+'" width="'+(bw*0.3)+'" height="'+bh+'" rx="3" fill="'+colors[si]+'"/>';
+    }
+    s+='<text x="'+(30+i*bw+bw*0.4)+'" y="'+(h-6)+'" font-size="9" fill="var(--text-ter)" text-anchor="middle">'+labels[i]+'</text>';
+  }
+  return s+'</svg>';}
+RU.ring=ring;RU.gauge=gauge;RU.lineChart=lineChart;RU.barChart=barChart;RU.rh=rh;RU.money=money;RU.fmtM=fmtM;RU.irrMid=irrMid;
+
+/* ================= COPILOT QUERY ENGINE ================= */
+const COUNTRY_WORDS={italy:'IT',italian:'IT',germany:'DE',german:'DE',france:'FR',french:'FR',spain:'ES',spanish:'ES',netherlands:'NL',dutch:'NL',portugal:'PT',portuguese:'PT',austria:'AT',austrian:'AT',poland:'PL',polish:'PL',sweden:'SE',swedish:'SE',denmark:'DK',danish:'DK',belgium:'BE',belgian:'BE',switzerland:'CH',swiss:'CH',ireland:'IE',irish:'IE',greece:'GR',greek:'GR',norway:'NO',norwegian:'NO',croatia:'HR',croatian:'HR',finland:'FI',finnish:'FI',czech:'CZ'};
+const SECTOR_WORDS={food:'food',restaurant:'food',dining:'food',pasta:'food',pizzeria:'food',bakery:'food',hotel:'hospitality',hospitality:'hospitality',resort:'hospitality',tourism:'hospitality',health:'healthcare',clinic:'healthcare',medical:'healthcare',dental:'healthcare',wine:'wine',vineyard:'wine',winery:'wine',agriculture:'wine',brewery:'production',distillery:'production','food production':'production',manufacturing:'industry',factory:'industry',industrial:'industry',machining:'industry',robotics:'industry',engineering:'industry',textile:'textiles',fashion:'textiles',luxury:'textiles',leather:'textiles',tech:'tech',software:'tech',saas:'tech',ai:'tech',fintech:'tech',startup:'tech',digital:'tech',energy:'energy',solar:'energy',wind:'energy',climate:'energy',green:'energy',renewable:'energy',retail:'retail',store:'retail',shop:'retail',logistics:'logistics',delivery:'logistics',warehouse:'logistics',education:'education',school:'education',maritime:'maritime',fishing:'maritime',aquaculture:'maritime',pharma:'pharma',biotech:'pharma',sport:'sport',gym:'sport',padel:'sport',ski:'sport','real estate':'realestate',housing:'realestate',property:'realestate'};
+function parseQuery(q){
+  q=' '+q.toLowerCase()+' ';
+  const f={countries:[],sectors:[],maxTarget:null,minIrr:null,sort:'overall',income:false,label:[]};
+  Object.entries(COUNTRY_WORDS).forEach(([w,c])=>{if(q.includes(w)&&!f.countries.includes(c)){f.countries.push(c);f.label.push(countryNames[c]);}});
+  Object.entries(SECTOR_WORDS).forEach(([w,s])=>{if(q.includes(w)&&!f.sectors.includes(s)){f.sectors.push(s);}});
+  f.sectors.forEach(s=>{const n=sectors[s]&&sectors[s].name;if(n&&!f.label.includes(n))f.label.push(n);});
+  const um=q.match(/under\s*€?\s*(\d+(?:\.\d+)?)\s*(m|k|million|thousand)?/);
+  if(um){let v=parseFloat(um[1]);const u=um[2]||'m';v*=/k|thousand/.test(u)?1e3:1e6;f.maxTarget=v;f.label.push('raise under '+fmtM(v));}
+  const im=q.match(/(\d+)\s*%/);
+  if(im&&/irr|return|yield|above|least/.test(q)){f.minIrr=+im[1];f.label.push('IRR ≥ '+im[1]+'%');}
+  if(/safe|low risk|low downside|conservative|protect|stable|survived/.test(q)){f.sort='risk';f.label.push('sorted by safety');}
+  else if(/growth|grow|fastest|double|scale|ipo|momentum|promising/.test(q)){f.sort='growth';f.label.push('sorted by growth');}
+  else if(/undervalued|cheap|value|bargain/.test(q)){f.sort='valuation';f.label.push('sorted by valuation attractiveness');}
+  else if(/profitable|cash flow|income|dividend|monthly/.test(q)){f.income=true;f.sort='financial';f.label.push('income-oriented');}
+  else f.label.push('sorted by RaiseUp Score');
+  return f;
+}
+function runCopilot(q){
+  if(!q||!q.trim())return;
+  const f=parseQuery(q);
+  let list=Object.entries(deals).map(([k,d])=>({k,d,s:RU.S[k]}));
+  if(f.countries.length)list=list.filter(x=>f.countries.includes(x.d.country));
+  if(f.sectors.length)list=list.filter(x=>f.sectors.includes(x.d.sector));
+  if(f.maxTarget)list=list.filter(x=>money(x.d.target)<=f.maxTarget);
+  if(f.minIrr)list=list.filter(x=>irrMid(x.d)>=f.minIrr);
+  if(f.income)list=list.filter(x=>/month|quarter/i.test(x.d.dist));
+  const key=f.sort;
+  list.sort((a,b)=>{
+    if(key==='overall')return b.s.overall-a.s.overall;
+    if(key==='valuation')return b.s.subs['Valuation']-a.s.subs['Valuation'];
+    if(key==='risk')return b.d.aiScores.risk-a.d.aiScores.risk;
+    return (b.d.aiScores[key]||0)-(a.d.aiScores[key]||0);
+  });
+  const box=document.getElementById('ruCopResults');
+  if(!list.length){
+    box.innerHTML='<div class="ru-report ru-fadeup"><div class="ru-rep-title">No exact matches</div><div class="ru-rep-filters">Try broadening the criteria — for example remove the budget cap or the country filter.</div></div>';
+    return;
+  }
+  const best=list[0],rest=list.slice(1,9);
+  const bs=best.s,bd=best.d;
+  const whys=[];
+  const subsSorted=Object.entries(bs.subs).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  subsSorted.forEach(([n,v])=>whys.push(n+' '+v+'/100'));
+  if(bd.highlights&&bd.highlights[0])whys.push(bd.highlights[0]);
+  whys.push((bd.metrics&&bd.metrics[0])?bd.metrics[0][0]+' '+bd.metrics[0][1]+' ('+bd.metrics[0][2]+')':'Verified financials');
+  box.innerHTML='<div class="ru-report ru-fadeup">'+
+    '<div class="ru-rep-head"><div class="ru-rep-title"><i class="fa-solid fa-wand-magic-sparkles" style="color:#6FB4FF;margin-right:8px;"></i>'+list.length+' compan'+(list.length===1?'y':'ies')+' match your criteria</div>'+
+    '<div class="ru-rep-filters">Understood as: <b>'+f.label.join('</b> · <b>')+'</b></div></div>'+
+    '<div class="ru-best" onclick="navigate(\'deal\',\''+best.k+'\')">'+
+      '<img class="ru-best-img" src="'+bd.img+'" loading="lazy" onerror="this.style.display=\'none\'">'+
+      '<div><div class="ru-best-tag"><i class="fa-solid fa-crown"></i> Best match</div>'+
+      '<div class="ru-best-name">'+esc(bd.name)+'</div>'+
+      '<div class="ru-best-meta">'+bd.location+', '+(countryNames[bd.country]||'')+' · '+(sectors[bd.sector]?sectors[bd.sector].name:'')+' · '+bd.instrument+'</div>'+
+      '<div class="ru-best-why">'+whys.slice(0,4).map(w=>'<div><i class="fa-solid fa-check"></i>'+esc(w)+'</div>').join('')+'</div></div>'+
+      '<div class="ru-best-right">'+ring(bs.overall,92,'#6FB4FF')+
+      '<div class="ru-best-return">Expected return<b>'+bd.irr+'</b></div>'+
+      '<div style="font-size:11px;margin-top:6px;color:rgba(255,255,255,.6);">Risk: <b style="color:#32D74B;">'+RU.riskLabel(bd.aiScores.risk)+'</b></div></div>'+
+    '</div>'+
+    (rest.length?'<div class="ru-match-grid">'+rest.map(x=>'<div class="ru-match" onclick="navigate(\'deal\',\''+x.k+'\')">'+
+      '<img src="'+x.d.img+'" loading="lazy" onerror="this.style.display=\'none\'"><div><div class="ru-match-name">'+esc(x.d.name)+'</div>'+
+      '<div class="ru-match-sub">'+x.d.location+' · '+x.d.irr+'</div></div><div class="ru-match-score">'+x.s.overall+'</div></div>').join('')+'</div>':'')+
+    '<div style="font-size:11px;color:rgba(255,255,255,.4);margin-top:14px;">AI-assisted screening on verified platform data. Demo environment — not investment advice.</div>'+
+  '</div>';
+  box.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+window.ruAsk=function(chip){const inp=document.getElementById('ruQuery');inp.value=chip||inp.value;runCopilot(inp.value);};
+/* ================= EXPLORE PAGE INJECTION ================= */
+function injectExplore(){
+  const view=document.getElementById('view-explore');if(!view)return;
+  const dealArr=Object.entries(deals);
+  const nCountries=new Set(dealArr.map(([k,d])=>d.country)).size;
+  /* one compact AI band — stats live inside it, nothing else added to the page */
+  const hero=document.createElement('div');
+  hero.className='ru-copilot ru-fadeup';
+  hero.innerHTML=
+    '<div class="ru-cop-title"><i class="fa-solid fa-wand-magic-sparkles" style="color:#6FB4FF;margin-right:10px;"></i>Ask anything about Europe\u2019s private economy</div>'+
+    '<div class="ru-cop-bar"><i class="fa-solid fa-magnifying-glass"></i>'+
+      '<input id="ruQuery" placeholder="e.g. \u201cprofitable Italian food companies with low downside\u201d" onkeydown="if(event.key===\'Enter\')ruAsk()">'+
+      '<button class="ru-cop-btn" onclick="ruAsk()">Ask AI</button></div>'+
+    '<div class="ru-chips">'+
+      ['Safest investments in Italy','German tech with highest growth','Wine estates under \u20ac2M','Monthly income, low risk']
+      .map(c=>'<div class="ru-chip" onclick="ruAsk(\''+c.replace(/'/g,"\\'")+'\')">'+c+'</div>').join('')+'</div>'+
+    '<div id="ruCopResults"></div>';
+  const mapSec=view.querySelector('.map-section');
+  if(mapSec)mapSec.after(hero);else view.insertBefore(hero,view.firstElementChild);
+  /* AI curation = sort control on the ONE grid (no extra rails) */
+  const fr=view.querySelector('.filter-row');
+  if(fr){
+    const sortWrap=document.createElement('div');
+    sortWrap.className='ru-sort';
+    sortWrap.innerHTML='<span class="ru-sort-lbl">Sort</span>'+
+      [['feat','Featured'],['score','AI Score'],['trend','Trending'],['growth','Growth'],['safe','Safest'],['end','Ending soon']]
+      .map(([id,l],i)=>'<button class="ru-sort-btn'+(i===0?' active':'')+'" onclick="ruSort(\''+id+'\',this)">'+l+'</button>').join('');
+    fr.insertBefore(sortWrap, fr.querySelector('#dealsCount'));
+  }
+}
+RU.sortKey='feat';
+RU.visibleCount=12;
+/* hot threshold = top decile of weekly investment activity */
+RU.hotCut=(function(){const v=Object.keys(deals).map(k=>RU.S[k].invested).sort((a,b)=>a-b);return v[Math.floor(v.length*0.9)];})();
+window.ruSort=function(id,btn){
+  RU.sortKey=id;RU.visibleCount=12;
+  if(btn){btn.parentElement.querySelectorAll('.ru-sort-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+  renderDeals();
+};
+/* ================= DEAL GRID v3 — sorted, capped, decluttered ================= */
+window.renderDeals=function(){
+  const grid=document.getElementById('dealsGrid');if(!grid)return;
+  /* remove the legacy show-more control (superseded by sorted pagination) */
+  const stale=document.getElementById('dealsShowMoreWrap');if(stale)stale.remove();
+  let entries=Object.entries(deals).filter(([k,d])=>{
+    const sec=sectors[d.sector];
+    if(typeof activeSector!=='undefined'&&activeSector&&d.sector!==activeSector)return false;
+    if(typeof activeDealFilter!=='undefined'&&activeDealFilter!=='All'&&(sec?sec.name:'')!==activeDealFilter)return false;
+    return true;
+  });
+  const metric={feat:null,score:x=>RU.S[x[0]].overall,trend:x=>RU.S[x[0]].invested,growth:x=>x[1].aiScores.growth,safe:x=>x[1].aiScores.risk,end:x=>-x[1].days}[RU.sortKey||'feat'];
+  if(metric)entries.sort((a,b)=>metric(b)-metric(a));
+  const total=entries.length;
+  const show=entries.slice(0,RU.visibleCount);
+  grid.innerHTML=show.map(([key,deal])=>{
+    const sec=sectors[deal.sector];const s=RU.S[key];
+    const flag=flags[deal.country]||'';
+    const hot=s.invested>=RU.hotCut?'<div class="ru-social"><span class="hot"><i class="fa-solid fa-bolt"></i> High demand \u00b7 '+s.invested+' investments this week</span></div>':'';
+    return '<div class="deal-card" onclick="navigate(\'deal\',\''+key+'\')">'+
+      '<img src="'+deal.img+'" class="deal-image" loading="lazy" onerror="this.onerror=null;this.src=\'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=80\';">'+
+      '<div class="deal-content">'+
+      '<div class="deal-sector-tag" style="background:'+(sec?sec.color:'#666')+';">'+(sec?sec.icon:'')+' '+(sec?sec.name:'')+'</div>'+
+      '<div class="deal-header"><div class="deal-name">'+deal.name+'</div>'+
+      '<div class="deal-score" style="background:'+deal.scoreBg+';" title="RaiseUp Score '+s.overall+' \u00b7 '+(s.delta>=0?'+':'')+s.delta+' this month: '+s.reasons.join(', ')+'">'+deal.score+' \u00b7 '+s.overall+'</div></div>'+
+      '<div class="deal-meta"><span class="country-flag">'+flag+'</span>'+deal.location+' \u00b7 '+(countryNames[deal.country]||deal.country)+'</div>'+
+      '<div class="deal-funding"><div class="funding-bar"><div class="funding-fill" style="width:'+deal.funded+'%;"></div></div>'+
+      '<div class="funding-text"><span>'+deal.funded+'% funded</span><span>'+deal.target+'</span></div></div>'+
+      '<div class="inst-metrics">'+
+        '<div class="inst-m"><div class="inst-m-label">Instrument</div><div class="inst-m-val" style="font-size:12px;">'+((deal.instrument||'').split(' ')[0])+'</div></div>'+
+        '<div class="inst-m"><div class="inst-m-label">Term</div><div class="inst-m-val" style="font-size:12px;">'+((deal.duration||'').replace(' months','m'))+'</div></div>'+
+        '<div class="inst-m"><div class="inst-m-label">Min</div><div class="inst-m-val" style="font-size:12px;">'+(deal.min||'')+'</div></div>'+
+      '</div>'+
+      '<div class="deal-footer"><div class="deal-irr">'+deal.irr+' IRR</div><div class="deal-days">'+deal.days+' days left</div></div>'+
+      hot+'</div></div>';
+  }).join('');
+  const cnt=document.getElementById('dealsCount');
+  if(cnt)cnt.textContent='Showing '+show.length+' of '+total+' deal'+(total!==1?'s':'');
+  let more=document.getElementById('ruMoreBtn');
+  if(!more){more=document.createElement('div');more.id='ruMoreBtn';more.className='ru-more';grid.after(more);}
+  more.innerHTML=total>show.length?'<button class="ru-more-btn" onclick="RU.visibleCount+=12;renderDeals();">Show more \u00b7 '+(total-show.length)+' remaining</button>':'';
+};
+/* filter changes reset pagination */
+if(typeof filterSector==='function'){const _fs=filterSector;filterSector=function(k){RU.visibleCount=12;_fs(k);};}
+if(typeof filterDeals==='function'){const _fd=filterDeals;filterDeals=function(f){RU.visibleCount=12;_fd(f);};}
+/* ================= DEAL DETAIL INTELLIGENCE ================= */
+const TERMS={
+ 'IRR':'Internal Rate of Return — the annualised return an investment is expected to generate, accounting for the timing of every cash flow. A 15% IRR roughly means your money compounds at 15% per year.',
+ 'EBITDA':'Earnings Before Interest, Taxes, Depreciation & Amortisation — a proxy for operating profitability. Investors use it to compare companies regardless of financing and accounting choices.',
+ 'Instrument':'The legal form of your investment: equity (ownership), debt (a loan), revenue sharing (a % of sales), or hybrids like convertible notes.',
+ 'Convertible Note':'A loan that converts into shares at the next funding round, usually at a discount. You get downside protection now, equity upside later.',
+ 'SAFE':'Simple Agreement for Future Equity — you invest now and receive shares at the next priced round. No interest, no maturity date.',
+ 'Revenue Sharing':'You receive a fixed percentage of the company’s revenue until a return cap is reached. Payouts start quickly, upside is capped.',
+ 'Distribution':'How and when returns are paid to you — monthly, quarterly, annually, or at an exit event.',
+ 'Protection':'The security backing your investment: collateral, personal guarantees, liquidation preferences or covenants that reduce your downside.',
+ 'Duration':'The expected holding period before the instrument matures or is repaid. Private investments are typically illiquid until then.',
+ 'Min Investment':'The smallest ticket accepted in this round.',
+ 'Valuation':'What the whole company is estimated to be worth. Your ownership % = your investment ÷ post-money valuation.',
+ 'Dilution':'When new shares are issued in later rounds, your percentage of the company decreases unless you reinvest.'};
+const SECTOR_WEAK={food:['Thin margins typical of F&B','Location dependency','Seasonal demand swings'],hospitality:['Capex-heavy expansion','Tourism cycle exposure','Staffing cost inflation'],healthcare:['Regulatory approval timelines','Reimbursement dependency','Key-clinician risk'],wine:['Vintage/weather variability','Long inventory cycles','Export tariff exposure'],production:['Raw material price dependency','High working capital','Retail concentration'],textiles:['Fashion-cycle demand risk','Customer concentration in luxury houses','Import competition'],industry:['Cyclical order books','Capex intensity','Supply-chain dependency'],tech:['Burn rate before profitability','Talent competition','Platform/churn risk'],energy:['Regulatory/subsidy dependency','Grid connection timelines','Interest-rate sensitivity'],retail:['E-commerce margin pressure','Footfall dependency','Inventory risk'],logistics:['Fuel cost exposure','Contract renewal risk','Asset utilisation swings'],education:['Enrollment seasonality','Regulatory accreditation','Key-teacher dependency'],maritime:['Weather/biological risk','Quota regulation','Fuel exposure'],pharma:['Trial/approval risk','Concentrated pipeline','IP litigation exposure'],sport:['Membership churn','Seasonality','Real-estate lease terms'],realestate:['Interest-rate sensitivity','Permitting delays','Local market cycles']};
+function dealYear(k){return 1996+rh(k+'y')%24;}
+function injectDealIntel(k){
+  const d=deals[k];if(!d)return;const s=RU.S[k];if(!s)return;
+  const c=document.getElementById('dealDetailContent');
+  const tabs=c.querySelector('.tabs');if(!tabs)return;
+  const left=tabs.parentElement;
+  const secName=sectors[d.sector]?sectors[d.sector].name:d.sector;
+  /* --- extra tab buttons --- */
+  [['memo','AI Memo'],['tc','Trust'],['rk','Risk'],['wi','What-If']].forEach(([p,label])=>{
+    const b=document.createElement('button');b.className='tab-button';b.textContent=label;
+    b.setAttribute('onclick',"switchTab(this,'"+p+'-'+k+"')");tabs.appendChild(b);
+  });
+  /* --- score breakdown in AI tab --- */
+  const aiBox=c.querySelector('#ai-'+k+' .ai-score-container');
+  if(aiBox){
+    const why=document.createElement('div');why.className='ru-why ru-fadeup';
+    why.innerHTML='<div class="ru-why-top"><div class="ru-why-num">'+s.overall+'</div>'+
+      '<div><div style="font-size:14px;font-weight:700;">RaiseUp Score</div><div style="font-size:12px;color:var(--text-ter);">Recomputed on every data update</div></div>'+
+      '<div class="ru-why-delta '+(s.delta>=0?'up':'down')+'">'+(s.delta>=0?'▲ +':'▼ ')+s.delta+' this month</div></div>'+
+      '<div class="ru-why-reasons">'+s.reasons.map(r=>'<div><i class="fa-solid fa-circle-check"></i> '+r+'</div>').join('')+'</div>'+
+      Object.entries(s.subs).map(([n,v])=>'<div class="ru-subrow"><span>'+n+'</span><div class="ru-subbar"><div style="width:'+v+'%;"></div></div><b>'+v+'</b></div>').join('');
+    aiBox.insertBefore(why,aiBox.firstChild);
+  }
+  /* --- timeline into Overview --- */
+  const ov=c.querySelector('#ov-'+k+' .deal-overview');
+  if(ov){
+    const y0=dealYear(k);
+    const steps=[[y0,'<b>Founded</b> in '+d.location],
+      [y0+Math.max(2,rh(k+'t1')%6),'<b>First expansion</b> — '+(d.subsector||secName)+' operations scaled'],
+      [2020,'<b>Navigated COVID</b> — business model stress-tested'],
+      [2023,'<b>'+(d.metrics&&d.metrics[0]?d.metrics[0][0]+' '+d.metrics[0][1]:'Revenue milestone')+'</b> reached ('+(d.metrics&&d.metrics[0]?d.metrics[0][2]:'+20%')+')'],
+      [2025,'<b>Verified by RaiseUp</b> — '+(d.aiChecks||200)+'+ automated checks passed'],
+      ['Today','<b>Raising '+d.target+'</b> — '+d.instrument+' · '+d.irr+' expected IRR']];
+    const tl=document.createElement('div');tl.className='overview-section';
+    tl.innerHTML='<div class="section-title">Company Journey</div><div class="ru-tl">'+
+      steps.map(([y,t],i)=>'<div class="ru-tl-item'+(i===steps.length-1?' now':'')+'"><div class="ru-tl-year">'+y+'</div><div class="ru-tl-txt">'+t+'</div></div>').join('')+'</div>';
+    ov.appendChild(tl);
+  }
+  /* --- helpers for content --- */
+  const fin=d.aiScores;const peerList=Object.entries(deals).filter(([pk,pd])=>pd.sector===d.sector&&pk!==k).sort((a,b)=>RU.S[b[0]].overall-RU.S[a[0]].overall).slice(0,3);
+  const founderPct=52+rh(k+'f')%36;
+  const rev=d.metrics&&d.metrics[0]?d.metrics[0][1]:'—';
+  const growthPct=(d.metrics&&d.metrics[0]&&d.metrics[0][2].match(/\d+/))?+d.metrics[0][2].match(/\d+/)[0]:20;
+  /* --- AI MEMO tab --- */
+  const memo=document.createElement('div');memo.className='tab-content';memo.id='memo-'+k;
+  const thesisPro=esc(d.name)+' operates in '+secName.toLowerCase()+' ('+d.location+', '+(countryNames[d.country]||'')+') with '+rev+' revenue growing '+growthPct+'% YoY. The '+d.instrument.toLowerCase()+' structure with '+d.protection.toLowerCase()+' offers asymmetric exposure: '+d.irr+' target IRR against a '+RU.riskLabel(fin.risk).toLowerCase()+' risk profile. Founder retains ~'+founderPct+'% ownership — strong alignment. Score momentum is '+(s.delta>=0?'positive':'negative')+' ('+(s.delta>=0?'+':'')+s.delta+' this month), driven by: '+s.reasons.join('; ').toLowerCase()+'.';
+  const thesisSimple='This is a real, established business — not a startup idea. It makes '+rev+' a year and is growing about '+growthPct+'% annually. If you invest, you get '+d.instrument.toLowerCase()+', and your money is partly protected by '+d.protection.toLowerCase()+'. The platform expects roughly '+d.irr+' per year in returns, with '+RU.riskLabel(fin.risk).toLowerCase()+' risk. The founder still owns most of the company, so they win only if you win.';
+  memo.innerHTML='<div class="ru-memo ru-fadeup">'+
+    '<div class="ru-memo-head"><div><div style="font-size:19px;font-weight:800;">AI Investment Memo</div>'+
+    '<div style="font-size:12px;color:var(--text-ter);">Generated from '+(d.aiChecks||200)+'+ verified data points · '+(d.aiConfidence||90)+'% confidence · Demo — not investment advice</div></div>'+
+    '<div class="ru-memo-badge"><i class="fa-solid fa-wand-magic-sparkles"></i> RaiseUp AI</div></div>'+
+    '<div class="ru-memo-grid">'+
+      [['Overall',s.overall],['Financials',fin.financial],['Management',fin.management],['Market',fin.market],['Growth',fin.growth],['Governance',fin.esg]].map(([n,v])=>'<div class="ru-memo-dim"><b>'+v+'</b><span>'+n+'</span></div>').join('')+'</div>'+
+    '<div class="ru-memo-sec"><h4>Investment thesis <span class="ru-simple-toggle" style="float:right;" onclick="ruToggleThesis(this)">Explain it simply</span></h4>'+
+    '<p class="ru-thesis" data-pro="'+thesisPro.replace(/"/g,'&quot;')+'" data-simple="'+thesisSimple.replace(/"/g,'&quot;')+'">'+thesisPro+'</p></div>'+
+    '<div class="ru-memo-cols"><div class="ru-memo-sec"><h4>Strengths</h4>'+
+      (d.highlights||[]).slice(0,4).map(hl=>'<div class="ru-li pos"><i class="fa-solid fa-circle-check"></i>'+esc(hl)+'</div>').join('')+'</div>'+
+    '<div class="ru-memo-sec"><h4>Watch items</h4>'+
+      (SECTOR_WEAK[d.sector]||['Execution risk']).map(w=>'<div class="ru-li neg"><i class="fa-solid fa-triangle-exclamation"></i>'+w+'</div>').join('')+'</div></div>'+
+    '<div class="ru-memo-sec"><h4>Questions a professional would ask</h4>'+
+      ['What are the top-3 customer concentrations and their contract lengths?','How does management deploy the '+d.target+' — and what happens if only 70% is raised?','What triggers the '+d.protection.toLowerCase()+', and who enforces it?','What is the realistic exit path over '+d.duration+'?'].map(q=>'<div class="ru-li"><i class="fa-regular fa-circle-question" style="color:var(--blue);"></i>'+q+'</div>').join('')+'</div>'+
+    '<div class="ru-memo-sec"><h4>Peer comparison — '+secName+'</h4><table class="ru-peers"><tr><th>Company</th><th>Score</th><th>IRR</th><th>Funded</th></tr>'+
+      '<tr style="background:var(--blue-light);"><td><b>'+esc(d.name)+'</b></td><td><b>'+s.overall+'</b></td><td>'+d.irr+'</td><td>'+d.funded+'%</td></tr>'+
+      peerList.map(([pk,pd])=>'<tr><td style="cursor:pointer;color:var(--blue);" onclick="navigate(\'deal\',\''+pk+'\')">'+esc(pd.name)+'</td><td>'+RU.S[pk].overall+'</td><td>'+pd.irr+'</td><td>'+pd.funded+'%</td></tr>').join('')+'</table>'+
+      '<p style="margin-top:10px;font-size:13px;">'+ (peerList.length? 'Verdict: <b>'+esc(d.name)+'</b> '+(s.overall>=RU.S[peerList[0][0]].overall?'leads its peer group on composite score; the premium is justified by '+Object.entries(s.subs).sort((a,b)=>b[1]-a[1])[0][0].toLowerCase()+'.':'trails '+esc(peerList[0][1].name)+' on composite score but offers '+(irrMid(d)>irrMid(peerList[0][1])?'a higher expected return for the added risk.':'a more defensive profile.')) : 'No direct peers currently listed.')+'</p></div>'+
+  '</div>';
+  left.appendChild(memo);
+  /* --- TRUST tab --- */
+  const tc=document.createElement('div');tc.className='tab-content';tc.id='tc-'+k;
+  const trustItems=[['Identity & UBO verified','KYC via national registry'],['Financial statements audited','FY2023–FY2025'],['AML screening passed','EU sanctions & PEP lists'],['Legal review completed','Corporate structure & litigation'],['Tax compliance confirmed','No outstanding liabilities'],['Credit bureau check','Score band A–B'],['Founder interview on file','45-min recorded session'],['Site visit conducted','Photo & video documentation'],['ESG assessment','Scope 1–2 reviewed'],['Insurance coverage verified','Property & liability in force'],['IP & patents checked','Registered where applicable'],['Supply chain screened','Top-5 suppliers verified']];
+  const pendingIdx=rh(k+'p')%13; /* 12 = none pending */
+  const okCount=trustItems.filter((_,i)=>i!==pendingIdx).length;
+  tc.innerHTML='<div class="ru-fadeup"><div class="ru-trust-score"><b>'+okCount+'/12</b><span><b style="font-size:14px;color:var(--text-pri);">Verification checks completed.</b><br>Every listing on RaiseUp passes an institutional-grade onboarding process before going live. Documentation is available in the Data Room.</span></div>'+
+    '<div class="ru-trust-grid">'+trustItems.map(([t,sub],i)=>{
+      const ok=i!==pendingIdx;
+      return '<div class="ru-trust-item '+(ok?'ok':'pending')+'"><i class="fa-solid '+(ok?'fa-circle-check':'fa-clock')+'"></i><div>'+t+'<small>'+(ok?sub:'In progress — expected this month')+'</small></div></div>';}).join('')+'</div></div>';
+  left.appendChild(tc);
+  /* --- RISK tab --- */
+  const rk=document.createElement('div');rk.className='tab-content';rk.id='rk-'+k;
+  const bkr=((100-fin.risk)*0.32).toFixed(1);
+  const liq=Math.min(88,34+rh(k+'l')%30+(/(month|quarter)/i.test(d.dist)?-12:8));
+  const secR=SECTOR_RISK[d.sector]||45;const geoR=GEO_RISK[d.country]||30;const macro=22+rh(k+'m')%34;
+  rk.innerHTML='<div class="ru-fadeup"><div style="display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px;margin-bottom:14px;">'+
+    '<div style="font-size:19px;font-weight:800;">Risk, made visible</div>'+
+    '<div style="font-size:12.5px;color:var(--text-ter);">Most platforms hide risk. We chart it. Composite: <b style="color:var(--text-pri);">'+RU.riskLabel(fin.risk)+'</b></div></div>'+
+    '<div class="ru-gauges">'+
+    gauge(Math.min(95,+bkr*10),'Bankruptcy probability',bkr+'%','3-yr horizon, sector-adjusted model')+
+    gauge(liq,'Liquidity risk',liq<40?'Low':liq<65?'Medium':'High','Secondary market & '+d.dist.toLowerCase()+' distributions')+
+    gauge(secR,'Sector risk',secR<40?'Low':secR<60?'Medium':'High',secName+' cyclicality index')+
+    gauge(macro,'Macro exposure',macro<35?'Low':macro<60?'Medium':'High','Rates, inflation & consumer demand')+
+    gauge(geoR,'Geopolitical exposure',geoR<28?'Low':geoR<45?'Medium':'High',(countryNames[d.country]||'')+' + export market mix')+
+    '</div>'+
+    '<div class="ru-memo-sec" style="margin-top:14px;"><h4>What protects you</h4><div class="ru-li pos"><i class="fa-solid fa-shield-halved"></i>'+d.protection+'</div>'+
+    '<div class="ru-li pos"><i class="fa-solid fa-file-contract"></i>Contractual covenants monitored quarterly by RaiseUp — breaches trigger investor alerts.</div>'+
+    '<div class="ru-li pos"><i class="fa-solid fa-scale-balanced"></i>Funds held in segregated escrow until the round closes.</div></div></div>';
+  left.appendChild(rk);
+  /* --- WHAT-IF tab --- */
+  const wi=document.createElement('div');wi.className='tab-content';wi.id='wi-'+k;
+  wi.innerHTML='<div class="ru-fadeup"><div style="font-size:19px;font-weight:800;margin-bottom:2px;">Digital Twin — What-If Simulator</div>'+
+    '<div style="font-size:12.5px;color:var(--text-ter);margin-bottom:16px;">Stress-test this company before you invest. The model recalculates valuation, return and risk in real time.</div>'+
+    '<div class="ru-wi"><div class="ru-wi-controls">'+
+    '<label>Revenue growth next 3 yrs <b id="wiG-'+k+'">'+growthPct+'%</b></label><input type="range" min="-20" max="45" value="'+growthPct+'" oninput="ruWhatIf(\''+k+'\')" id="wiGr-'+k+'">'+
+    '<label>Cost shock (materials, energy) <b id="wiC-'+k+'">0%</b></label><input type="range" min="0" max="30" value="0" oninput="ruWhatIf(\''+k+'\')" id="wiCs-'+k+'">'+
+    '<label>Additional capital raised <b id="wiR-'+k+'">€0</b></label><input type="range" min="0" max="10" value="0" step="0.5" oninput="ruWhatIf(\''+k+'\')" id="wiRa-'+k+'">'+
+    '<label style="display:flex;gap:8px;align-items:center;justify-content:flex-start;cursor:pointer;"><input type="checkbox" id="wiEx-'+k+'" onchange="ruWhatIf(\''+k+'\')" style="accent-color:var(--blue);width:16px;height:16px;"> Expands into a new EU market</label>'+
+    '</div><div class="ru-wi-out" id="wiOut-'+k+'"></div></div></div>';
+  left.appendChild(wi);
+  /* --- charts into Financials tab --- */
+  const fi=c.querySelector('#fi-'+k+' .financials-container');
+  if(fi){
+    const g=1+growthPct/100;const revNow=Math.max(4e5,money(rev)||2.5e6);
+    const years=['2021','2022','2023','2024','2025'];
+    const revS=years.map((_,i)=>Math.round(revNow/Math.pow(g,4-i)));
+    const margin=0.10+ (rh(k+'e')%14)/100;
+    const ebS=revS.map((r,i)=>Math.round(r*(margin+i*0.012)));
+    const valS=revS.map((r,i)=>Math.round(r*(2.2+i*0.25+(fin.growth-80)/40)));
+    const chart=document.createElement('div');chart.className='financial-section';
+    chart.innerHTML='<div class="section-title">Institutional View</div><div class="ru-chart-grid">'+
+      '<div class="ru-chart"><h5>Revenue vs EBITDA (€)</h5>'+barChart([revS,ebS],years,['#0071E3','#30D158'],150)+
+        '<div class="ru-legend"><span><i class="fa-solid fa-circle" style="color:#0071E3;"></i>Revenue</span><span><i class="fa-solid fa-circle" style="color:#30D158;"></i>EBITDA</span></div></div>'+
+      '<div class="ru-chart"><h5>Estimated valuation history</h5>'+lineChart([valS],years,['#AF52DE'],150)+
+        '<div class="ru-legend"><span><i class="fa-solid fa-circle" style="color:#AF52DE;"></i>'+fmtM(valS[4])+' current est.</span></div></div>'+
+      '<div class="ru-chart"><h5>Ownership</h5>'+lineChart([[founderPct+14,founderPct+9,founderPct+5,founderPct+2,founderPct]],years,['#FF9F0A'],150)+
+        '<div class="ru-legend"><span><i class="fa-solid fa-circle" style="color:#FF9F0A;"></i>Founder ownership — now '+founderPct+'%</span></div></div>'+
+      '<div class="ru-chart"><h5>vs. '+secName+' sector average</h5>'+barChart([[growthPct,Math.round(irrMid(d)),s.overall],[Math.max(4,growthPct-7),Math.round(irrMid(d))-3,78]],['Growth %','Exp. IRR %','Score'],['#0071E3','#A1A1A6'],150)+
+        '<div class="ru-legend"><span><i class="fa-solid fa-circle" style="color:#0071E3;"></i>'+esc(d.name)+'</span><span><i class="fa-solid fa-circle" style="color:#A1A1A6;"></i>Sector avg</span></div></div>'+
+    '</div>';
+    fi.appendChild(chart);
+  }
+  /* --- sidebar upgrades --- */
+  const sb=c.querySelector('.invest-sidebar');
+  if(sb){
+    const ex=document.createElement('div');
+    ex.style.cssText='margin-top:16px;padding-top:16px;border-top:1px solid var(--border);';
+    ex.innerHTML='<div style="font-size:12px;color:var(--text-ter);margin-bottom:8px;">Live activity</div>'+
+      '<div style="font-size:13px;color:var(--text-sec);display:flex;flex-direction:column;gap:6px;">'+
+      '<span><i class="fa-regular fa-eye" style="width:16px;color:var(--blue);"></i> '+s.viewers+' investors viewed today</span>'+
+      '<span><i class="fa-solid fa-bolt" style="width:16px;color:var(--orange);"></i> '+s.invested+' invested this week</span>'+
+      '<span><i class="fa-solid fa-arrow-trend-up" style="width:16px;color:var(--green-dark);"></i> Trending in '+(countryNames[d.country]||'Europe')+'</span></div>'+
+      '<button class="ru-cop-btn" style="width:100%;margin-top:14px;background:var(--purple);" onclick="ruOpenMemo(\''+k+'\')"><i class="fa-solid fa-wand-magic-sparkles"></i>&nbsp; Generate AI Report</button>';
+    sb.appendChild(ex);
+  }
+  /* --- info tooltips on terms table & stats --- */
+  c.querySelectorAll('.terms-table th, .stat-label').forEach(el=>{
+    const t=el.textContent.trim();
+    const key=TERMS[t]?t:(t==='Expected IRR'?'IRR':null);
+    if(key&&!el.querySelector('.ru-info')){
+      const i=document.createElement('span');i.className='ru-info';i.textContent='i';
+      i.onclick=e=>{e.stopPropagation();ruPop(e,key,TERMS[key]);};
+      el.appendChild(i);
+    }
+  });
+  ruWhatIf(k);
+}
+window.ruOpenMemo=function(k){
+  const btns=document.querySelectorAll('#dealDetailContent .tab-button');
+  btns.forEach(b=>{if(b.textContent==='AI Memo')b.click();});
+  window.scrollTo({top:0,behavior:'smooth'});
+};
+window.ruToggleThesis=function(el){
+  const p=el.closest('.ru-memo-sec').querySelector('.ru-thesis');
+  const simple=el.dataset.on!=='1';
+  p.textContent=simple?p.dataset.simple:p.dataset.pro;
+  el.dataset.on=simple?'1':'0';el.textContent=simple?'Show professional version':'Explain it simply';
+};
+window.ruWhatIf=function(k){
+  const d=deals[k];const s=RU.S[k];const out=document.getElementById('wiOut-'+k);if(!out)return;
+  const g=+document.getElementById('wiGr-'+k).value;
+  const cs=+document.getElementById('wiCs-'+k).value;
+  const ra=+document.getElementById('wiRa-'+k).value;
+  const ex=document.getElementById('wiEx-'+k).checked;
+  document.getElementById('wiG-'+k).textContent=g+'%';
+  document.getElementById('wiC-'+k).textContent=cs+'%';
+  document.getElementById('wiR-'+k).textContent=ra?('€'+ra+'M'):'€0';
+  const rev=Math.max(4e5,money(d.metrics&&d.metrics[0]?d.metrics[0][1]:'')||2.5e6);
+  const rev3=rev*Math.pow(1+(g+(ex?6:0))/100,3);
+  const marginHit=1-cs/100*0.55;
+  const baseMult=2.2+(d.aiScores.growth-80)/40;
+  const val=rev3*baseMult*marginHit+(ra*1e6*0.9);
+  const valNow=rev*(baseMult+0.55);
+  const irr0=irrMid(d);
+  const irr=Math.max(2,irr0+(g-((d.metrics&&d.metrics[0]&&d.metrics[0][2].match(/\d+/))?+d.metrics[0][2].match(/\d+/)[0]:20))*0.35-cs*0.28+(ex?1.4:0)).toFixed(1);
+  const dil=ra?Math.min(38,Math.round(ra*1e6/(val+ra*1e6)*100)):0;
+  const riskShift=Math.round(cs*0.7-(g>0?g*0.2:g*-0.4)+(ex?4:0));
+  const rl=RU.riskLabel(Math.max(55,Math.min(96,d.aiScores.risk-riskShift)));
+  out.innerHTML='<div class="ru-wi-row"><span>Projected revenue (3 yrs)</span><b>'+fmtM(rev3)+'</b></div>'+
+    '<div class="ru-wi-row"><span>Estimated valuation</span><b style="color:'+(val>=valNow?'var(--green-dark)':'var(--red)')+';">'+fmtM(val)+' <small style="font-weight:600;">('+(val>=valNow?'+':'')+Math.round((val/valNow-1)*100)+'%)</small></b></div>'+
+    '<div class="ru-wi-row"><span>Projected IRR</span><b>'+irr+'%</b></div>'+
+    '<div class="ru-wi-row"><span>Dilution from new raise</span><b>'+dil+'%</b></div>'+
+    '<div class="ru-wi-row"><span>Risk level</span><b>'+rl+'</b></div>'+
+    '<div style="font-size:11px;color:var(--text-ter);margin-top:10px;">Deterministic scenario model on verified data. Illustrative only.</div>';
+};
+/* global tooltip */
+const pop=document.createElement('div');pop.id='ruPop';document.body.appendChild(pop);
+window.ruPop=function(e,title,text){
+  pop.innerHTML='<div class="ru-pop-ai"><i class="fa-solid fa-wand-magic-sparkles"></i> RaiseUp AI explains</div><b>'+title+'</b>'+text;
+  pop.style.display='block';
+  const x=Math.min(e.clientX,window.innerWidth-320),y=Math.min(e.clientY+14,window.innerHeight-180);
+  pop.style.left=x+'px';pop.style.top=y+'px';
+};
+document.addEventListener('click',e=>{if(!e.target.classList.contains('ru-info'))pop.style.display='none';});
+/* hook renderDealDetail */
+const _rdd=window.renderDealDetail;
+window.renderDealDetail=function(k){_rdd(k);try{injectDealIntel(k);}catch(err){console.warn('v2 deal intel',err);}};
+/* ================= PORTFOLIO INTELLIGENCE ================= */
+function injectPortfolio(){
+  const view=document.getElementById('view-portfolio');if(!view)return;
+  const container=view.querySelector('.portfolio-container');if(!container)return;
+  const hold=[['borgo',75000],['osteria',50000],['vigneto',40000],['tessuti',30000],['clinic',20000],['sapori',15000]];
+  const tot=hold.reduce((s,h)=>s+h[1],0);
+  const bySector={};let wScore=0,wRisk=0;
+  hold.forEach(([k,amt])=>{const d=deals[k];if(!d)return;const nm=sectors[d.sector]?sectors[d.sector].name:d.sector;
+    bySector[nm]=(bySector[nm]||0)+amt;wScore+=RU.S[k].overall*amt;wRisk+=d.aiScores.risk*amt;});
+  wScore=Math.round(wScore/tot);wRisk=Math.round(wRisk/tot);
+  const expEntries=Object.entries(bySector).sort((a,b)=>b[1]-a[1]);
+  const topPct=Math.round(expEntries[0][1]/tot*100);
+  const colors=['#0071E3','#30D158','#AF52DE','#FF9F0A','#FF453A','#5856D6'];
+  const pi=document.createElement('div');pi.style.padding='0 20px 20px';
+  pi.innerHTML='<div class="section-title">Portfolio Intelligence <span class="ru-memo-badge" style="margin-left:8px;"><i class="fa-solid fa-wand-magic-sparkles"></i> AI</span></div>'+
+   '<div class="ru-pi-grid">'+
+   '<div class="ru-pi-card"><h5>Portfolio Health</h5><div class="ru-pi-big" style="color:var(--blue);">'+wScore+'<span style="font-size:14px;color:var(--text-ter);">/100</span></div><div style="font-size:12px;color:var(--green-dark);font-weight:600;margin-top:4px;">▲ +2 this month</div></div>'+
+   '<div class="ru-pi-card"><h5>Risk Level</h5><div class="ru-pi-big">'+RU.riskLabel(wRisk)+'</div><div style="font-size:12px;color:var(--text-ter);margin-top:4px;">Weighted across 6 holdings</div></div>'+
+   '<div class="ru-pi-card"><h5>Diversification</h5><div class="ru-pi-big" style="color:'+(topPct>40?'var(--orange)':'var(--green-dark)')+';">'+(topPct>40?'B':'A−')+'</div><div style="font-size:12px;color:var(--text-ter);margin-top:4px;">'+expEntries.length+' sectors · top weight '+topPct+'%</div></div>'+
+   '<div class="ru-pi-card"><h5>Sector Exposure</h5>'+expEntries.map(([n,v],i)=>'<div class="ru-exp-row"><span>'+n+'</span><div class="ru-exp-bar"><div style="width:'+Math.round(v/tot*100)+'%;background:'+colors[i%6]+';"></div></div><span>'+Math.round(v/tot*100)+'%</span></div>').join('')+'</div>'+
+   '</div>'+
+   '<div class="ru-sugg"><i class="fa-solid fa-lightbulb"></i><span><b>AI suggestion:</b> '+expEntries[0][0]+' represents '+topPct+'% of your portfolio. Adding one Technology or Energy position of ~€15,000 would lift diversification to A and cut estimated drawdown risk by 9%.</span></div>'+
+   '<div class="ru-sugg"><i class="fa-solid fa-arrow-trend-up"></i><span><b>Opportunity:</b> Your safest holding profile matches 3 new listings this week. Ask the Copilot: <i>"safe deals similar to my portfolio"</i>.</span></div>';
+  container.appendChild(pi);
+  /* simulator */
+  const sim=document.createElement('div');sim.className='ru-card';sim.style.cssText='margin-top:24px;padding:26px;';
+  sim.innerHTML='<div style="font-size:20px;font-weight:800;margin-bottom:2px;">Portfolio Simulator</div>'+
+    '<div style="font-size:13px;color:var(--text-sec);margin-bottom:20px;">What happens if you invest across European SMEs? Model it before committing a euro.</div>'+
+    '<div class="ru-sim"><div>'+
+    '<label style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;color:var(--text-sec);margin-bottom:6px;">Amount <b style="color:var(--blue);" id="simAmtL">€25,000</b></label>'+
+    '<input type="range" min="5000" max="250000" step="5000" value="25000" id="simAmt" style="width:100%;accent-color:var(--blue);" oninput="ruSim()">'+
+    '<label style="display:flex;justify-content:space-between;font-size:13px;font-weight:600;color:var(--text-sec);margin:18px 0 6px;">Companies <b style="color:var(--blue);" id="simNL">10</b></label>'+
+    '<input type="range" min="2" max="20" value="10" id="simN" style="width:100%;accent-color:var(--blue);" oninput="ruSim()">'+
+    '<label style="display:block;font-size:13px;font-weight:600;color:var(--text-sec);margin:18px 0 6px;">Strategy</label>'+
+    '<select id="simStrat" onchange="ruSim()" style="width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:var(--surface);color:var(--text-pri);font-family:inherit;font-size:14px;"><option value="bal">Balanced (12–16% target)</option><option value="cons">Conservative (9–12% target)</option><option value="gro">Growth (16–24% target)</option></select>'+
+    '</div><div><div class="ru-sim-out-big" id="simCases"></div><div class="ru-chart"><h5>5-year projection</h5><div id="simChart"></div>'+
+    '<div class="ru-legend"><span><i class="fa-solid fa-circle" style="color:#30D158;"></i>Best (90th pct)</span><span><i class="fa-solid fa-circle" style="color:#0071E3;"></i>Expected</span><span><i class="fa-solid fa-circle" style="color:#FF453A;"></i>Stress (10th pct)</span></div>'+
+    '<div style="font-size:11px;color:var(--text-ter);margin-top:8px;" id="simNote"></div></div></div></div>';
+  container.after(sim);
+  window.ruSim=function(){
+    const amt=+document.getElementById('simAmt').value;
+    const n=+document.getElementById('simN').value;
+    const st=document.getElementById('simStrat').value;
+    document.getElementById('simAmtL').textContent='€'+amt.toLocaleString('en-US');
+    document.getElementById('simNL').textContent=n;
+    const P={cons:{mu:.105,sig:.06},bal:{mu:.145,sig:.10},gro:{mu:.20,sig:.17}}[st];
+    const sigAdj=P.sig/Math.sqrt(n)+P.sig*0.35;
+    const yrs=[0,1,2,3,4,5];
+    const base=yrs.map(y=>amt*Math.pow(1+P.mu,y));
+    const best=yrs.map(y=>amt*Math.pow(1+P.mu+1.28*sigAdj,y));
+    const worst=yrs.map(y=>amt*Math.pow(Math.max(0.7,1+P.mu-1.28*sigAdj),y));
+    document.getElementById('simCases').innerHTML=
+      '<div class="ru-sim-case best"><b>'+fmtM(best[5])+'</b><span>Best case</span></div>'+
+      '<div class="ru-sim-case"><b>'+fmtM(base[5])+'</b><span>Expected</span></div>'+
+      '<div class="ru-sim-case worst"><b>'+fmtM(worst[5])+'</b><span>Stress case</span></div>';
+    document.getElementById('simChart').innerHTML=lineChart([best,base,worst],yrs.map(y=>'Y'+y),['#30D158','#0071E3','#FF453A'],170);
+    document.getElementById('simNote').textContent='Diversifying across '+n+' companies narrows the outcome range by '+Math.round((1-1/Math.sqrt(n))*100)+'% vs a single holding. Historical-style simulation, demo data.';
+  };
+  ruSim();
+}
+/* ================= NAV BADGE + INIT ================= */
+function init(){
+  try{injectExplore();}catch(e){console.warn('v2 explore',e);}
+  try{injectPortfolio();}catch(e){console.warn('v2 portfolio',e);}
+  try{renderDeals();}catch(e){}
+
+}
+let ruRz;window.addEventListener('resize',()=>{clearTimeout(ruRz);ruRz=setTimeout(()=>{try{if(typeof map!=='undefined'&&map&&map.invalidateSize)map.invalidateSize();}catch(e){}},150);});
+setTimeout(()=>{try{if(typeof map!=='undefined'&&map&&map.invalidateSize)map.invalidateSize();}catch(e){}},600);
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
+<!-- ============ END RAISEUP v2 INTELLIGENCE LAYER ============ -->
+
 </body>
 </html>
